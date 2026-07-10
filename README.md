@@ -4,6 +4,8 @@ A production-grade, full-stack **food ordering & delivery platform** built to de
 
 The whole point of ForkFlow is that **every technology in the stack is essential, not bolted on.** The domain naturally forces hard problems: concurrent orders fighting for the last item, kitchens that can only cook so many orders per time-window, live "where's my food" tracking, and natural-language menu discovery. Each of those maps to exactly one tool below.
 
+> 📄 **Project files:** `README.md` (this — rules, stack, architecture, folder tree) · `TODO.md` (7-day checklist) · `WORKFLOW.md` (day-wise + step-wise flowcharts of the whole build).
+
 ---
 
 ## 📌 IMPORTANT NOTES — READ THIS FIRST (for any developer or AI agent)
@@ -20,6 +22,10 @@ The whole point of ForkFlow is that **every technology in the stack is essential
 8. **Naming conventions are strict** (see [Naming Conventions](#-naming-conventions)). A file named wrong = the build is wrong.
 9. **Idempotency and the Redis lock are non-negotiable** on the order path. The "two orders, one item" race is the centerpiece of this project — it must actually work, provably.
 10. **Keep commits small and per-task.** One TODO checkbox ≈ one commit.
+11. **NEVER run a terminal command silently. ASK FIRST.** Before running ANY command (npm install, docker, prisma, git, running the server, etc.) the agent MUST stop and tell the user: (a) the exact command, (b) *what* it does, (c) *why* we run it now, (d) what a successful result looks like. Wait for the user to run it (or approve) before continuing. The user runs commands and reports back the output/errors.
+12. **TEACH WHILE BUILDING — the user is learning, not just receiving code.** For every step the agent MUST narrate: *what* it is about to do, *why* this step exists, and *how* it fits the bigger picture. After a step, if an error occurred, explain **what the error was, why it happened, and how it was fixed** — do not silently patch things. The user must be able to follow the reasoning at every point.
+13. **The user is NEW to Docker, Redis, and Socket.io** (tutorials only, jumped into the project due to time). Whenever these appear, explain the concept in plain language *before* the code — e.g. "a Redis lock is like taking a key so only one order can touch the last item at a time." Never assume prior hands-on familiarity with these three.
+14. **EVERY line of code gets an inline comment explaining what it does**, written for a learner. Keep code broken into small, ordered steps (Step 1, Step 2, …) with a short comment above each block explaining the *why*, and an inline `//` comment on individual lines explaining the *what*. The user will strip the comments later — during the build they are mandatory. Prefer many small commented pieces over one large uncommented file.
 
 ---
 

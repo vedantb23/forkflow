@@ -1,12 +1,16 @@
 # ForkFlow — 7-Day Build Checklist
 
 > **How to use this file (for any agent or developer):**
+> - Companion files: `README.md` (rules + architecture) · `WORKFLOW.md` (day-wise + step-wise flowcharts of the whole build).
 > - Work **top to bottom, one day at a time.** Do not skip ahead.
 > - Check a box `[x]` ONLY when the task is done AND verified (compiles / endpoint responds / test passes).
 > - **Setup blocks (📎) are for the USER.** When you (agent) reach one, STOP coding, paste the instructions to the user, wait for them to add the key to `.env`, then continue.
 > - **RAG is Day 7. Do not touch `modules/search/` or pgvector before then.**
 > - Backend = Days 1–5. Frontend integration = Day 6. RAG + polish = Day 7.
 > - One task ≈ one commit.
+> - **NEVER run a terminal command for the user silently.** Before every command, state the exact command, what it does, why now, and what success looks like — then wait for the user to run it and report back (README rule #11).
+> - **Teach while building.** Narrate what/why/how for each step; on errors, explain what broke, why, and the fix. User is NEW to Docker/Redis/Socket.io — explain the concept before the code (README rules #12–13).
+> - **Every line of code gets a learner-friendly comment**, broken into ordered Steps. User strips them later (README rule #14).
 
 ---
 
