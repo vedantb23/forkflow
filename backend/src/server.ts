@@ -9,12 +9,17 @@
 import { app } from "./app"; // the configured Express app
 import { env } from "./config/env"; // validated env (for PORT)
 import { logger } from "./config/logger"; // shared logger
+import { redis } from "./config/redis"; // shared Redis client — importing it opens the connection on boot
+import { pool, connectDb } from "./config/db"; // shared Postgres pool + a boot check
 
 // Step 2 — start listening on the configured port.
 // app.listen opens the TCP port and runs the callback once it's ready.
 const server = app.listen(env.PORT, () => {
   logger.info(`🚀 ForkFlow API running on http://localhost:${env.PORT}`);
   logger.info(`   Health check: http://localhost:${env.PORT}/health`);
+
+  // ping the DB once so boot logs clearly show Postgres is reachable
+  connectDb().catch((err) => logger.error({ err }, "Postgres connect check failed"));
 });
 
 // Step 3 — graceful shutdown.
@@ -23,8 +28,11 @@ const server = app.listen(env.PORT, () => {
 // mid-request. Later we'll also close Redis/DB connections here.
 function shutdown(signal: string) {
   logger.info(`${signal} received — shutting down gracefully...`);
-  server.close(() => {
-    logger.info("HTTP server closed. Bye 👋");
+  server.close(async () => {
+    logger.info("HTTP server closed.");
+    await redis.quit(); // close the Redis connection cleanly (flushes pending commands)
+    await pool.end(); // close the Postgres pool too
+    logger.info("Redis + Postgres connections closed. Bye 👋");
     process.exit(0); // 0 = clean exit
   });
 }

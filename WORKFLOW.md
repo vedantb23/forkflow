@@ -42,7 +42,7 @@ START
 [1] Scaffold repo ── root files (.gitignore, docker-compose.yml) + backend/ + frontend/
   │
   ▼
-⌨️ [2] npm init + install deps (express, prisma, ioredis, bullmq, jwt...)
+⌨️ [2] npm init + install deps (express, pg, ioredis, bullmq, jwt...)
   │        (ASK user to run, explain each package group)
   ▼
 [3] tsconfig + npm scripts (dev / worker / build)
@@ -63,13 +63,13 @@ START
 📎 [7] SETUP SUPABASE ── create project → copy DATABASE_URL (6543) + DIRECT_URL (5432)
   │        explain: "Supabase = hosted Postgres with a dashboard"
   ▼
-⌨️ [8] npx prisma init  → write schema.prisma (all models + enums)
+[8] db/schema.sql (all tables + enums) + config/db.ts (pg Pool)
   │
   ▼
-⌨️ [9] npx prisma migrate dev --name init  → ✅ tables show in Supabase Table Editor
+⌨️ [9] npm run db:migrate  → ✅ tables show in Supabase Table Editor
   │
   ▼
-⌨️ [10] seed.ts → npm run prisma:seed  → ✅ 3 restaurants + menus in DB
+⌨️ [10] db/seed.ts → npm run db:seed  → ✅ 3 restaurants + menus in DB
   │
   ▼
 END DAY 1 ✅  (health live · Redis connected · schema migrated + seeded)

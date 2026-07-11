@@ -15,6 +15,6 @@
     "declaration": false,               // we don't need .d.ts output for an app (only for libraries)
     "types": ["node"]                   // include Node.js global types
   },
-  "include": ["src/**/*.ts", "prisma/**/*.ts"], // which files to compile
+  "include": ["src/**/*.ts"], // compiled to dist/ for `npm start`. db/ scripts run via tsx, not built.
   "exclude": ["node_modules", "dist"]           // which to ignore
 }

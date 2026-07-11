@@ -22,12 +22,12 @@
 - [ ] Create `backend/` and `frontend/` folders  <!-- backend done; frontend deferred to Day 6 -->
 - [x] `cd backend && npm init -y`
 - [x] Install backend deps:
-      `npm i express cors helmet cookie-parser dotenv ioredis bullmq @prisma/client pino pino-pretty jsonwebtoken bcryptjs`
+      `npm i express cors helmet cookie-parser dotenv ioredis bullmq pg pino pino-pretty jsonwebtoken bcryptjs`
 - [x] Install backend dev deps:
-      `npm i -D typescript tsx @types/node @types/express @types/cors @types/cookie-parser @types/jsonwebtoken @types/bcryptjs prisma`
+      `npm i -D typescript tsx @types/node @types/express @types/cors @types/cookie-parser @types/jsonwebtoken @types/bcryptjs @types/pg`
 - [x] `npx tsc --init` → set `outDir: ./dist`, `rootDir: ./src`, `strict: true`, `esModuleInterop: true`, `moduleResolution: nodenext` <!-- node10 removed in TS7 -->
 - [x] Add npm scripts to `backend/package.json`:
-      `"dev": "tsx watch src/server.ts"`, `"worker": "tsx watch src/workers/index.ts"`, `"build": "tsc"`, `"start": "node dist/server.js"`, `"prisma:seed": "tsx prisma/seed.ts"`
+      `"dev": "tsx watch src/server.ts"`, `"worker": "tsx watch src/workers/index.ts"`, `"build": "tsc"`, `"start": "node dist/server.js"`, `"db:migrate": "tsx db/migrate.ts"`, `"db:seed": "tsx db/seed.ts"`
 
 ### Backend skeleton
 - [x] `src/config/env.ts` — load `dotenv`, validate required vars with plain TS checks, export typed `env`
@@ -46,10 +46,10 @@
 > 3. Run: `docker compose up -d redis`
 > 4. Verify it's up: `docker ps` should show a redis container.
 > 5. In `backend/.env` set `REDIS_URL=redis://localhost:6379`
-- [ ] Add `redis` service to `docker-compose.yml`
-- [ ] `docker compose up -d redis` and verify
-- [ ] `src/config/redis.ts` — create ioredis client, log "Redis connected"
-- [ ] Verify backend logs show Redis connected on boot
+- [x] Add `redis` service to `docker-compose.yml`
+- [x] `docker compose up -d redis` and verify
+- [x] `src/config/redis.ts` — create ioredis client, log "Redis connected"
+- [x] Verify backend logs show Redis connected on boot
 
 ### 📎 SETUP: Supabase (PostgreSQL) — do this carefully, user is new
 > **Agent: give user this ENTIRE block, step by step. Do not proceed until they paste the two URLs.**
@@ -64,7 +64,7 @@
 > 5. Scroll to **Connection string** → select the **URI** tab.
 >    - There are two you need:
 >      - **Transaction pooler** connection (host has `pooler`, port **6543**) → this is your `DATABASE_URL` (used by the app at runtime).
->      - **Direct connection** (port **5432**) → this is your `DIRECT_URL` (used by Prisma for migrations).
+>      - **Direct connection** (port **5432**) → this is your `DIRECT_URL` (used by the migrate script to run raw SQL).
 >    - Replace `[YOUR-PASSWORD]` in each string with the DB password you set in step 2.
 > 6. Paste both into `backend/.env`:
 >    ```
@@ -74,15 +74,13 @@
 > 7. Tell the agent "done" and it will continue.
 - [ ] User has created Supabase project and pasted `DATABASE_URL` + `DIRECT_URL`
 
-### Prisma + schema
-- [ ] `npx prisma init` (creates `prisma/schema.prisma`)
-- [ ] In `schema.prisma` datasource: `provider = "postgresql"`, `url = env("DATABASE_URL")`, `directUrl = env("DIRECT_URL")`
-- [ ] Define enums: `Role`, `OrderStatus`, `PaymentStatus`, `DeliveryStatus`
-- [ ] Define models: `User`, `Restaurant`, `MenuItem`, `Cart`, `CartItem`, `Order`, `OrderItem`, `Payment`, `DeliveryAssignment` (embedding field on MenuItem added Day 7)
-- [ ] `src/config/prisma.ts` — PrismaClient singleton
-- [ ] `npx prisma migrate dev --name init` → verify tables appear in Supabase → **Table Editor**
-- [ ] `prisma/seed.ts` — insert 3 sample restaurants with menus; wire `prisma.seed` in package.json; run `npm run prisma:seed`
-- [ ] Verify seeded rows in Supabase Table Editor
+### Database — raw SQL (no ORM; `pg` driver)
+- [x] `db/schema.sql` — enums (`role`, `order_status`, `payment_status`, `delivery_status`) + tables (`users`, `restaurants`, `menu_items`, `carts`, `cart_items`, `orders`, `order_items`, `payments`, `delivery_assignments`) + `updated_at` triggers (embedding column on menu_items added Day 7)
+- [x] `src/config/db.ts` — shared `pg` Pool on `DATABASE_URL` + `query()` helper + `connectDb()` boot check
+- [x] `db/migrate.ts` — runs `schema.sql` over `DIRECT_URL`; `npm run db:migrate`
+- [x] Run `npm run db:migrate` → verify tables appear in Supabase → **Table Editor**
+- [x] `db/seed.ts` — insert 1 owner + 3 sample restaurants with menus; `npm run db:seed`
+- [x] Run `npm run db:seed` → verify seeded rows in Supabase Table Editor
 
 **End of Day 1:** health endpoint live, Redis connected, Supabase schema migrated + seeded. ✅
 
@@ -262,7 +260,7 @@
 - [ ] `npm i @langchain/google-genai langchain @langchain/community`
 
 ### Schema + ingestion
-- [ ] Add `embedding vector(768)` to `MenuItem` in schema (raw SQL migration, since Prisma lacks native vector type)
+- [ ] Add `embedding vector(768)` column to `menu_items` (raw SQL — add to `db/schema.sql` after enabling pgvector)
 - [ ] Create ivfflat index on the embedding column
 - [ ] `modules/search/rag.embeddings.ts` — Gemini `text-embedding-004` wrapper
 - [ ] `modules/search/rag.ingest.ts` — build a text blob per menu item (name + desc + veg + spice + price) → embed → store; script to backfill all seeded items
@@ -274,7 +272,7 @@
 - [ ] Verify: "spicy veg under ₹200 ready in 30 min" returns sensible dishes with an explanation
 
 ### Polish & docs
-- [ ] Expand `prisma/seed.ts` to a rich demo dataset (multiple cuisines) and re-ingest embeddings
+- [ ] Expand `db/seed.ts` to a rich demo dataset (multiple cuisines) and re-ingest embeddings
 - [ ] `Dockerfile`, `Dockerfile.worker`, `frontend/Dockerfile`; finalize `docker-compose.yml` (backend + worker + redis; Supabase is remote)
 - [ ] `.github/workflows/ci.yml` — lint + typecheck + build
 - [ ] README final pass: architecture diagram accurate, screenshots/GIF of live tracking + RAG search

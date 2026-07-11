@@ -62,12 +62,12 @@ export const env = {
   PORT, // a number, guaranteed positive
   CLIENT_URL: requireString("CLIENT_URL"), // frontend origin for CORS
 
-  // ---- Redis (promote to requireString at the Redis setup step, later Day 1) ----
-  REDIS_URL: optionalString("REDIS_URL"),
+  // ---- Redis (required — set up Day 1) ----
+  REDIS_URL: requireString("REDIS_URL"), // e.g. redis://localhost:6379
 
-  // ---- Postgres / Supabase (promote at the Supabase setup step) ----
-  DATABASE_URL: optionalString("DATABASE_URL"),
-  DIRECT_URL: optionalString("DIRECT_URL"),
+  // ---- Postgres / Supabase (required — set up Day 1) ----
+  DATABASE_URL: requireString("DATABASE_URL"), // pooled (6543), used by the app at runtime
+  DIRECT_URL: requireString("DIRECT_URL"), // direct (5432), used by the migrate script (raw SQL)
 
   // ---- Auth (promote Day 2) ----
   JWT_SECRET: optionalString("JWT_SECRET"),
