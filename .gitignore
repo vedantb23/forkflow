@@ -1,0 +1,22 @@
+# ---- Dependencies ----
+node_modules/          # installed packages — huge, never commit, re-created by `npm install`
+
+# ---- Secrets (NEVER commit these) ----
+.env                   # backend secrets (DB url, API keys)
+.env.local             # frontend secrets
+.env.*.local
+
+# ---- Build output ----
+dist/                  # compiled backend JS (from TypeScript)
+.next/                 # Next.js build output
+out/
+
+# ---- Logs ----
+*.log
+npm-debug.log*
+
+# ---- OS / editor junk ----
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
