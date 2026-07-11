@@ -1,0 +1,20 @@
+{
+  // tsconfig.json — tells the TypeScript compiler how to build our code
+  "compilerOptions": {
+    "target": "ES2022",                 // which JS version to compile down to (modern Node supports ES2022)
+    "module": "commonjs",               // Node's module system (require/module.exports under the hood)
+    "moduleResolution": "node",         // resolve imports the way Node does
+    "rootDir": "./src",                 // our TypeScript source lives here
+    "outDir": "./dist",                 // compiled JavaScript goes here (gitignored)
+    "esModuleInterop": true,            // lets us write `import express from "express"` cleanly
+    "forceConsistentCasingInFileNames": true, // avoids bugs where File.ts vs file.ts differ across OSes
+    "strict": true,                     // turns on all strict type checks — catches bugs early
+    "skipLibCheck": true,               // don't type-check inside node_modules (faster builds)
+    "resolveJsonModule": true,          // allows importing .json files
+    "sourceMap": true,                  // maps compiled JS back to TS for easier debugging
+    "declaration": false,               // we don't need .d.ts output for an app (only for libraries)
+    "types": ["node"]                   // include Node.js global types
+  },
+  "include": ["src/**/*.ts", "prisma/**/*.ts"], // which files to compile
+  "exclude": ["node_modules", "dist"]           // which to ignore
+}
