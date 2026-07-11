@@ -2,8 +2,8 @@
   // tsconfig.json — tells the TypeScript compiler how to build our code
   "compilerOptions": {
     "target": "ES2022",                 // which JS version to compile down to (modern Node supports ES2022)
-    "module": "commonjs",               // Node's module system (require/module.exports under the hood)
-    "moduleResolution": "node",         // resolve imports the way Node does
+    "module": "nodenext",               // modern Node module setting; emits CommonJS since package.json has no "type":"module"
+    "moduleResolution": "nodenext",     // resolve imports the modern Node way (respects package "exports" maps)
     "rootDir": "./src",                 // our TypeScript source lives here
     "outDir": "./dist",                 // compiled JavaScript goes here (gitignored)
     "esModuleInterop": true,            // lets us write `import express from "express"` cleanly

@@ -42,7 +42,7 @@ START
 [1] Scaffold repo ── root files (.gitignore, docker-compose.yml) + backend/ + frontend/
   │
   ▼
-⌨️ [2] npm init + install deps (express, prisma, ioredis, bullmq, zod, jwt...)
+⌨️ [2] npm init + install deps (express, prisma, ioredis, bullmq, jwt...)
   │        (ASK user to run, explain each package group)
   ▼
 [3] tsconfig + npm scripts (dev / worker / build)
@@ -87,12 +87,12 @@ START
   │        + generate JWT_SECRET (openssl rand -hex 32)
   ▼
 [2] auth/ module
-  │   ├─ auth.types.ts     (zod: register/login schemas)
+  │   ├─ auth.types.ts     (TS types + hand-written register/login validators)
   │   ├─ auth.service.ts   (bcrypt hash · verify · issue JWT · google verify)
   │   ├─ auth.controller.ts
   │   └─ auth.routes.ts    (POST /auth/register · /auth/login · GET /auth/me)
   ▼
-[3] middlewares ── auth.middleware (verify JWT) · rbac.middleware (roles) · validate (zod)
+[3] middlewares ── auth.middleware (verify JWT) · rbac.middleware (roles) · validate (hand-written)
   │
   ▼
 [4] users/ module ── profile get/update · admin list

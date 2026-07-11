@@ -229,7 +229,7 @@ food-app/
 │       │   ├── rbac.middleware.ts   # role check (customer/restaurant/...)
 │       │   ├── error.middleware.ts  # central error handler
 │       │   ├── rateLimit.middleware.ts
-│       │   └── validate.middleware.ts  # zod validation
+│       │   └── validate.middleware.ts  # hand-written request validation
 │       │
 │       ├── jobs/
 │       │   └── cleanup.job.ts       # scheduled: expire stale carts/holds

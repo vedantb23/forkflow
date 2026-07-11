@@ -17,27 +17,27 @@
 ## 📅 DAY 1 — Foundation, Infra & Database
 
 ### Repo scaffold
-- [ ] Create root files: `README.md`, `TODO.md`, `.gitignore`, `docker-compose.yml`
-- [ ] `.gitignore` includes: `node_modules`, `.env`, `.env.local`, `dist`, `.next`, `*.log`
-- [ ] Create `backend/` and `frontend/` folders
-- [ ] `cd backend && npm init -y`
-- [ ] Install backend deps:
-      `npm i express cors helmet cookie-parser dotenv zod ioredis bullmq @prisma/client pino pino-pretty jsonwebtoken bcryptjs`
-- [ ] Install backend dev deps:
+- [x] Create root files: `README.md`, `TODO.md`, `.gitignore`, `docker-compose.yml`
+- [x] `.gitignore` includes: `node_modules`, `.env`, `.env.local`, `dist`, `.next`, `*.log`
+- [ ] Create `backend/` and `frontend/` folders  <!-- backend done; frontend deferred to Day 6 -->
+- [x] `cd backend && npm init -y`
+- [x] Install backend deps:
+      `npm i express cors helmet cookie-parser dotenv ioredis bullmq @prisma/client pino pino-pretty jsonwebtoken bcryptjs`
+- [x] Install backend dev deps:
       `npm i -D typescript tsx @types/node @types/express @types/cors @types/cookie-parser @types/jsonwebtoken @types/bcryptjs prisma`
-- [ ] `npx tsc --init` → set `outDir: ./dist`, `rootDir: ./src`, `strict: true`, `esModuleInterop: true`, `moduleResolution: node`
-- [ ] Add npm scripts to `backend/package.json`:
+- [x] `npx tsc --init` → set `outDir: ./dist`, `rootDir: ./src`, `strict: true`, `esModuleInterop: true`, `moduleResolution: nodenext` <!-- node10 removed in TS7 -->
+- [x] Add npm scripts to `backend/package.json`:
       `"dev": "tsx watch src/server.ts"`, `"worker": "tsx watch src/workers/index.ts"`, `"build": "tsc"`, `"start": "node dist/server.js"`, `"prisma:seed": "tsx prisma/seed.ts"`
 
 ### Backend skeleton
-- [ ] `src/config/env.ts` — load `dotenv`, validate required vars with zod, export typed `env`
-- [ ] `src/config/logger.ts` — pino logger
-- [ ] `src/config/constants.ts` — `SLOT_MINUTES=15`, cache TTLs, queue name constants
-- [ ] `src/utils/apiResponse.ts`, `src/utils/apiError.ts`, `src/utils/asyncHandler.ts`
-- [ ] `src/middlewares/error.middleware.ts` — central error handler
-- [ ] `src/app.ts` — express app: helmet, cors(CLIENT_URL), json, cookieParser, mount `/health` route
-- [ ] `src/server.ts` — start HTTP server on `PORT`, log startup
-- [ ] Verify: `npm run dev` → `GET http://localhost:4000/health` returns `{ status: "ok" }`
+- [x] `src/config/env.ts` — load `dotenv`, validate required vars with plain TS checks, export typed `env`
+- [x] `src/config/logger.ts` — pino logger
+- [x] `src/config/constants.ts` — `SLOT_MINUTES=15`, cache TTLs, queue name constants
+- [x] `src/utils/apiResponse.ts`, `src/utils/apiError.ts`, `src/utils/asyncHandler.ts`
+- [x] `src/middlewares/error.middleware.ts` — central error handler
+- [x] `src/app.ts` — express app: helmet, cors(CLIENT_URL), json, cookieParser, mount `/health` route
+- [x] `src/server.ts` — start HTTP server on `PORT`, log startup
+- [x] Verify: `npm run dev` → `GET http://localhost:4000/health` returns `{ status: "ok" }`
 
 ### 📎 SETUP: Redis (local via Docker)
 > **Agent: give user this block.**
@@ -104,13 +104,13 @@
 - [ ] User has pasted `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `JWT_SECRET`
 
 ### Auth module (`modules/auth/`)
-- [ ] `auth.types.ts` — zod schemas for register/login payloads
+- [ ] `auth.types.ts` — TS types + hand-written validators for register/login payloads
 - [ ] `auth.service.ts` — `register` (hash w/ bcrypt), `login` (verify, issue JWT), `verifyGoogleToken`
 - [ ] `auth.controller.ts` — register/login/me handlers using `asyncHandler`
 - [ ] `auth.routes.ts` — `POST /auth/register`, `POST /auth/login`, `GET /auth/me`
 - [ ] `src/middlewares/auth.middleware.ts` — verify JWT from header/cookie, attach `req.user`
 - [ ] `src/middlewares/rbac.middleware.ts` — `requireRole(...roles)`
-- [ ] `src/middlewares/validate.middleware.ts` — zod body validation
+- [ ] `src/middlewares/validate.middleware.ts` — hand-written body validation (checks required fields/types, throws ApiError.badRequest on failure)
 - [ ] Mount auth routes in `app.ts`
 
 ### Users module (`modules/users/`)
