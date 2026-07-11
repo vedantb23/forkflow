@@ -1,14 +1,19 @@
 # ---- Dependencies ----
-node_modules/          # installed packages — huge, never commit, re-created by `npm install`
+# installed packages — huge, never commit, re-created by `npm install`
+node_modules/
 
 # ---- Secrets (NEVER commit these) ----
-.env                   # backend secrets (DB url, API keys)
-.env.local             # frontend secrets
+# backend secrets (DB url, API keys)
+.env
+# frontend secrets
+.env.local
 .env.*.local
 
 # ---- Build output ----
-dist/                  # compiled backend JS (from TypeScript)
-.next/                 # Next.js build output
+# compiled backend JS (from TypeScript)
+dist/
+# Next.js build output
+.next/
 out/
 
 # ---- Logs ----
