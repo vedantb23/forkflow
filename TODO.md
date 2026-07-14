@@ -96,26 +96,26 @@
 > 4. Application type: **Web application**. Name: `forkflow-web`.
 > 5. **Authorized JavaScript origins:** add `http://localhost:3000`
 > 6. **Authorized redirect URIs:** add `http://localhost:3000/api/auth/callback/google`
-> 7. Click Create → copy **Client ID** and **Client secret**.
+> 7. Click Create → copy **Client ID** and **Cl       ient secret**.
 > 8. Paste into `backend/.env` (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`) AND `frontend/.env.local` (same two values).
 > 9. Also generate a JWT secret: run `openssl rand -hex 32` → paste into `JWT_SECRET`.
 - [ ] User has pasted `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `JWT_SECRET`
 
 ### Auth module (`modules/auth/`)
-- [ ] `auth.types.ts` — TS types + hand-written validators for register/login payloads
-- [ ] `auth.service.ts` — `register` (hash w/ bcrypt), `login` (verify, issue JWT), `verifyGoogleToken`
-- [ ] `auth.controller.ts` — register/login/me handlers using `asyncHandler`
-- [ ] `auth.routes.ts` — `POST /auth/register`, `POST /auth/login`, `GET /auth/me`
-- [ ] `src/middlewares/auth.middleware.ts` — verify JWT from header/cookie, attach `req.user`
-- [ ] `src/middlewares/rbac.middleware.ts` — `requireRole(...roles)`
-- [ ] `src/middlewares/validate.middleware.ts` — hand-written body validation (checks required fields/types, throws ApiError.badRequest on failure)
-- [ ] Mount auth routes in `app.ts`
+- [x] `auth.types.ts` — TS types + hand-written validators for register/login payloads
+- [x] `auth.service.ts` — `register` (hash w/ bcrypt), `login` (verify, issue JWT), `verifyGoogleToken` <!-- Google upsert built (loginWithGoogle); real token verify wired Day 6 w/ frontend -->
+- [x] `auth.controller.ts` — register/login/me handlers using `asyncHandler`
+- [x] `auth.routes.ts` — `POST /auth/register`, `POST /auth/login`, `GET /auth/me` <!-- + POST /auth/logout -->
+- [x] `src/middlewares/auth.middleware.ts` — verify JWT from header/cookie, attach `req.user`
+- [x] `src/middlewares/rbac.middleware.ts` — `requireRole(...roles)`
+- [x] `src/middlewares/validate.middleware.ts` — hand-written body validation (checks required fields/types, throws ApiError.badRequest on failure)
+- [x] Mount auth routes in `app.ts`
 
 ### Users module (`modules/users/`)
-- [ ] `user.service.ts` — get profile, update profile, list (admin)
-- [ ] `user.controller.ts`, `user.routes.ts` (protected by auth middleware)
-- [ ] Verify with Postman: register → login (get JWT) → `GET /auth/me` with token → `GET /users/me`
-- [ ] Verify RBAC: a CUSTOMER hitting an admin route → 403
+- [x] `user.service.ts` — get profile, update profile, list (admin)
+- [x] `user.controller.ts`, `user.routes.ts` (protected by auth middleware)
+- [x] Verify with Postman: register → login (get JWT) → `GET /auth/me` with token → `GET /users/me`
+- [x] Verify RBAC: a CUSTOMER hitting an admin route → 403
 
 **End of Day 2:** full auth (email + Google-ready), JWT, roles enforced. ✅
 

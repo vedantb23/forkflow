@@ -69,8 +69,11 @@ export const env = {
   DATABASE_URL: requireString("DATABASE_URL"), // pooled (6543), used by the app at runtime
   DIRECT_URL: requireString("DIRECT_URL"), // direct (5432), used by the migrate script (raw SQL)
 
-  // ---- Auth (promote Day 2) ----
-  JWT_SECRET: optionalString("JWT_SECRET"),
+  // ---- Auth (promoted Day 2) ----
+  // JWT_SECRET is now REQUIRED: it signs/verifies every login token. Booting
+  // without it would let auth "work" insecurely, so we crash if it's missing.
+  JWT_SECRET: requireString("JWT_SECRET"),
+  // Google keys stay optional until Day 6 (frontend NextAuth wires the real flow).
   GOOGLE_CLIENT_ID: optionalString("GOOGLE_CLIENT_ID"),
   GOOGLE_CLIENT_SECRET: optionalString("GOOGLE_CLIENT_SECRET"),
 

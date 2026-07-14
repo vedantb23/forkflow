@@ -13,6 +13,8 @@ import cors from "cors"; // controls which origins may call us
 import cookieParser from "cookie-parser"; // parses the Cookie header into req.cookies
 import { env } from "./config/env"; // validated env (for CLIENT_URL)
 import { errorMiddleware } from "./middlewares/error.middleware"; // central error handler
+import { authRoutes } from "./modules/auth/auth.routes"; // /api/auth/*
+import { userRoutes } from "./modules/users/user.routes"; // /api/users/*
 
 // Step 2 — create the app instance.
 const app = express();
@@ -48,6 +50,11 @@ app.use(cookieParser());
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" }); // simple, no DB — just "am I running?"
 });
+
+// Step 4b — feature routes (Day 2). Each module owns a router; we mount each
+// under an "/api/..." prefix so all API endpoints share a clear namespace.
+app.use("/api/auth", authRoutes); // register, login, me, logout
+app.use("/api/users", userRoutes); // profile get/update, admin list
 
 // Step 5 — error handler LAST.
 // Any error forwarded via next(err) from anywhere above ends up here.
