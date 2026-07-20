@@ -72,7 +72,7 @@
 >    DIRECT_URL="postgresql://...:5432/postgres"
 >    ```
 > 7. Tell the agent "done" and it will continue.
-- [ ] User has created Supabase project and pasted `DATABASE_URL` + `DIRECT_URL`
+- [x] User has created Supabase project and pasted `DATABASE_URL` + `DIRECT_URL`
 
 ### Database — raw SQL (no ORM; `pg` driver)
 - [x] `db/schema.sql` — enums (`role`, `order_status`, `payment_status`, `delivery_status`) + tables (`users`, `restaurants`, `menu_items`, `carts`, `cart_items`, `orders`, `order_items`, `payments`, `delivery_assignments`) + `updated_at` triggers (embedding column on menu_items added Day 7)
@@ -128,24 +128,24 @@
 > 1. Go to **https://cloudinary.com** → sign up (free).
 > 2. On the **Dashboard** you'll see **Cloud name**, **API Key**, **API Secret**.
 > 3. Paste into `backend/.env`: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`.
-- [ ] User has pasted Cloudinary keys
-- [ ] `npm i cloudinary multer && npm i -D @types/multer`
+- [x] User has pasted Cloudinary keys
+- [x] `npm i cloudinary multer && npm i -D @types/multer`
 
 ### Restaurants module (`modules/restaurants/`)
-- [ ] `restaurant.types.ts`, `restaurant.service.ts` — CRUD (owner-scoped), list with filters
-- [ ] `restaurant.controller.ts`, `restaurant.routes.ts` (create/update guarded by `RESTAURANT_OWNER`)
-- [ ] Image upload to Cloudinary on create/update
+- [x] `restaurant.types.ts`, `restaurant.service.ts` — CRUD (owner-scoped), list with filters
+- [x] `restaurant.controller.ts`, `restaurant.routes.ts` (create/update guarded by `RESTAURANT_OWNER`)
+- [x] Image upload to Cloudinary on create/update
 
 ### Menu module (`modules/menu/`)
-- [ ] `menu.service.ts` — CRUD menu items under a restaurant, stock field
-- [ ] `menu.controller.ts`, `menu.routes.ts`
+- [x] `menu.service.ts` — CRUD menu items under a restaurant, stock field
+- [x] `menu.controller.ts`, `menu.routes.ts`
 
 ### Redis caching (the point of today)
-- [ ] `restaurants/restaurant.cache.ts` — cache-aside: `getRestaurantList` checks Redis → miss → DB → set with TTL
-- [ ] `menu/menu.cache.ts` — cache a restaurant's menu
-- [ ] Invalidate cache on any create/update/delete (delete the Redis key)
-- [ ] Verify: first GET hits DB (log "cache miss"), second GET hits cache (log "cache hit"); after an update, cache is busted
-- [ ] `middlewares/rateLimit.middleware.ts` — Redis-based limiter; apply to public list endpoints
+- [x] `restaurants/restaurant.cache.ts` — cache-aside: `getRestaurantList` checks Redis → miss → DB → set with TTL
+- [x] `menu/menu.cache.ts` — cache a restaurant's menu
+- [x] Invalidate cache on any create/update/delete (delete the Redis key)
+- [x] Verify: first GET hits DB (log "cache miss"), second GET hits cache (log "cache hit"); after an update, cache is busted
+- [x] `middlewares/rateLimit.middleware.ts` — Redis-based limiter; apply to public list endpoints
 
 **End of Day 3:** restaurants + menus CRUD, images, cache-aside working & invalidating. ✅
 

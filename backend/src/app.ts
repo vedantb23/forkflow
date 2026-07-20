@@ -15,6 +15,9 @@ import { env } from "./config/env"; // validated env (for CLIENT_URL)
 import { errorMiddleware } from "./middlewares/error.middleware"; // central error handler
 import { authRoutes } from "./modules/auth/auth.routes"; // /api/auth/*
 import { userRoutes } from "./modules/users/user.routes"; // /api/users/*
+import { restaurantRoutes } from "./modules/restaurants/restaurant.routes"; // /api/restaurants/*  (Day 3)
+import { menuRoutes } from "./modules/menu/menu.routes"; // /api/menu/*  (Day 3)
+import { rateLimit } from "./middlewares/rateLimit.middleware"; // Redis rate limiter (Day 3)
 
 // Step 2 — create the app instance.
 const app = express();
@@ -42,8 +45,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Step 4 — routes.
-// Today we only have a health check. Real feature routes get mounted here later
-// (e.g. app.use("/api/auth", authRoutes) on Day 2).
 //
 // GET /health — a tiny endpoint to confirm the server is alive. Load balancers
 // and uptime monitors ping this. If it returns { status: "ok" }, we're up.
@@ -55,6 +56,15 @@ app.get("/health", (_req, res) => {
 // under an "/api/..." prefix so all API endpoints share a clear namespace.
 app.use("/api/auth", authRoutes); // register, login, me, logout
 app.use("/api/users", userRoutes); // profile get/update, admin list
+
+// Step 4c — feature routes (Day 3). Restaurants and menus with Redis caching.
+// The rateLimit() middleware is applied ONLY to these public-facing list
+// endpoints. It uses Redis to count requests per IP per time window — if
+// someone hammers the restaurant list, they get a 429 "Too Many Requests"
+// after 30 hits in 60 seconds. Protected routes (behind requireAuth) don't
+// need this because auth already limits who can call them.
+app.use("/api/restaurants", rateLimit(60, 30), restaurantRoutes); // CRUD + cache-aside
+app.use("/api/menu", rateLimit(60, 30), menuRoutes);              // CRUD + cache-aside
 
 // Step 5 — error handler LAST.
 // Any error forwarded via next(err) from anywhere above ends up here.
