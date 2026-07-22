@@ -17,6 +17,7 @@ import { authRoutes } from "./modules/auth/auth.routes"; // /api/auth/*
 import { userRoutes } from "./modules/users/user.routes"; // /api/users/*
 import { restaurantRoutes } from "./modules/restaurants/restaurant.routes"; // /api/restaurants/*  (Day 3)
 import { menuRoutes } from "./modules/menu/menu.routes"; // /api/menu/*  (Day 3)
+import { cartRoutes } from "./modules/cart/cart.routes"; // /api/cart/*  (Day 4)
 import { rateLimit } from "./middlewares/rateLimit.middleware"; // Redis rate limiter (Day 3)
 
 // Step 2 — create the app instance.
@@ -65,6 +66,11 @@ app.use("/api/users", userRoutes); // profile get/update, admin list
 // need this because auth already limits who can call them.
 app.use("/api/restaurants", rateLimit(60, 30), restaurantRoutes); // CRUD + cache-aside
 app.use("/api/menu", rateLimit(60, 30), menuRoutes);              // CRUD + cache-aside
+
+// Step 4d — feature routes (Day 4). The cart is per-user and customer-only, so
+// every route inside is already gated by requireAuth. No rateLimit() here: these
+// aren't public firehose endpoints — auth already bounds who can call them.
+app.use("/api/cart", cartRoutes);                                 // per-user shopping cart
 
 // Step 5 — error handler LAST.
 // Any error forwarded via next(err) from anywhere above ends up here.
