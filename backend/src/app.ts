@@ -13,6 +13,7 @@ import { restaurantRoutes } from "./modules/restaurants/restaurant.routes";
 import { menuRoutes } from "./modules/menu/menu.routes";
 import { cartRoutes } from "./modules/cart/cart.routes";
 import { orderRoutes } from "./modules/orders/order.routes"; // Day 4
+import { bullBoardRouter } from "./bull-board"; // Day 5 — queue dashboard
 import { rateLimit } from "./middlewares/rateLimit.middleware";
 
 const app = express();
@@ -32,6 +33,12 @@ app.use("/api/restaurants", rateLimit(60, 30), restaurantRoutes);
 app.use("/api/menu", rateLimit(60, 30), menuRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes); // Day 4 — place + track orders
+
+// Step 4e — Bull Board dashboard (Day 5) at /admin/queues. Lets us watch jobs
+// flow (waiting/active/completed/failed) and retry failed jobs by hand. Mounted
+// WITHOUT rateLimit — it's an internal admin tool, not a public endpoint.
+// (In production this would sit behind admin auth; fine open on localhost for dev.)
+app.use("/admin/queues", bullBoardRouter);
 
 app.use(errorMiddleware);
 

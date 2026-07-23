@@ -15,6 +15,7 @@ import { ApiError } from "../../utils/apiError";
 import { checkIdempotency, storeIdempotency } from "../../utils/idempotency";
 import { reserveSlot, releaseSlot } from "../capacity/capacity.service";
 import { acquireLock, releaseLock } from "./order.lock";
+import { orderQueue } from "../../queues";
 import type { PlaceOrderInput, OrderRow, OrderItemRow, OrderView } from "./order.types";
 
 // Step 1 — fetch a placed order by id (used for idempotency replay + GET endpoint).
@@ -138,12 +139,20 @@ export async function placeOrder(
       await client.query("COMMIT");
 
       // 3e) Store idempotency key → orderId so retries return this order.
-      if (idempotencyToken) {
+      if (idempotencyToken) { 
         await storeIdempotency(idempotencyToken, order.id);
       }
 
-      // 3f) Day 5 will enqueue a BullMQ job here. For now, the order is PENDING.
-      // TODO(Day5): await orderQueue.add("process-order", { orderId: order.id });
+      // 3f) Enqueue the order for async processing (Day 5). The API returns
+      // immediately; a separate worker process picks this job up and runs
+      // payment → status transitions → email + notification.
+      // jobId: order.id makes the enqueue idempotent at the QUEUE level too — the
+      // same order can never sit in the queue twice (BullMQ dedupes by jobId).
+      await orderQueue.add(
+        "process-order",
+        { orderId: order.id },
+        { jobId: order.id }
+      );
 
       const items = await query<OrderItemRow>(
         "SELECT * FROM order_items WHERE order_id = $1",

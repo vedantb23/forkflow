@@ -185,30 +185,30 @@
 ## 📅 DAY 5 — BullMQ Queues, Workers, Idempotency & Reliability
 
 ### Queue producers (`queues/`)
-- [ ] `queues/connection.ts` — shared BullMQ Redis connection
-- [ ] `queues/order.queue.ts` — `orderQueue` producer
-- [ ] `queues/email.queue.ts`, `queues/notification.queue.ts`
-- [ ] `queues/index.ts` — export all
-- [ ] Update `order.service.ts` to **enqueue** the order job instead of inline processing
+- [x] `queues/connection.ts` — shared BullMQ Redis connection
+- [x] `queues/order.queue.ts` — `orderQueue` producer
+- [x] `queues/email.queue.ts`, `queues/notification.queue.ts`
+- [x] `queues/index.ts` — export all
+- [x] Update `order.service.ts` to **enqueue** the order job instead of inline processing  <!-- jobId=orderId for queue-level dedupe -->
 
 ### Workers (`workers/`) — separate process
-- [ ] `workers/order.worker.ts` — consume order jobs **in arrival order**; inside: finalize payment (call payment service), set status CONFIRMED→PREPARING, enqueue email + notification jobs; **idempotency check** (skip if order already processed); retries w/ exponential backoff; failed jobs → DLQ
-- [ ] `modules/payments/payment.service.ts` — mock gateway, **idempotent** on order id
-- [ ] `workers/email.worker.ts` — send emails (Nodemailer, see setup below)
-- [ ] `workers/notification.worker.ts` — placeholder that will emit Socket.io events (Day 6)
-- [ ] `workers/index.ts` — boot all workers; verify `npm run worker` runs as its own process
+- [x] `workers/order.worker.ts` — consume order jobs **in arrival order**; inside: finalize payment (call payment service), set status CONFIRMED→PREPARING, enqueue email + notification jobs; **idempotency check** (skip if order already processed); retries w/ exponential backoff; failed jobs → DLQ
+- [x] `modules/payments/payment.service.ts` — mock gateway, **idempotent** on order id
+- [x] `workers/email.worker.ts` — send emails (Nodemailer, see setup below)
+- [x] `workers/notification.worker.ts` — placeholder that will emit Socket.io events (Day 6)
+- [x] `workers/index.ts` — boot all workers; verify `npm run worker` runs as its own process
 
 ### 📎 SETUP: Email (Nodemailer)
 > **Agent: give user this block.**
 > Easiest for dev: use **Gmail App Password** (needs 2FA on your Google account) OR a free **Mailtrap** inbox (recommended — no real emails sent).
 > **Mailtrap:** https://mailtrap.io → Email Testing → Inboxes → copy SMTP host/port/user/pass → paste into `SMTP_HOST/PORT/USER/PASS` in `backend/.env`.
-- [ ] User has pasted SMTP creds
-- [ ] Verify: placing an order → order worker runs → confirmation email appears in Mailtrap inbox
+- [x] User has pasted SMTP creds
+- [x] Verify: placing an order → order worker runs → confirmation email appears in Mailtrap inbox  <!-- ✅ email.worker: sent -->
 
 ### Bull Board monitoring
-- [ ] `src/bull-board.ts` — mount Bull Board at `/admin/queues`
-- [ ] Verify: open `http://localhost:4000/admin/queues`, see jobs flowing, retry a failed job manually
-- [ ] `jobs/cleanup.job.ts` — repeatable job to expire stale carts / abandoned slot holds
+- [x] `src/bull-board.ts` — mount Bull Board at `/admin/queues`
+- [x] Verify: open `http://localhost:4000/admin/queues`, see jobs flowing, retry a failed job manually
+- [x] `jobs/cleanup.job.ts` — repeatable job to expire stale carts / abandoned slot holds
 
 **End of Day 5:** BACKEND COMPLETE. Orders flow through queue → worker → payment → email, idempotent, retryable, observable. ✅
 
