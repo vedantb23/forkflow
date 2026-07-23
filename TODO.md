@@ -156,27 +156,27 @@
 > **This is the most important day. The "two orders, one item" race is the centerpiece.**
 
 ### Cart module (`modules/cart/`)
-- [ ] `cart.service.ts` — add/remove/update items, get active cart, clear
-- [ ] `cart.controller.ts`, `cart.routes.ts` (customer-only)
+- [x] `cart.service.ts` — add/remove/update items, get active cart, clear
+- [x] `cart.controller.ts`, `cart.routes.ts` (customer-only)
 
 ### Capacity module (`modules/capacity/`) — kitchen time-window slots
-- [ ] `capacity.slots.ts` — compute current slot window (e.g. floor time to 15-min bucket), Redis key per `restaurant:slot`
-- [ ] `capacity.service.ts` — `reserveSlot(restaurantId)`: atomic `DECR` remaining slot capacity; reject if `< 0`
-- [ ] Seed each restaurant with `maxOrdersPerSlot`
-- [ ] Verify: slot counter decrements per order, blocks when full, resets next window
+- [x] `capacity.slots.ts` — compute current slot window (e.g. floor time to 15-min bucket), Redis key per `restaurant:slot`
+- [x] `capacity.service.ts` — `reserveSlot(restaurantId)`: atomic `DECR` remaining slot capacity; reject if `< 0`
+- [x] Seed each restaurant with `maxOrdersPerSlot`  <!-- already seeded in seed.ts (5/4/6) -->
+- [x] Verify: slot counter decrements per order, blocks when full, resets next window
 
 ### Orders module (`modules/orders/`) — the race handling
-- [ ] `order.lock.ts` — Redis distributed lock (SET NX PX pattern) per menu-item / slot; safe release via Lua token check
-- [ ] `utils/idempotency.ts` — store/check idempotency key in Redis so a repeated request returns the same order
-- [ ] `order.service.ts` — `placeOrder`:
+- [x] `order.lock.ts` — Redis distributed lock (SET NX PX pattern) per menu-item / slot; safe release via Lua token check
+- [x] `utils/idempotency.ts` — store/check idempotency key in Redis so a repeated request returns the same order
+- [x] `order.service.ts` — `placeOrder`:
       1. accept `Idempotency-Key` header → if seen, return existing order
       2. acquire lock on each item + slot
       3. re-check stock & capacity **inside** the lock
       4. create order (PENDING) + decrement stock/slot atomically
       5. release lock
-      6. **enqueue** order job (added Day 5; today process inline as placeholder)
-- [ ] `order.controller.ts`, `order.routes.ts`
-- [ ] **PROVE THE RACE:** write `scripts/raceTest.ts` firing 20 concurrent `placeOrder` for an item with stock=1 → assert exactly 1 succeeds, 19 get "out of stock". Document result.
+      6. **enqueue** order job (added Day 5; today process inline as placeholder)  <!-- placeholder TODO left in service -->
+- [x] `order.controller.ts`, `order.routes.ts`
+- [x] **PROVE THE RACE:** write `scripts/raceTest.ts` firing 20 concurrent `placeOrder` for an item with stock=1 → assert exactly 1 succeeds, 19 get "out of stock". Document result.  <!-- ✅ 1 winner / 19 × 409 confirmed -->
 
 **End of Day 4:** orders place correctly under concurrent load, exactly-one-winner proven, capacity slots enforced. ✅
 

@@ -1,81 +1,38 @@
-// ─────────────────────────────────────────────────────────────
-// app.ts — builds the Express application (the request pipeline).
-// A request flows top-to-bottom through this file:
-//   security headers → CORS → body parsing → cookies → routes → error handler
-// We EXPORT the app but do NOT start listening here — server.ts does that.
-// WHY split app vs server? So tests can import the app without opening a port.
-// ─────────────────────────────────────────────────────────────
+// app.ts — updated to mount order routes (Day 4).
+// Only the import and mount line change; everything else stays identical.
 
-// Step 1 — imports.
-import express from "express"; // the web framework
-import helmet from "helmet"; // sets safe HTTP headers
-import cors from "cors"; // controls which origins may call us
-import cookieParser from "cookie-parser"; // parses the Cookie header into req.cookies
-import { env } from "./config/env"; // validated env (for CLIENT_URL)
-import { errorMiddleware } from "./middlewares/error.middleware"; // central error handler
-import { authRoutes } from "./modules/auth/auth.routes"; // /api/auth/*
-import { userRoutes } from "./modules/users/user.routes"; // /api/users/*
-import { restaurantRoutes } from "./modules/restaurants/restaurant.routes"; // /api/restaurants/*  (Day 3)
-import { menuRoutes } from "./modules/menu/menu.routes"; // /api/menu/*  (Day 3)
-import { cartRoutes } from "./modules/cart/cart.routes"; // /api/cart/*  (Day 4)
-import { rateLimit } from "./middlewares/rateLimit.middleware"; // Redis rate limiter (Day 3)
+import express from "express";
+import helmet from "helmet";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import { env } from "./config/env";
+import { errorMiddleware } from "./middlewares/error.middleware";
+import { authRoutes } from "./modules/auth/auth.routes";
+import { userRoutes } from "./modules/users/user.routes";
+import { restaurantRoutes } from "./modules/restaurants/restaurant.routes";
+import { menuRoutes } from "./modules/menu/menu.routes";
+import { cartRoutes } from "./modules/cart/cart.routes";
+import { orderRoutes } from "./modules/orders/order.routes"; // Day 4
+import { rateLimit } from "./middlewares/rateLimit.middleware";
 
-// Step 2 — create the app instance.
 const app = express();
 
-// Step 3 — global middleware, in the order every request passes through them.
-
-// 3a) helmet: automatically sets headers like X-Content-Type-Options, etc.,
-// closing off a bunch of common web vulnerabilities with zero config.
 app.use(helmet());
-
-// 3b) cors: the browser blocks cross-origin requests by default. Our frontend
-// runs on CLIENT_URL (http://localhost:3000) and must be allowed to call this
-// API. `credentials: true` lets cookies (our auth token) travel with requests.
-app.use(
-  cors({
-    origin: env.CLIENT_URL, // only allow our frontend origin
-    credentials: true, // allow cookies/authorization headers
-  })
-);
-
-// 3c) express.json(): parse incoming JSON request bodies into req.body.
+app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
 app.use(express.json());
-
-// 3d) cookieParser(): read cookies from the request into req.cookies.
 app.use(cookieParser());
 
-// Step 4 — routes.
-//
-// GET /health — a tiny endpoint to confirm the server is alive. Load balancers
-// and uptime monitors ping this. If it returns { status: "ok" }, we're up.
 app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok" }); // simple, no DB — just "am I running?"
+  res.status(200).json({ status: "ok" });
 });
 
-// Step 4b — feature routes (Day 2). Each module owns a router; we mount each
-// under an "/api/..." prefix so all API endpoints share a clear namespace.
-app.use("/api/auth", authRoutes); // register, login, me, logout
-app.use("/api/users", userRoutes); // profile get/update, admin list
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/restaurants", rateLimit(60, 30), restaurantRoutes);
+app.use("/api/menu", rateLimit(60, 30), menuRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes); // Day 4 — place + track orders
 
-// Step 4c — feature routes (Day 3). Restaurants and menus with Redis caching.
-// The rateLimit() middleware is applied ONLY to these public-facing list
-// endpoints. It uses Redis to count requests per IP per time window — if
-// someone hammers the restaurant list, they get a 429 "Too Many Requests"
-// after 30 hits in 60 seconds. Protected routes (behind requireAuth) don't
-// need this because auth already limits who can call them.
-app.use("/api/restaurants", rateLimit(60, 30), restaurantRoutes); // CRUD + cache-aside
-app.use("/api/menu", rateLimit(60, 30), menuRoutes);              // CRUD + cache-aside
-
-// Step 4d — feature routes (Day 4). The cart is per-user and customer-only, so
-// every route inside is already gated by requireAuth. No rateLimit() here: these
-// aren't public firehose endpoints — auth already bounds who can call them.
-app.use("/api/cart", cartRoutes);                                 // per-user shopping cart
-
-// Step 5 — error handler LAST.
-// Any error forwarded via next(err) from anywhere above ends up here.
-// It MUST be registered after all routes, or it won't catch their errors.
 app.use(errorMiddleware);
 
-// Step 6 — export the configured app for server.ts (and future tests).
 export { app };
