@@ -16,6 +16,8 @@ import { checkIdempotency, storeIdempotency } from "../../utils/idempotency";
 import { reserveSlot, releaseSlot } from "../capacity/capacity.service";
 import { acquireLock, releaseLock } from "./order.lock";
 import { orderQueue } from "../../queues";
+import { getIo } from "../../realtime/socket";
+import { SERVER_EVENTS } from "../../realtime/socket.events";
 import type { PlaceOrderInput, OrderRow, OrderItemRow, OrderView } from "./order.types";
 
 // Step 1 — fetch a placed order by id (used for idempotency replay + GET endpoint).
@@ -158,6 +160,19 @@ export async function placeOrder(
         "SELECT * FROM order_items WHERE order_id = $1",
         [order.id]
       );
+
+      // 3g) Notify the restaurant owner's dashboard in real time. placeOrder runs
+      // in the API process (which owns the sockets), so getIo() works directly —
+      // no Redis emitter needed here (that's only for the worker process).
+      getIo()
+        .to(`restaurant:${order.restaurant_id}`)
+        .emit(SERVER_EVENTS.ORDER_NEW, {
+          orderId: order.id,
+          status: order.status,
+          total_amount: order.total_amount,
+          created_at: order.created_at,
+        });
+
       return { order, items };
     } catch (err) {
       // If we haven't already rolled back (non-stock errors), roll back now.
