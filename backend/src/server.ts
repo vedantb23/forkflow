@@ -11,9 +11,12 @@ import { env } from "./config/env"; // validated env (for PORT)
 import { logger } from "./config/logger"; // shared logger
 import { redis } from "./config/redis"; // shared Redis client — importing it opens the connection on boot
 import { pool, connectDb } from "./config/db"; // shared Postgres pool + a boot check
+import { initSocket } from "./realtime/socket"; // Day 6 — Socket.io real-time layer
 
 // Step 2 — start listening on the configured port.
-// app.listen opens the TCP port and runs the callback once it's ready.
+// app.listen RETURNS the underlying Node http.Server. We capture it because
+// Socket.io needs to attach to that same server (WebSocket upgrades ride the
+// same port as HTTP), not to the Express app object.
 const server = app.listen(env.PORT, () => {
   logger.info(`🚀 ForkFlow API running on http://localhost:${env.PORT}`);
   logger.info(`   Health check: http://localhost:${env.PORT}/health`);
@@ -21,6 +24,11 @@ const server = app.listen(env.PORT, () => {
   // ping the DB once so boot logs clearly show Postgres is reachable
   connectDb().catch((err) => logger.error({ err }, "Postgres connect check failed"));
 });
+
+// Step 2b — start Socket.io on the same HTTP server (Day 6).
+// After this, browsers can open a live WebSocket connection to this port and the
+// Redis adapter lets the worker process push events to them.
+initSocket(server);
 
 // Step 3 — graceful shutdown.
 // WHY: when we stop the server (Ctrl+C, or the host sends SIGTERM on deploy),
