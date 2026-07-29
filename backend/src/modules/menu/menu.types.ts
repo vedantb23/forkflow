@@ -66,8 +66,12 @@ function checkNumericFields(b: Record<string, unknown>) {
     }
   }
   for (const field of ["is_veg", "is_available"] as const) {
-    if (b[field] !== undefined && typeof b[field] !== "boolean") {
-      throw ApiError.badRequest(`${field} must be true or false`);
+    if (b[field] !== undefined) {
+      if (b[field] === "true") b[field] = true;
+      if (b[field] === "false") b[field] = false;
+      if (typeof b[field] !== "boolean") {
+        throw ApiError.badRequest(`${field} must be true or false`);
+      }
     }
   }
 }

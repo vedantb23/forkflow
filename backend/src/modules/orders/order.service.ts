@@ -18,6 +18,7 @@ import { acquireLock, releaseLock } from "./order.lock";
 import { orderQueue } from "../../queues";
 import { getIo } from "../../realtime/socket";
 import { SERVER_EVENTS } from "../../realtime/socket.events";
+import { logger } from "../../config/logger";
 import type { PlaceOrderInput, OrderRow, OrderItemRow, OrderView } from "./order.types";
 
 // Step 1 — fetch a placed order by id (used for idempotency replay + GET endpoint).
@@ -37,6 +38,78 @@ export async function getOrdersForUser(userId: string): Promise<OrderRow[]> {
     "SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC",
     [userId]
   );
+}
+
+// Step 2b — list every order for ONE restaurant, newest first (the owner's KDS feed).
+// Ownership is enforced in the WHERE itself: the restaurant_id must belong to a
+// restaurant this owner owns. If they don't own it, zero rows come back — they can
+// never read another restaurant's orders. Each order is returned as a full OrderView
+// ({ order, items }) so the dashboard can render line items without a second call.
+export async function getOrdersForRestaurant(
+  restaurantId: string,
+  ownerId: string
+): Promise<OrderView[]> {
+  // 2b-i) Pull the restaurant's orders, but only if the caller owns the restaurant.
+  //       The IN (...) sub-select is the ownership guard — same trick the menu
+  //       service uses for its transitively-owned rows.
+  const orders = await query<OrderRow>(
+    `SELECT * FROM orders
+     WHERE restaurant_id = $1
+       AND restaurant_id IN (SELECT id FROM restaurants WHERE owner_id = $2)
+     ORDER BY created_at DESC`,
+    [restaurantId, ownerId]
+  );
+  if (orders.length === 0) return [];
+
+  // 2b-ii) Fetch all their line items in ONE query (avoids N+1), then group by order.
+  const orderIds = orders.map((o) => o.id);
+  const items = await query<OrderItemRow>(
+    "SELECT * FROM order_items WHERE order_id = ANY($1)",
+    [orderIds]
+  );
+
+  // 2b-iii) Stitch each order together with its items into the OrderView shape.
+  return orders.map((order) => ({
+    order,
+    items: items.filter((it) => it.order_id === order.id),
+  }));
+}
+
+// Step 2c — the restaurant owner advances an order's status (PENDING → CONFIRMED →
+// PREPARING → OUT_FOR_DELIVERY → DELIVERED / CANCELLED). Like delivery.updateStatus,
+// this also pushes the change to the customer's browser LIVE over the order room.
+export async function updateOrderStatus(
+  orderId: string,
+  ownerId: string,
+  status: OrderRow["status"]
+): Promise<OrderView> {
+  // 2c-i) Update the row, but ONLY if this owner owns the order's restaurant.
+  //       RETURNING tells us whether a row actually changed — zero rows means the
+  //       caller either doesn't own it or the order doesn't exist → 403/404.
+  const rows = await query<OrderRow>(
+    `UPDATE orders SET status = $1
+     WHERE id = $2
+       AND restaurant_id IN (SELECT id FROM restaurants WHERE owner_id = $3)
+     RETURNING *`,
+    [status, orderId, ownerId]
+  );
+  if (rows.length === 0)
+    throw ApiError.forbidden("Order not found or not owned by you");
+
+  // 2c-ii) Tell the customer watching this order RIGHT NOW. We're in the API
+  //        process (which owns the sockets), so getIo() emits directly; the Redis
+  //        adapter delivers it to whichever server holds that customer's socket.
+  getIo()
+    .to(`order:${orderId}`)
+    .emit(SERVER_EVENTS.ORDER_STATUS_UPDATED, { orderId, status });
+  logger.info({ orderId, status }, "orders: status updated by owner (emitted live)");
+
+  // 2c-iii) Return the full view so the dashboard can update its cache in place.
+  const items = await query<OrderItemRow>(
+    "SELECT * FROM order_items WHERE order_id = $1",
+    [orderId]
+  );
+  return { order: rows[0], items };
 }
 
 // Step 3 — placeOrder: the main event.

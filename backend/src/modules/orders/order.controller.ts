@@ -30,3 +30,27 @@ export async function getOrderHandler(req: Request, res: Response) {
   if (result.order.user_id !== req.user.sub) throw ApiError.forbidden("Not your order");
   return sendSuccess(res, result, "Order details");
 }
+
+// GET /api/orders/restaurant/:restaurantId — the owner's live order feed (KDS).
+// requireRole in the route already guarantees the caller is an OWNER/ADMIN; the
+// service adds the per-restaurant ownership check so an owner only sees THEIR feed.
+export async function getRestaurantOrdersHandler(req: Request, res: Response) {
+  if (!req.user) throw ApiError.unauthorized("Not authenticated");
+  const orders = await orderService.getOrdersForRestaurant(
+    req.params.restaurantId as string,
+    req.user.sub
+  );
+  return sendSuccess(res, { orders }, "Restaurant orders");
+}
+
+// PATCH /api/orders/:orderId/status — owner advances an order's status.
+// The service verifies ownership and emits the change to the customer live.
+export async function updateOrderStatusHandler(req: Request, res: Response) {
+  if (!req.user) throw ApiError.unauthorized("Not authenticated");
+  const result = await orderService.updateOrderStatus(
+    req.params.orderId as string,
+    req.user.sub,
+    req.body.status
+  );
+  return sendSuccess(res, result, "Order status updated");
+}

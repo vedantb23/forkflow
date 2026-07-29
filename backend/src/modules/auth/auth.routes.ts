@@ -15,6 +15,7 @@ import {
   loginHandler,
   meHandler,
   logoutHandler,
+  googleHandler,
 } from "./auth.controller";
 import { validate } from "../../middlewares/validate.middleware";
 import { validateRegister, validateLogin } from "./auth.types";
@@ -29,6 +30,11 @@ router.post("/register", validate(validateRegister), asyncHandler(registerHandle
 
 // POST /api/auth/login — validate body, then authenticate.
 router.post("/login", validate(validateLogin), asyncHandler(loginHandler));
+
+// POST /api/auth/google — sign in with a Google ID token. No validate() here:
+// the body is a single opaque token string that the handler verifies with
+// Google before trusting anything, so schema validation adds nothing.
+router.post("/google", asyncHandler(googleHandler));
 
 
 // GET /api/auth/me — PROTECTED: must be logged in. requireAuth sets req.user.

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForkFlow - Orders</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#9df4cb",
+                        "inverse-surface": "#3c2c2b",
+                        "surface-bright": "#fff8f7",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#261817",
+                        "outline-variant": "#e2bebc",
+                        "on-tertiary-fixed": "#002114",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#81d7b0",
+                        "secondary": "#545f73",
+                        "outline": "#8e706f",
+                        "surface-container": "#ffe9e7",
+                        "error-container": "#ffdad6",
+                        "surface": "#fff8f7",
+                        "on-primary-container": "#ffccca",
+                        "secondary-container": "#d5e0f8",
+                        "primary-container": "#b52330",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#92001c",
+                        "primary": "#92001c",
+                        "tertiary": "#005138",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-tertiary-fixed-variant": "#005138",
+                        "surface-container-high": "#fde2e0",
+                        "secondary-fixed": "#d8e3fb",
+                        "surface-variant": "#f7ddda",
+                        "surface-container-highest": "#f7ddda",
+                        "on-tertiary-container": "#93eac2",
+                        "on-surface-variant": "#5a403f",
+                        "surface-tint": "#b52330",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#ffedeb",
+                        "on-secondary-container": "#586377",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "tertiary-container": "#006c4c",
+                        "inverse-primary": "#ffb3b1",
+                        "on-primary-fixed": "#410007",
+                        "background": "#fff8f7",
+                        "surface-dim": "#eed4d2",
+                        "surface-container-low": "#fff0ef",
+                        "primary-fixed": "#ffdad8",
+                        "on-background": "#261817"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin": "24px",
+                        "xxl": "48px",
+                        "xl": "32px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "title-lg": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] transition-all duration-300">
+<div class="max-w-[1280px] mx-auto flex justify-between items-center px-margin py-md">
+<!-- Brand -->
+<a class="font-display-lg text-display-lg font-bold text-primary tracking-tight md:block hidden" href="#">ForkFlow</a>
+<a class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary tracking-tight md:hidden" href="#">ForkFlow</a>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex space-x-xl items-center">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-white/20 transition-all duration-300 px-sm py-xs rounded-md" href="#">Discover</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-label-md text-label-md hover:bg-white/20 transition-all duration-300 px-sm py-xs" href="#">Orders</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-white/20 transition-all duration-300 px-sm py-xs rounded-md" href="#">Offers</a>
+</nav>
+<!-- Trailing Icons -->
+<div class="flex items-center space-x-md text-primary">
+<button aria-label="dark_mode" class="p-2 rounded-full hover:bg-white/20 transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dark_mode</span>
+</button>
+<button aria-label="account_circle" class="p-2 rounded-full hover:bg-white/20 transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow pt-[120px] pb-xxl px-margin">
+<div class="max-w-[1280px] mx-auto">
+<!-- Page Header & Tabs -->
+<div class="flex flex-col md:flex-row md:justify-between md:items-end gap-lg mb-xl">
+<div>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight md:block hidden">Order History</h1>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight md:hidden mb-sm">Order History</h1>
+<p class="text-secondary font-body-md text-body-md mt-sm">Review your past meals and track current deliveries.</p>
+</div>
+<!-- Custom Segmented Control -->
+<div class="inline-flex p-1 bg-surface-variant rounded-full shadow-inner self-start md:self-auto">
+<button class="px-xl py-sm rounded-full bg-surface-container-lowest shadow-[0_2px_8px_0_rgba(181,35,48,0.12)] font-label-md text-label-md text-primary transition-all">Active</button>
+<button class="px-xl py-sm rounded-full text-on-surface-variant hover:text-primary font-label-md text-label-md transition-colors hover:bg-white/50">Past</button>
+</div>
+</div>
+<!-- Active Orders Section (Pinned) -->
+<section class="mb-xxl">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+                    Currently Arriving
+                </h2>
+<!-- Active Order Card -->
+<div class="glass-card rounded-[2rem] p-md md:p-lg shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] flex flex-col md:flex-row gap-lg items-center relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer">
+<!-- Image -->
+<div class="w-full md:w-1/3 h-48 md:h-full min-h-[200px] rounded-[1.5rem] overflow-hidden relative">
+<img class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700" data-alt="A high-end, close-up photograph of a steaming bowl of artisan ramen in a dark, atmospheric setting. The broth is rich and golden, reflecting soft warm light. Delicate garnishes of bright green scallions and a perfectly soft-boiled egg sit atop perfectly arranged noodles. The lighting is moody yet brightens the food, evoking a modern, premium dining experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw_TefTGdq_E3UNvLTFcj0Voagesd315bn4M4hMXfXM3H-cjxMVPC16Hav_XyTsMmvgVyW2mmwmeWNO9Seg_a95b0IvM4rFPppUwKhhAaUCwBqwAht5KBabIBdajlsr-GFAfl40fAacij8eIKi1FKjA0-fgStQ8djzOEka0rACTrKaFvmvuNxfA07jnvrr40i_5GJXfJcD8tqK8XqMwlEGi5E1jFUO09XY1hK8UA7vzwRzHdQkHyJNqHMmLnWQBAvQ3eSaIxGWigtb"/>
+<div class="absolute top-sm left-sm bg-primary-container text-on-primary-container px-sm py-xs rounded-full font-label-md text-label-md flex items-center gap-xs shadow-sm backdrop-blur-md">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                            Preparing
+                        </div>
+</div>
+<!-- Content -->
+<div class="w-full md:w-2/3 flex flex-col justify-between py-sm">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface tracking-tight">Kiku Artisan Sushi &amp; Ramen</h3>
+<p class="text-secondary font-body-md text-body-md mt-xs">2x Spicy Tonkotsu, 1x Edamame • Dec 12, 7:30 PM</p>
+</div>
+<span class="font-title-lg text-title-lg text-primary">$42.50</span>
+</div>
+<!-- Progress Track -->
+<div class="w-full bg-surface-variant h-2 rounded-full mb-lg overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full bg-primary w-1/3 rounded-full relative overflow-hidden">
+<div class="absolute inset-0 bg-white/30 w-full h-full animate-[translateX_2s_infinite]"></div>
+</div>
+</div>
+<div class="flex justify-between items-center mt-auto">
+<p class="text-on-surface-variant font-label-md text-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 0;">schedule</span>
+                                Est. Arrival: 8:15 PM
+                            </p>
+<button class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary px-xl py-sm rounded-full font-label-md text-label-md transition-colors shadow-md flex items-center gap-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">my_location</span>
+                                Track Order
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<div class="w-full h-[1px] bg-outline-variant/30 mb-xxl"></div>
+<!-- Past Orders Section -->
+<section>
+<h2 class="font-title-lg text-title-lg text-on-surface mb-lg">Past Orders</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Past Card 1 -->
+<div class="glass-card rounded-[1.5rem] p-sm flex flex-col gap-sm hover:-translate-y-1 transition-transform duration-300 shadow-sm hover:shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] cursor-pointer group">
+<div class="w-full h-40 rounded-[1rem] overflow-hidden relative">
+<img class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" data-alt="A bright, overhead shot of an authentic Neapolitan pizza resting on a rustic wooden board. The crust is beautifully blistered and charred, topped with vibrant red tomato sauce, melted pools of fresh mozzarella, and bright green basil leaves. Soft, diffused natural daylight illuminates the scene, giving it an appetizing, warm, and inviting modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxevwLH6OXHTHmK5v0Ev53gqGq4v9Y4HSmLbYHSeOkEtwCL1PIMe_bE8obigtBwDLDyRCjQD7l1bl40AHUdYg0rwsBFDIbRZRmUAKveCTUGfXFINf2imjL6ZO73rD6BOfYq63FyzEY8_27ohQaj6l4nx5WIXmlJ6UDWerMzbToUNpHptrLJaP03vq-TBNwyDmPIz7W6dTaBK_oBFXYZB6Nrz08ZqarJ3nP-JxyIUwCR9aVvj3xFsbioEKFsEg0eXjcQV0LKugb38KE"/>
+<div class="absolute top-sm right-sm bg-tertiary-fixed text-on-tertiary-fixed px-sm py-xs rounded-full font-label-md text-label-md shadow-sm backdrop-blur-md">
+                                Delivered
+                            </div>
+</div>
+<div class="p-sm flex flex-col gap-xs">
+<div class="flex justify-between items-center">
+<h4 class="font-title-lg text-title-lg text-on-surface truncate pr-sm">Bella Napoli Pizzeria</h4>
+<span class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap">$34.00</span>
+</div>
+<p class="text-secondary font-label-md text-label-md">Nov 28 • 1x Margherita, 1x Garlic Knots</p>
+<div class="mt-md flex justify-between items-center">
+<button class="text-primary font-label-md text-label-md hover:underline decoration-outline-variant underline-offset-4 flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
+                                    Receipt
+                                </button>
+<button class="bg-surface-variant text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container px-md py-xs rounded-full font-label-md text-label-md transition-colors">
+                                    Reorder
+                                </button>
+</div>
+</div>
+</div>
+<!-- Past Card 2 -->
+<div class="glass-card rounded-[1.5rem] p-sm flex flex-col gap-sm hover:-translate-y-1 transition-transform duration-300 shadow-sm hover:shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] cursor-pointer group">
+<div class="w-full h-40 rounded-[1rem] overflow-hidden relative grayscale-[0.2]">
+<img class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" data-alt="A beautifully plated gourmet burger on a brioche bun, stacked with a juicy beef patty, melted cheddar, crisp lettuce, and a glossy sauce. Served on a dark slate plate alongside golden, crispy french fries. The lighting is warm and directional, highlighting the textures of the food against a clean, modern off-white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOTMUJAvbFUF3XZWebS7lHbnyi02rchj9k3X2-EBhKnOLmayElG5UB79mWjaOex7Dtok4BPOsCWOXt1YVTugKMfp45oHH4uEz0jQNhZ7kO5EiMFybRogpGLeqZo_PjF_3nXehrbj3rPOCD8WFVqcPdpWQQy43aL3sSkSLHOmcQS8oNcu74X5Ky-8xyHNjBGQNpZZtRVyG9LNJLw7SF5oBmCxNwjf0Z8aQA7xUwBH8notXSIuw382XUhvJ1W2P72wpcv5GHyfgmxW39"/>
+<div class="absolute top-sm right-sm bg-surface-variant text-on-surface-variant px-sm py-xs rounded-full font-label-md text-label-md shadow-sm backdrop-blur-md">
+                                Cancelled
+                            </div>
+</div>
+<div class="p-sm flex flex-col gap-xs opacity-80">
+<div class="flex justify-between items-center">
+<h4 class="font-title-lg text-title-lg text-on-surface truncate pr-sm">Urban Burger Co.</h4>
+<span class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap">$22.50</span>
+</div>
+<p class="text-secondary font-label-md text-label-md">Nov 22 • 1x Classic Smash, 1x Fries</p>
+<div class="mt-md flex justify-between items-center">
+<span class="text-outline font-label-md text-label-md text-xs italic">Store unavailable</span>
+</div>
+</div>
+</div>
+<!-- Past Card 3 -->
+<div class="glass-card rounded-[1.5rem] p-sm flex flex-col gap-sm hover:-translate-y-1 transition-transform duration-300 shadow-sm hover:shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] cursor-pointer group">
+<div class="w-full h-40 rounded-[1rem] overflow-hidden relative">
+<img class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" data-alt="A vibrant, fresh salad bowl bursting with color. Slices of creamy avocado, bright pink radish, deep green spinach, and golden roasted chickpeas are elegantly arranged. The bowl rests on a light, marble surface under soft, natural morning light, creating a clean, healthy, and premium aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZsNOicb35qHWkZHiKjoBiUsGylU_Yg0RFPnVLcW_bnZxalnDaUysRTTnTtFqMEdcL5v67BLc9cvr2YVur9FmUdLu1PzrfAHoFUsDj8dAx_hsZmpeEyaHeJpP72PA9hgQoOq7qmDPmupws6psmUNpm9yGCEEYrXZFp380aW7S1sMDc_b_DqmfgRia8suR1R_KDpKGUUEDZAReA0A6xB9sYQfi6XEmxHrJjrl_foXOA0ozjEpw_ilMiE7zpJxvnb1Vk-G_EVxHySfWY"/>
+<div class="absolute top-sm right-sm bg-tertiary-fixed text-on-tertiary-fixed px-sm py-xs rounded-full font-label-md text-label-md shadow-sm backdrop-blur-md">
+                                Delivered
+                            </div>
+</div>
+<div class="p-sm flex flex-col gap-xs">
+<div class="flex justify-between items-center">
+<h4 class="font-title-lg text-title-lg text-on-surface truncate pr-sm">Green Leaf Botanicals</h4>
+<span class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap">$18.00</span>
+</div>
+<p class="text-secondary font-label-md text-label-md">Nov 15 • 1x Superfood Bowl</p>
+<div class="mt-md flex justify-between items-center">
+<button class="text-primary font-label-md text-label-md hover:underline decoration-outline-variant underline-offset-4 flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
+                                    Receipt
+                                </button>
+<button class="bg-surface-variant text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container px-md py-xs rounded-full font-label-md text-label-md transition-colors">
+                                    Reorder
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-lowest/80 backdrop-blur-md py-xxl px-margin mt-auto border-t border-outline-variant/30">
+<div class="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center gap-lg">
+<div class="font-display-lg text-display-lg text-primary tracking-tight md:block hidden">
+                ForkFlow
+            </div>
+<div class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight md:hidden">
+                ForkFlow
+            </div>
+<nav class="flex flex-wrap justify-center gap-md md:gap-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:opacity-80" href="#">About Us</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:opacity-80" href="#">Partner with Us</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:opacity-80" href="#">Help Center</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md hover:opacity-80" href="#">Privacy Policy</a>
+</nav>
+<div class="font-body-md text-body-md text-secondary">
+                © 2024 ForkFlow Inc. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

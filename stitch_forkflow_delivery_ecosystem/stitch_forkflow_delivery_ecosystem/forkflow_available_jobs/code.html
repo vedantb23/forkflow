@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForkFlow - Delivery Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#9df4cb",
+                      "inverse-surface": "#3c2c2b",
+                      "surface-bright": "#fff8f7",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#261817",
+                      "outline-variant": "#e2bebc",
+                      "on-tertiary-fixed": "#002114",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#81d7b0",
+                      "secondary": "#545f73",
+                      "outline": "#8e706f",
+                      "surface-container": "#ffe9e7",
+                      "error-container": "#ffdad6",
+                      "surface": "#fff8f7",
+                      "on-primary-container": "#ffccca",
+                      "secondary-container": "#d5e0f8",
+                      "primary-container": "#b52330",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed-variant": "#92001c",
+                      "primary": "#92001c",
+                      "tertiary": "#005138",
+                      "on-secondary-fixed": "#111c2d",
+                      "on-tertiary-fixed-variant": "#005138",
+                      "surface-container-high": "#fde2e0",
+                      "secondary-fixed": "#d8e3fb",
+                      "surface-variant": "#f7ddda",
+                      "surface-container-highest": "#f7ddda",
+                      "on-tertiary-container": "#93eac2",
+                      "on-surface-variant": "#5a403f",
+                      "surface-tint": "#b52330",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#ffedeb",
+                      "on-secondary-container": "#586377",
+                      "primary-fixed-dim": "#ffb3b1",
+                      "tertiary-container": "#006c4c",
+                      "inverse-primary": "#ffb3b1",
+                      "on-primary-fixed": "#410007",
+                      "background": "#fff8f7",
+                      "surface-dim": "#eed4d2",
+                      "surface-container-low": "#fff0ef",
+                      "primary-fixed": "#ffdad8",
+                      "on-background": "#261817"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "24px",
+                      "xxl": "48px",
+                      "xl": "32px",
+                      "gutter": "24px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "base": "4px",
+                      "sm": "8px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg-mobile": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "title-lg": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>body {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBu0hVjuhx_S1ka1kfPvMesoF6AXFE_IgUjqy5mayfvfk5dngsGGnyphZYjCVdOoM8XyhXLMkR2m7hNTXf2v_17cHH3yfdYPibpRhRuzGjkU-T0cE0MHTky8uXG4N0grZq_da2FmcSWFIgbVnDi81OdQWtk9DnS8jNGfrKKlJ1BLrbSwq5PeFzsZ4IBXcAGhcHouaBMxu3b_0lJ4_jogjke91NIseGo2GpF9Pq25DtDpbOqBWRjiAsKo3OhLvTcHPK3kA7kiHBh7c4E);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed
+    }
+.bg-overlay {
+    background-color: rgba(255, 248, 247, 0.95)
+    }
+.dark .bg-overlay {
+    background-color: rgba(60, 44, 43, 0.95)
+    }
+/* Custom scrollbar for webkit */
+::-webkit-scrollbar {
+    width: 6px
+    }
+::-webkit-scrollbar-track {
+    background: transparent
+    }
+::-webkit-scrollbar-thumb {
+    background-color: rgba(181, 35, 48, 0.2);
+    border-radius: 20px
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background antialiased min-h-screen pb-[90px] md:pb-0 pt-[72px] md:pt-[88px]">
+<div class="fixed inset-0 bg-overlay -z-10 transition-colors duration-300"></div>
+<!-- TopNavBar (Web & Mobile Hybrid Setup based on JSON) -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/40 dark:border-white/10 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<div class="max-w-[1280px] mx-auto flex justify-between items-center px-margin py-md">
+<div class="flex items-center gap-sm">
+<a class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg font-bold text-primary dark:text-primary-fixed-dim tracking-tight" href="#">ForkFlow</a>
+<span class="ml-2 px-2 py-1 bg-tertiary text-on-tertiary rounded-full font-label-md text-label-md">Driver</span>
+</div>
+<!-- Desktop Nav Links (Hidden on Mobile) -->
+<div class="hidden md:flex gap-lg items-center">
+<a class="text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 font-label-md text-label-md hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 scale-95" href="#">Discover</a>
+<a class="text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300" href="#">Orders</a>
+<a class="text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors font-label-md text-label-md hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300" href="#">Offers</a>
+</div>
+<!-- Right Actions -->
+<div class="flex items-center gap-md">
+<!-- Status Toggle -->
+<div class="flex items-center bg-surface-variant rounded-full p-1 cursor-pointer" onclick="toggleStatus(this)">
+<div class="w-24 h-8 relative rounded-full overflow-hidden flex">
+<div class="absolute left-0 top-0 h-full w-1/2 bg-tertiary rounded-full transition-transform duration-300 ease-in-out" id="statusIndicator"></div>
+<div class="z-10 w-1/2 flex items-center justify-center font-label-md text-label-md text-on-tertiary transition-colors duration-300" id="statusOnline">Online</div>
+<div class="z-10 w-1/2 flex items-center justify-center font-label-md text-label-md text-on-surface-variant transition-colors duration-300" id="statusOffline">Offline</div>
+</div>
+</div>
+<button class="text-primary dark:text-primary-fixed-dim hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 p-2 rounded-full" onclick="toggleTheme()">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dark_mode</span>
+</button>
+<button class="text-primary dark:text-primary-fixed-dim hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<div class="max-w-[1280px] mx-auto px-margin mt-lg md:mt-xl flex flex-col md:flex-row gap-gutter">
+<!-- Main Content Area -->
+<main class="w-full md:w-2/3 flex flex-col gap-xl">
+<!-- Dashboard Header Stats -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-md">
+<div class="bg-surface-container-lowest/80 dark:bg-surface-dim/80 backdrop-blur-md rounded-lg p-md border border-outline-variant/30 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-sm">Today's Earnings</h3>
+<p class="font-headline-md text-headline-md text-primary">$142.50</p>
+</div>
+<div class="bg-surface-container-lowest/80 dark:bg-surface-dim/80 backdrop-blur-md rounded-lg p-md border border-outline-variant/30 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-sm">Trips</h3>
+<p class="font-headline-md text-headline-md text-on-surface">12</p>
+</div>
+<div class="bg-surface-container-lowest/80 dark:bg-surface-dim/80 backdrop-blur-md rounded-lg p-md border border-outline-variant/30 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-sm">Online Time</h3>
+<p class="font-headline-md text-headline-md text-on-surface">4h 15m</p>
+</div>
+<div class="bg-surface-container-lowest/80 dark:bg-surface-dim/80 backdrop-blur-md rounded-lg p-md border border-outline-variant/30 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-sm">Acceptance Rate</h3>
+<p class="font-headline-md text-headline-md text-tertiary">98%</p>
+</div>
+</section>
+<!-- Available Jobs Feed -->
+<section class="flex flex-col gap-md">
+<h2 class="font-title-lg text-title-lg text-on-surface">Available Jobs</h2>
+<!-- Job Card 1 -->
+<article class="bg-surface-container-lowest/90 dark:bg-surface-dim/90 backdrop-blur-xl rounded-xl p-lg border border-white/40 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] hover:-translate-y-1 hover:shadow-[0_12px_48px_0_rgba(181,35,48,0.12)] transition-all duration-300">
+<div class="flex justify-between items-start mb-md">
+<div class="flex gap-md items-center">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A stylized logo icon of a burger joint with warm red and yellow tones, set against a clean white background. High resolution, modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVAwpBGsviV6cSZwXycKb4DwMGiP6sb2JWAQOBVyrpZV_enQTIwu_w1VajuYzd4ojo5_JZ6Qm-Xa5CtcDGcl3NOsSXUrp7OYnQTyNPC8InGsQTEQ6sV4aq-NlW8xYoJsN8l2C70gackqdEOXHygnDtMk9yBRIQKBa-YTkneEwbGrfbIiJXrtAh2-CFUFcZtO5htaOXLZuC8Yv4RVHV1DS1ZpU2x4OrI7TwGrzJ0_VrNQUSBWzZGkOyV01s_BzbxtI9jkLjmFUFjjuY"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Burger Joint Downtown</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm">location_on</span> 1.2 mi away
+                                </p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-tertiary block">$8.50</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Est. 15 mins</span>
+</div>
+</div>
+<div class="bg-surface-variant/50 rounded-lg p-md mb-md">
+<div class="flex items-center gap-md mb-sm relative">
+<div class="w-2 h-2 rounded-full bg-primary z-10 relative"></div>
+<div class="absolute left-[3px] top-4 w-px h-6 bg-outline-variant"></div>
+<p class="font-body-md text-body-md text-on-surface">Pickup: 123 Main St</p>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-2 h-2 rounded-full bg-tertiary z-10 relative"></div>
+<p class="font-body-md text-body-md text-on-surface">Dropoff: 456 Elm St</p>
+</div>
+</div>
+<button class="w-full bg-gradient-to-r from-tertiary to-tertiary-container hover:opacity-90 text-on-tertiary font-title-lg text-title-lg py-md rounded-lg transition-opacity duration-300 flex justify-center items-center gap-sm">
+                        Accept Trip <span class="material-symbols-outlined">check_circle</span>
+</button>
+</article>
+<!-- Job Card 2 -->
+<article class="bg-surface-container-lowest/90 dark:bg-surface-dim/90 backdrop-blur-xl rounded-xl p-lg border border-white/40 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] hover:-translate-y-1 hover:shadow-[0_12px_48px_0_rgba(181,35,48,0.12)] transition-all duration-300">
+<div class="flex justify-between items-start mb-md">
+<div class="flex gap-md items-center">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A minimal, elegant logo of a sushi restaurant featuring clean lines and a soft pink cherry blossom motif. Crisp and high quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZjARccvBcKowQejau6vgcJBmjiLBdxYhHl9jpxFjjKMozH5sgQr4cSNenVvSE4cIU0TLR0KMjK1X8IHWykjgGrwqNLO8yCIRcn2NEFBhArMpy95EPuxDaMtMQQ-j9d_YmiOqqw626pI2FGUs_YJI4X7QFtspLBZJn-8aJcTgwsGtduxfnWgfg3dNwAMYEA1QBpad8RprvZrZpc2I6F7r2sStZc1thhMZQRTHpk6lRtz5ECPsuEbcJ64Kb4W196oahIe_LrpvWqs35"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Sushi Master</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm">location_on</span> 3.5 mi away
+                                </p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-tertiary block">$14.20</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Est. 25 mins</span>
+</div>
+</div>
+<div class="bg-surface-variant/50 rounded-lg p-md mb-md">
+<div class="flex items-center gap-md mb-sm relative">
+<div class="w-2 h-2 rounded-full bg-primary z-10 relative"></div>
+<div class="absolute left-[3px] top-4 w-px h-6 bg-outline-variant"></div>
+<p class="font-body-md text-body-md text-on-surface">Pickup: 789 Ocean Blvd</p>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-2 h-2 rounded-full bg-tertiary z-10 relative"></div>
+<p class="font-body-md text-body-md text-on-surface">Dropoff: 101 Pine Ln</p>
+</div>
+</div>
+<button class="w-full bg-gradient-to-r from-tertiary to-tertiary-container hover:opacity-90 text-on-tertiary font-title-lg text-title-lg py-md rounded-lg transition-opacity duration-300 flex justify-center items-center gap-sm">
+                        Accept Trip <span class="material-symbols-outlined">check_circle</span>
+</button>
+</article>
+</section>
+</main>
+<!-- Sidebar / Map Preview (Desktop) -->
+<aside class="hidden md:flex md:w-1/3 flex-col gap-xl">
+<div class="sticky top-[120px] bg-surface-container-lowest/80 dark:bg-surface-dim/80 backdrop-blur-md rounded-xl overflow-hidden border border-outline-variant/30 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] h-[600px] flex flex-col">
+<div class="p-md border-b border-outline-variant/30 flex justify-between items-center bg-surface-bright">
+<h3 class="font-title-lg text-title-lg text-on-surface">Area Map</h3>
+<span class="material-symbols-outlined text-primary">my_location</span>
+</div>
+<div class="flex-grow bg-surface-container-low relative">
+<!-- Map Placeholder Image -->
+<img class="absolute inset-0 w-full h-full object-cover opacity-70" data-alt="A clean, modern street map style interface showing city blocks and a few route lines in warm, muted colors, suitable for a light-mode UI background. Overhead view." data-location="New York" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADo0ZzxMtFkr1w9NZGDDGPAXTX0uezVCG5DPxB8DS269bgUanzv_-p3657BTw-MK2ST8JKlexCw8i8qqWiJHEw3_yc_CbpuRmWfUVclxpfN68MXhZGxAkxgQnwxHrAibjQxM1_eowhKCXlvWDfZ7dDyZr2cPx7OlvATT65YgztlCu2lYrlRrvzh0QuhDtIZJjAY-xWPDeabtChXUkUDPgcPhm1DvHnQoCHARtZVdDLzTDMd6dKSy3R7EEReCWUPkSTlRgMXv78Aa4-"/>
+<!-- Decorative Map Elements -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full shadow-[0_0_15px_rgba(146,0,28,0.5)] border-2 border-white animate-pulse"></div>
+</div>
+</div>
+</aside>
+</div>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface-container-lowest/90 dark:bg-surface-dim/90 backdrop-blur-xl border-t border-outline-variant/30 z-50 pb-safe">
+<div class="flex justify-around items-center py-sm px-md">
+<a class="flex flex-col items-center p-sm text-primary dark:text-primary-fixed-dim border-t-2 border-primary -mt-[18px] pt-[16px]" href="#">
+<span class="material-symbols-outlined mb-xs" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<span class="font-label-md text-[12px]">Jobs</span>
+</a>
+<a class="flex flex-col items-center p-sm text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-xs">route</span>
+<span class="font-label-md text-[12px]">Active</span>
+</a>
+<a class="flex flex-col items-center p-sm text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-xs">payments</span>
+<span class="font-label-md text-[12px]">Earnings</span>
+</a>
+<a class="flex flex-col items-center p-sm text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-xs">person</span>
+<span class="font-label-md text-[12px]">Profile</span>
+</a>
+</div>
+</nav>
+<script>
+        // Simple Theme Toggle
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Online/Offline Toggle Logic
+        let isOnline = true;
+        function toggleStatus(element) {
+            isOnline = !isOnline;
+            const indicator = document.getElementById('statusIndicator');
+            const textOnline = document.getElementById('statusOnline');
+            const textOffline = document.getElementById('statusOffline');
+
+            if (isOnline) {
+                indicator.style.transform = 'translateX(0)';
+                indicator.classList.remove('bg-secondary');
+                indicator.classList.add('bg-tertiary');
+                textOnline.classList.replace('text-on-surface-variant', 'text-on-tertiary');
+                textOffline.classList.replace('text-on-surface-variant', 'text-on-surface-variant');
+            } else {
+                indicator.style.transform = 'translateX(100%)';
+                indicator.classList.remove('bg-tertiary');
+                indicator.classList.add('bg-secondary');
+                textOnline.classList.replace('text-on-tertiary', 'text-on-surface-variant');
+                textOffline.classList.replace('text-on-surface-variant', 'text-on-secondary');
+            }
+        }
+    </script>
+</body></html>

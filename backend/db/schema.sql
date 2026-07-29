@@ -89,7 +89,13 @@ CREATE TABLE IF NOT EXISTS menu_items (
   created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+DO $$ BEGIN
+  ALTER TABLE menu_items ADD COLUMN embedding vector(384);
+EXCEPTION WHEN duplicate_column THEN NULL; END $$;
+
 CREATE INDEX IF NOT EXISTS idx_menu_items_restaurant ON menu_items(restaurant_id);
+CREATE INDEX IF NOT EXISTS idx_menu_items_embedding ON menu_items USING ivfflat (embedding vector_cosine_ops);
 
 -- ---- carts ----
 -- One active cart per user (user_id is UNIQUE). Holds items from a single restaurant.

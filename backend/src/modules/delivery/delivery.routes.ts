@@ -1,5 +1,6 @@
 // delivery.routes.ts — URLs for delivery, mounted at "/api/delivery".
 //
+// GET  /available               — partner's feed of orders ready to carry (DELIVERY)
 // POST /assign                  — assign a partner to an order (OWNER / ADMIN)
 // GET  /:orderId                — get assignment details (any authenticated user)
 // PATCH /:orderId/status        — partner updates delivery status (DELIVERY)
@@ -11,6 +12,8 @@ import {
   getAssignmentHandler,
   updateStatusHandler,
   updateLocationHandler,
+  getAvailableDeliveriesHandler,
+  claimDeliveryHandler,
 } from "./delivery.controller";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { requireRole } from "../../middlewares/rbac.middleware";
@@ -19,6 +22,14 @@ import { validateAssignPartner, validateUpdateStatus, validateUpdateLocation } f
 import { asyncHandler } from "../../utils/asyncHandler";
 
 const router = Router();
+
+// The partner's job feed. MUST come before "/:orderId" so "available" isn't an id.
+router.get(
+  "/available",
+  requireAuth,
+  requireRole("DELIVERY"),
+  asyncHandler(getAvailableDeliveriesHandler)
+);
 
 // Assign a delivery partner — only owners/admins can do this.
 router.post(
@@ -39,6 +50,14 @@ router.patch(
   requireRole("DELIVERY"),
   validate(validateUpdateStatus),
   asyncHandler(updateStatusHandler)
+);
+
+// Partner claims an available (PREPARING) order for themselves ("Accept Trip").
+router.post(
+  "/:orderId/claim",
+  requireAuth,
+  requireRole("DELIVERY"),
+  asyncHandler(claimDeliveryHandler)
 );
 
 // Partner pushes a GPS ping.

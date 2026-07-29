@@ -90,4 +90,6 @@ export const env = {
 
   // ---- RAG (promote Day 7) ----
   GEMINI_API_KEY: optionalString("GEMINI_API_KEY"),
+  GROQ_API_KEY: optionalString("GROQ_API_KEY"),
+  HUGGINGFACE_API_KEY: optionalString("HUGGINGFACE_API_KEY"),
 } as const; // `as const` = this object is read-only; values never change at runtime

@@ -51,26 +51,31 @@ async function processOrderJob(job: Job<OrderJobData>): Promise<void> {
   const payment = await processPayment(orderId);
   logger.info({ orderId, txn: payment.transaction_id }, "order.worker: payment PAID");
 
-  // Step 4 — advance the order status PENDING → CONFIRMED → PREPARING.
-  // We only flip if it's still PENDING (WHERE guard) so concurrent/duplicate runs
-  // can't stomp a later status.
+  // Step 4 — advance the order status PENDING → CONFIRMED (payment succeeded).
+  // We STOP at CONFIRMED on purpose: the order now rests in the restaurant's
+  // Incoming queue and waits for the OWNER to manually accept it (→ PREPARING via
+  // PATCH /orders/:id/status). We must NOT auto-advance to PREPARING here, because:
+  //   • couriers can only claim orders in PREPARING (see claimDelivery), so
+  //     auto-PREPARING makes an order look "ready for pickup" with no human action;
+  //   • the owner has to actually see + accept the order first.
+  // WHERE guard keeps concurrent/duplicate runs from stomping a later status.
   await query(
-    "UPDATE orders SET status = 'PREPARING' WHERE id = $1 AND status = 'PENDING'",
+    "UPDATE orders SET status = 'CONFIRMED' WHERE id = $1 AND status = 'PENDING'",
     [orderId]
   );
-  logger.info({ orderId }, "order.worker: status → PREPARING");
+  logger.info({ orderId }, "order.worker: status → CONFIRMED (awaiting owner acceptance)");
 
   // Step 5 — fan out to the email + notification queues. These run in their own
   // workers, so a slow mail server never blocks order processing.
   await emailQueue.add("order-confirmation", {
     to: `user-${order.user_id}@example.com`, // Day 6 will join users table for the real email
     subject: `Your ForkFlow order is confirmed! 🍽️`,
-    text: `Order ${orderId} is confirmed and being prepared. Total: ₹${order.total_amount}.`,
+    text: `Order ${orderId} is confirmed and payment received. The restaurant will start preparing it soon. Total: ₹${order.total_amount}.`,
   });
   await notificationQueue.add("status-changed", {
     orderId,
     userId: order.user_id,
-    status: "PREPARING",
+    status: "CONFIRMED",
   });
   logger.info({ orderId }, "order.worker: enqueued email + notification");
 }

@@ -14,6 +14,7 @@ import { menuRoutes } from "./modules/menu/menu.routes";
 import { cartRoutes } from "./modules/cart/cart.routes";
 import { orderRoutes } from "./modules/orders/order.routes"; // Day 4
 import { deliveryRoutes } from "./modules/delivery/delivery.routes"; // Day 6
+import { searchRoutes } from "./modules/search/search.routes"; // Day 7 - RAG
 import { bullBoardRouter } from "./bull-board"; // Day 5 — queue dashboard
 import { rateLimit } from "./middlewares/rateLimit.middleware";
 
@@ -35,6 +36,7 @@ app.use("/api/menu", rateLimit(60, 30), menuRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes); // Day 4 — place + track orders
 app.use("/api/delivery", deliveryRoutes); // Day 6 — assign partner, status, location
+app.use("/api/search", searchRoutes); // Day 7 - RAG Concierge Search
 
 // Step 4e — Bull Board dashboard (Day 5) at /admin/queues. Lets us watch jobs
 // flow (waiting/active/completed/failed) and retry failed jobs by hand. Mounted

@@ -217,32 +217,32 @@
 ## 📅 DAY 6 — Real-time (Socket.io) + Frontend Integration
 
 ### Socket.io backend (`realtime/`)
-- [ ] `npm i socket.io @socket.io/redis-adapter`
-- [ ] `realtime/socket.ts` — init `io` on same HTTP server, attach Redis adapter (pub/sub)
-- [ ] `realtime/socket.auth.ts` — verify JWT on handshake
-- [ ] `realtime/socket.events.ts` — event constants (`ORDER_STATUS_UPDATED`, `DELIVERY_LOCATION`, etc.)
-- [ ] `realtime/handlers/order.handler.ts` — join room `order:{id}`, emit status changes
-- [ ] `realtime/handlers/delivery.handler.ts` — delivery partner location broadcast
-- [ ] Update `notification.worker.ts` to emit real-time events on status change
-- [ ] `modules/delivery/` — assign partner, update status/location
-- [ ] Verify: change an order status in worker → connected client receives event
+- [x] `npm i socket.io @socket.io/redis-adapter`
+- [x] `realtime/socket.ts` — init `io` on same HTTP server, attach Redis adapter (pub/sub)
+- [x] `realtime/socket.auth.ts` — verify JWT on handshake
+- [x] `realtime/socket.events.ts` — event constants (`ORDER_STATUS_UPDATED`, `DELIVERY_LOCATION`, etc.)
+- [x] `realtime/handlers/order.handler.ts` — join room `order:{id}`, emit status changes
+- [x] `realtime/handlers/delivery.handler.ts` — delivery partner location broadcast
+- [x] Update `notification.worker.ts` to emit real-time events on status change
+- [x] `modules/delivery/` — assign partner, update status/location
+- [x] Verify: change an order status in worker → connected client receives event
 
 ### Frontend scaffold
-- [ ] `cd frontend && npx create-next-app@latest .` (TS, App Router, Tailwind, src dir)
-- [ ] Install: `npm i axios socket.io-client @tanstack/react-query zustand next-auth`
-- [ ] shadcn init + add base components
-- [ ] `lib/api.ts` (axios + JWT interceptor), `lib/socket.ts`, `lib/auth.ts` (NextAuth Google + credentials)
-- [ ] `providers/QueryProvider.tsx`, `providers/SocketProvider.tsx`, wire in `layout.tsx`
-- [ ] `store/cartStore.ts` (Zustand); hooks `useSocket`, `useCart`, `useOrderTracking`
+- [x] `cd frontend && npx create-next-app@latest .` (TS, App Router, Tailwind, src dir)
+- [x] Install: `npm i axios socket.io-client @tanstack/react-query zustand next-auth`
+- [x] shadcn init + add base components
+- [x] `lib/api.ts` (axios + JWT interceptor), `lib/socket.ts`, `lib/auth.ts` (NextAuth Google + credentials)
+- [x] `providers/QueryProvider.tsx`, `providers/SocketProvider.tsx`, wire in `layout.tsx`
+- [x] `store/cartStore.ts` (Zustand); hooks `useSocket`, `useCart`, `useOrderTracking`
 
 ### Frontend pages
-- [ ] Auth pages: `login`, `register` (Google + email)
-- [ ] Home `page.tsx` — restaurant list (TanStack Query)
-- [ ] `restaurants/[id]` — menu + add to cart
-- [ ] `cart` + `checkout` — place order (sends `Idempotency-Key`)
-- [ ] `orders` list + `orders/[id]` — **LIVE tracking** via Socket.io (`OrderStatusTimeline`)
-- [ ] Restaurant dashboard — incoming orders live; Delivery dashboard
-- [ ] Verify end-to-end: browse → cart → checkout → watch status update live without refresh
+- [x] Auth pages: `login`, `register` (Google + email)
+- [x] Home `page.tsx` — restaurant list (TanStack Query)
+- [x] `restaurants/[id]` — menu + add to cart
+- [x] `cart` + `checkout` — place order (sends `Idempotency-Key`)
+- [x] `orders` list + `orders/[id]` — **LIVE tracking** via Socket.io (`OrderStatusTimeline`)
+- [x] Restaurant dashboard — incoming orders live; Delivery dashboard
+- [x] Verify end-to-end: browse → cart → checkout → watch status update live without refresh
 
 **End of Day 6:** full product working end-to-end with live tracking. ✅
 
@@ -256,20 +256,20 @@
 > **Agent: give user this block.**
 > 1. **Enable pgvector:** Supabase → **Database → Extensions** → search `vector` → enable it. (Or run `CREATE EXTENSION IF NOT EXISTS vector;` in the SQL Editor.)
 > 2. **Gemini key:** go to **https://aistudio.google.com/app/apikey** → Create API key → paste into `backend/.env` as `GEMINI_API_KEY`.
-- [ ] User enabled pgvector + pasted `GEMINI_API_KEY`
-- [ ] `npm i @langchain/google-genai langchain @langchain/community`
+- [x] User enabled pgvector + pasted keys
+- [x] `npm i @langchain/groq @huggingface/inference @langchain/community`
 
 ### Schema + ingestion
-- [ ] Add `embedding vector(768)` column to `menu_items` (raw SQL — add to `db/schema.sql` after enabling pgvector)
-- [ ] Create ivfflat index on the embedding column
-- [ ] `modules/search/rag.embeddings.ts` — Gemini `text-embedding-004` wrapper
-- [ ] `modules/search/rag.ingest.ts` — build a text blob per menu item (name + desc + veg + spice + price) → embed → store; script to backfill all seeded items
+- [x] Add `embedding vector(384)` column to `menu_items` (raw SQL — add to `db/schema.sql` after enabling pgvector)
+- [x] Create ivfflat index on the embedding column
+- [x] `modules/search/rag.embeddings.ts` — HuggingFace wrapper
+- [x] `modules/search/rag.ingest.ts` — build a text blob per menu item (name + desc + veg + spice + price) → embed → store; script to backfill all seeded items
 
 ### Query pipeline
-- [ ] `modules/search/rag.query.ts` — embed user query → pgvector cosine search (filter by veg/price if parsed) → pass top-K to Gemini → return dishes + natural-language answer + which items were used
-- [ ] `search.service.ts`, `search.controller.ts`, `search.routes.ts` — `POST /search` (rate-limited, cached in Redis)
-- [ ] Frontend `search/page.tsx` + `components/search/SearchBar.tsx` — the concierge UI
-- [ ] Verify: "spicy veg under ₹200 ready in 30 min" returns sensible dishes with an explanation
+- [x] `modules/search/rag.query.ts` — embed user query → pgvector cosine search (filter by veg/price if parsed) → pass top-K to Groq LLaMA 3 → return dishes + natural-language answer + which items were used
+- [x] `search.service.ts`, `search.controller.ts`, `search.routes.ts` — `POST /search` (rate-limited, cached in Redis)
+- [x] Frontend `search/page.tsx` + `components/search/SearchBar.tsx` — the AI Assistant UI
+- [x] Verify: "spicy veg under ₹200 ready in 30 min" returns sensible dishes with an explanation
 
 ### Polish & docs
 - [ ] Expand `db/seed.ts` to a rich demo dataset (multiple cuisines) and re-ingest embeddings
@@ -284,11 +284,11 @@
 ---
 
 ## 🔒 Non-negotiables checklist (verify before calling it done)
-- [ ] Concurrent-order race yields exactly one winner (raceTest passes)
-- [ ] Order processing is idempotent (same Idempotency-Key ⇒ one order)
-- [ ] BullMQ retries + DLQ work; Bull Board shows queues
-- [ ] Cache-aside hits/misses + invalidation verified
-- [ ] Live order tracking updates without refresh
-- [ ] RAG search returns grounded results from real menu data
-- [ ] No secrets committed; `.env.example` complete
-- [ ] `tsc` clean across backend and frontend
+- [x] Concurrent-order race yields exactly one winner (raceTest passes)
+- [x] Order processing is idempotent (same Idempotency-Key ⇒ one order)
+- [x] BullMQ retries + DLQ work; Bull Board shows queues
+- [x] Cache-aside hits/misses + invalidation verified
+- [x] Live order tracking updates without refresh
+- [x] RAG search returns grounded results from real menu data
+- [x] No secrets committed; `.env.example` complete
+- [x] `tsc` clean across backend and frontend

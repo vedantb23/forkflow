@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForkFlow - Sign In</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#9df4cb",
+                      "inverse-surface": "#3c2c2b",
+                      "surface-bright": "#fff8f7",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#261817",
+                      "outline-variant": "#e2bebc",
+                      "on-tertiary-fixed": "#002114",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#81d7b0",
+                      "secondary": "#545f73",
+                      "outline": "#8e706f",
+                      "surface-container": "#ffe9e7",
+                      "error-container": "#ffdad6",
+                      "surface": "#fff8f7",
+                      "on-primary-container": "#ffccca",
+                      "secondary-container": "#d5e0f8",
+                      "primary-container": "#b52330",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed-variant": "#92001c",
+                      "primary": "#92001c",
+                      "tertiary": "#005138",
+                      "on-secondary-fixed": "#111c2d",
+                      "on-tertiary-fixed-variant": "#005138",
+                      "surface-container-high": "#fde2e0",
+                      "secondary-fixed": "#d8e3fb",
+                      "surface-variant": "#f7ddda",
+                      "surface-container-highest": "#f7ddda",
+                      "on-tertiary-container": "#93eac2",
+                      "on-surface-variant": "#5a403f",
+                      "surface-tint": "#b52330",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#ffedeb",
+                      "on-secondary-container": "#586377",
+                      "primary-fixed-dim": "#ffb3b1",
+                      "tertiary-container": "#006c4c",
+                      "inverse-primary": "#ffb3b1",
+                      "on-primary-fixed": "#410007",
+                      "background": "#fff8f7",
+                      "surface-dim": "#eed4d2",
+                      "surface-container-low": "#fff0ef",
+                      "primary-fixed": "#ffdad8",
+                      "on-background": "#261817"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "24px",
+                      "xxl": "48px",
+                      "xl": "32px",
+                      "gutter": "24px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "base": "4px",
+                      "sm": "8px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg-mobile": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                      "display-lg-mobile": ["36px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                      "title-lg": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                      "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                      "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Custom styles for organic feel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        .input-transition {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .input-transition:focus-within {
+            border-color: #b52330;
+        }
+    </style>
+</head>
+<body class="bg-surface-bright text-on-background font-body-md text-body-md antialiased min-h-screen flex overflow-hidden">
+<!-- Split Screen Layout -->
+<!-- Left Pane: Imagery & Brand (Hidden on Mobile) -->
+<div class="hidden lg:flex w-1/2 relative flex-col justify-end overflow-hidden group">
+<!-- High Quality Food Image -->
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] ease-out group-hover:scale-105" data-alt="A highly detailed, appetizing overhead shot of a modern gourmet meal. The composition features vibrant, fresh ingredients like bright red tomatoes, verdant greens, and perfectly seared proteins arranged elegantly on artisan ceramics. The lighting is soft and natural, emphasizing the textures and rich warm colors. The overarching aesthetic is inviting and sophisticated, reflecting a high-end, premium dining experience." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBLKbC8q6VP0us5OobsqGvgdihnVEwBSlLMmr52mj02DQOg9QAcjVblBRMOHnthKdP2q1mn8vqpQLDsBI38LHfEsFxMcZApleLNKFgo79CWVTqSOqIZJJLUh-LDTI_wmFWUJoEh5QS_izNKGRbpH-FrfwBS4dpuLodfQ_TRq-7QeKAPERHBsNXTB-UBQI98UKVyNM1mCKKt-cNj3CdmFSso6zbFr5hOtzMB83pIN1VZdWtDvM8jfqgRZlW_Sb0UrOt2MYosPY3Jj8vw')">
+</div>
+<!-- Gradient Overlay for legibility -->
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/90 via-inverse-surface/40 to-transparent"></div>
+<!-- Brand Content -->
+<div class="relative z-10 p-xxl text-on-tertiary max-w-lg mb-xl">
+<h1 class="font-display-lg text-display-lg mb-sm tracking-tight drop-shadow-md">ForkFlow</h1>
+<p class="font-title-lg text-title-lg text-surface-container opacity-90 leading-relaxed">Good food, delivered your way. Experience culinary excellence at home.</p>
+</div>
+</div>
+<!-- Right Pane: Sign In Form -->
+<div class="w-full lg:w-1/2 flex items-center justify-center p-margin relative overflow-y-auto">
+<!-- Decorative subtle background blob -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-container/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+<!-- Glassmorphism Container -->
+<div class="w-full max-w-[420px] glass-panel rounded-xl shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] p-xl relative z-10 flex flex-col gap-lg animate-[fadeIn_0.5s_ease-out]">
+<!-- Header -->
+<div class="text-center mb-sm">
+<div class="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-full mb-md">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary tracking-tight">Welcome Back</h2>
+<p class="font-body-md text-body-md text-secondary mt-xs">Sign in to continue your culinary journey</p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-md" onsubmit="event.preventDefault(); this.querySelector('button[type=submit]').classList.add('opacity-80', 'scale-95'); setTimeout(() =&gt; this.querySelector('button[type=submit]').classList.remove('opacity-80', 'scale-95'), 300);">
+<!-- Email Field -->
+<div class="flex flex-col gap-xs group">
+<label class="font-label-md text-label-md text-on-surface-variant pl-xs transition-colors group-focus-within:text-primary" for="email">Email Address</label>
+<div class="relative flex items-center input-transition rounded-lg bg-surface-container-lowest border border-outline-variant overflow-hidden">
+<span class="material-symbols-outlined absolute left-md text-secondary group-focus-within:text-primary transition-colors">mail</span>
+<input class="w-full bg-transparent border-none py-md pl-[48px] pr-md text-on-surface font-body-md focus:ring-0 placeholder:text-secondary-fixed-dim" id="email" placeholder="name@example.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-xs group">
+<div class="flex justify-between items-end pl-xs pr-xs">
+<label class="font-label-md text-label-md text-on-surface-variant transition-colors group-focus-within:text-primary" for="password">Password</label>
+<a class="font-label-md text-label-md text-primary hover:text-primary-fixed-dim transition-colors" href="#">Forgot password?</a>
+</div>
+<div class="relative flex items-center input-transition rounded-lg bg-surface-container-lowest border border-outline-variant overflow-hidden">
+<span class="material-symbols-outlined absolute left-md text-secondary group-focus-within:text-primary transition-colors">lock</span>
+<input class="w-full bg-transparent border-none py-md pl-[48px] pr-md text-on-surface font-body-md focus:ring-0 placeholder:text-secondary-fixed-dim" id="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-md text-secondary hover:text-on-surface transition-colors focus:outline-none" onclick="const input = document.getElementById('password'); const icon = this.querySelector('span'); if(input.type === 'password') { input.type = 'text'; icon.textContent = 'visibility_off'; } else { input.type = 'password'; icon.textContent = 'visibility'; }" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center pt-xs">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="peer sr-only" type="checkbox"/>
+<div class="w-5 h-5 rounded border-2 border-outline-variant peer-checked:bg-primary peer-checked:border-primary flex items-center justify-center transition-all duration-200 group-hover:border-primary">
+<span class="material-symbols-outlined text-white text-[16px] opacity-0 peer-checked:opacity-100 transition-opacity duration-200">check</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant select-none">Remember me for 30 days</span>
+</label>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary text-on-primary rounded-full py-md mt-sm font-label-md text-label-md shadow-[0_4px_14px_0_rgba(181,35,48,0.39)] hover:shadow-[0_6px_20px_rgba(181,35,48,0.23)] hover:bg-on-primary-fixed-variant hover:-translate-y-[1px] transition-all duration-300 relative overflow-hidden group" type="submit">
+<span class="relative z-10 flex items-center justify-center gap-sm">
+                        Sign In
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</span>
+</button>
+</form>
+<!-- Divider -->
+<div class="relative flex items-center py-xs">
+<div class="flex-grow border-t border-outline-variant/60"></div>
+<span class="flex-shrink-0 mx-md font-label-md text-label-md text-secondary">or continue with</span>
+<div class="flex-grow border-t border-outline-variant/60"></div>
+</div>
+<!-- Social Auth -->
+<button class="w-full bg-surface-container-lowest border border-outline-variant hover:bg-surface-container-low text-on-surface rounded-full py-sm flex items-center justify-center gap-sm transition-colors duration-200 shadow-sm hover:shadow-md group">
+<svg class="w-5 h-5 transition-transform group-hover:scale-110" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+<span class="font-label-md text-label-md">Google</span>
+</button>
+<!-- Footer Link -->
+<p class="text-center font-body-md text-body-md text-on-surface-variant mt-sm">
+                Don't have an account? 
+                <a class="font-label-md text-label-md text-primary hover:text-primary-container underline decoration-primary/30 hover:decoration-primary transition-colors ml-xs" href="/register">Create account</a>
+</p>
+</div>
+<!-- Floating Theme Toggle -->
+<button aria-label="Toggle Theme" class="absolute bottom-margin right-margin glass-panel rounded-full p-2 flex items-center shadow-[0_4px_16px_rgba(181,35,48,0.1)] hover:shadow-[0_8px_24px_rgba(181,35,48,0.15)] hover:-translate-y-1 transition-all duration-300 z-50 group" id="themeToggle">
+<div class="relative flex items-center gap-xs px-xs">
+<span class="material-symbols-outlined text-[20px] text-primary transition-opacity duration-300" id="icon-light" style="font-variation-settings: 'FILL' 1;">light_mode</span>
+<!-- Pill switch visual -->
+<div class="w-8 h-4 bg-surface-variant rounded-full relative overflow-hidden border border-outline-variant/30">
+<div class="absolute left-0.5 top-0.5 w-3 h-3 bg-primary rounded-full transition-transform duration-300 ease-out shadow-sm" id="theme-knob"></div>
+</div>
+<span class="material-symbols-outlined text-[20px] text-secondary group-hover:text-primary transition-colors duration-300" id="icon-dark">dark_mode</span>
+</div>
+</button>
+</div>
+<script>
+        // Simple visual theme toggle logic (demonstration only, as requested to stay in light mode globally)
+        const themeToggle = document.getElementById('themeToggle');
+        const knob = document.getElementById('theme-knob');
+        const iconLight = document.getElementById('icon-light');
+        const iconDark = document.getElementById('icon-dark');
+        let isDark = false;
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            if (isDark) {
+                knob.style.transform = 'translateX(16px)';
+                iconLight.style.fontVariationSettings = "'FILL' 0";
+                iconLight.classList.replace('text-primary', 'text-secondary');
+                iconDark.style.fontVariationSettings = "'FILL' 1";
+                iconDark.classList.replace('text-secondary', 'text-primary');
+            } else {
+                knob.style.transform = 'translateX(0px)';
+                iconLight.style.fontVariationSettings = "'FILL' 1";
+                iconLight.classList.replace('text-secondary', 'text-primary');
+                iconDark.style.fontVariationSettings = "'FILL' 0";
+                iconDark.classList.replace('text-primary', 'text-secondary');
+            }
+        });
+    </script>
+</body></html>

@@ -25,6 +25,10 @@ export interface MenuItem {
   description: string | null;
   price: string; // numeric comes back as string from pg
   image_url: string | null;
+  is_veg: boolean;
+  spice_level: number; // 0 none, 1 mild, 2 medium, 3 hot
+  stock: number;
+  prep_time_minutes: number;
   is_available: boolean;
 }
 
@@ -85,3 +89,22 @@ export interface ApiEnvelope<T> {
 // Delivery statuses — must match the backend DB enum exactly.
 export const DELIVERY_STATUSES = ["UNASSIGNED", "ASSIGNED", "PICKED_UP", "DELIVERED"] as const;
 export type DeliveryStatus = (typeof DELIVERY_STATUSES)[number];
+
+// A delivery_assignments row — links one order to one delivery partner.
+export interface DeliveryAssignment {
+  id: string;
+  order_id: string;
+  partner_id: string | null;
+  status: string;
+  current_lat: number | null;
+  current_lng: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// A row in the delivery partner's job feed (GET /delivery/available). An OrderView
+// plus its assignment (null until claimed/assigned) so the dashboard can tell which
+// OUT_FOR_DELIVERY trips are "mine" without a per-order assignment lookup.
+export interface DeliveryFeedItem extends OrderView {
+  assignment: DeliveryAssignment | null;
+}

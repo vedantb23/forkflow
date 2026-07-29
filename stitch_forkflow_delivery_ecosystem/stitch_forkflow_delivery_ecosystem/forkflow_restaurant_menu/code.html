@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForkFlow - Restaurant Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#9df4cb",
+                        "inverse-surface": "#3c2c2b",
+                        "surface-bright": "#fff8f7",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#261817",
+                        "outline-variant": "#e2bebc",
+                        "on-tertiary-fixed": "#002114",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#81d7b0",
+                        "secondary": "#545f73",
+                        "outline": "#8e706f",
+                        "surface-container": "#ffe9e7",
+                        "error-container": "#ffdad6",
+                        "surface": "#fff8f7",
+                        "on-primary-container": "#ffccca",
+                        "secondary-container": "#d5e0f8",
+                        "primary-container": "#b52330",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#92001c",
+                        "primary": "#92001c",
+                        "tertiary": "#005138",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-tertiary-fixed-variant": "#005138",
+                        "surface-container-high": "#fde2e0",
+                        "secondary-fixed": "#d8e3fb",
+                        "surface-variant": "#f7ddda",
+                        "surface-container-highest": "#f7ddda",
+                        "on-tertiary-container": "#93eac2",
+                        "on-surface-variant": "#5a403f",
+                        "surface-tint": "#b52330",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#ffedeb",
+                        "on-secondary-container": "#586377",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "tertiary-container": "#006c4c",
+                        "inverse-primary": "#ffb3b1",
+                        "on-primary-fixed": "#410007",
+                        "background": "#fff8f7",
+                        "surface-dim": "#eed4d2",
+                        "surface-container-low": "#fff0ef",
+                        "primary-fixed": "#ffdad8",
+                        "on-background": "#261817"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin": "24px",
+                        "xxl": "48px",
+                        "xl": "32px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "title-lg": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 248, 247, 0.85); /* surface-bright with opacity */
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(181, 35, 48, 0.08); /* soft red shadow */
+        }
+        
+        .pulse-add {
+            animation: pulse-add-anim 0.3s ease-out;
+        }
+
+        @keyframes pulse-add-anim {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .cart-bounce {
+            animation: bounce-cart-anim 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes bounce-cart-anim {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+            100% { transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/40 dark:border-white/10 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<div class="max-w-[1280px] mx-auto flex justify-between items-center px-margin py-md">
+<div class="flex items-center gap-lg">
+<a class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed-dim tracking-tight" href="#">ForkFlow</a>
+<div class="hidden md:flex gap-md">
+<a class="text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors hover:bg-white/20 dark:hover:bg-black/20 duration-300 font-label-md text-label-md px-md py-sm rounded-full" href="#">Discover</a>
+<a class="text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors hover:bg-white/20 dark:hover:bg-black/20 duration-300 font-label-md text-label-md px-md py-sm rounded-full" href="#">Orders</a>
+<a class="text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors hover:bg-white/20 dark:hover:bg-black/20 duration-300 font-label-md text-label-md px-md py-sm rounded-full" href="#">Offers</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-xl pr-md py-sm rounded-full bg-surface-container-low border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary transition-colors w-64 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70" placeholder="Search menu..." type="text"/>
+</div>
+<button class="p-sm rounded-full hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 text-on-surface-variant">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button class="p-sm rounded-full hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 text-on-surface-variant">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[100px] pb-xxl">
+<!-- Restaurant Banner -->
+<section class="w-full relative h-[400px] md:h-[500px]">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full" data-alt="A sweeping, high-quality photograph of a sophisticated, modern Italian restaurant interior. The scene features warm, dim ambient lighting, rich mahogany wood textures, and elegant table settings with sparkling wine glasses. The atmosphere is inviting and upscale, reflecting a premium dining experience. The color palette emphasizes warm oranges, deep browns, and subtle reds to complement the food app UI style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvutV6MzUTmaYPawoT7mJXbcrmjkMTA6K_UH6BqyvEL2z_JqTrengG2kQ49ju-JF9dGg6tgwMeeQX6Heqk3tgrhfqsoMBlCxhVUlDLZsUN7Jy6jKCgutlqUwua9zf1K6aajaChtaTuQlMTzdWbmIAD6mQdqOszmZ6WQ6lwr9qNwFP6mXzfZjUwCyBoulVzj2bV7LhMQ8BvCOLrWHiUSHnwf4NWRTdTlBl9hCxJpO2abtKdtzu_eT7gx-2nHg7utAf3l3NyLTtK0FRj')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+<div class="absolute bottom-0 w-full">
+<div class="max-w-[1280px] mx-auto px-margin pb-xl flex flex-col md:flex-row md:items-end justify-between gap-lg">
+<div class="text-white z-10">
+<div class="flex flex-wrap gap-sm mb-sm">
+<span class="bg-primary/90 backdrop-blur-sm text-white px-sm py-xs rounded-full font-label-md text-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">storefront</span> Open now
+                            </span>
+<span class="bg-white/20 backdrop-blur-md text-white px-sm py-xs rounded-full font-label-md text-label-md">Italian</span>
+<span class="bg-white/20 backdrop-blur-md text-white px-sm py-xs rounded-full font-label-md text-label-md">Pasta</span>
+</div>
+<h1 class="font-display-lg text-display-lg md:text-[64px] mb-xs drop-shadow-md">Luigi's Trattoria</h1>
+<div class="flex items-center gap-md font-body-md text-body-md text-white/90">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px] text-yellow-400" style="font-variation-settings: 'FILL' 1;">star</span> 4.8 (500+ ratings)</span>
+<span class="w-1 h-1 rounded-full bg-white/50"></span>
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">schedule</span> 25-35 min</span>
+<span class="w-1 h-1 rounded-full bg-white/50"></span>
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">local_shipping</span> $2.99</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md flex gap-md items-center text-on-surface z-10 md:mb-0 mb-md">
+<div class="flex flex-col items-center border-r border-outline-variant/30 pr-md">
+<span class="font-headline-md text-headline-md text-primary">4.8</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Rating</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-headline-md text-headline-md text-primary">$$</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Price</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Menu Area -->
+<div class="max-w-[1280px] mx-auto px-margin pt-xl flex flex-col md:flex-row gap-gutter relative">
+<!-- Sticky Side Nav -->
+<aside class="w-full md:w-[240px] flex-shrink-0">
+<div class="sticky top-[120px] glass-card rounded-xl p-sm hidden md:flex flex-col gap-xs">
+<a class="flex items-center gap-sm p-sm rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md transition-all hover:bg-primary-container/80" href="#popular">
+<span class="material-symbols-outlined">star</span> Popular
+                    </a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant hover:bg-surface-variant/50 hover:text-primary transition-all font-label-md text-label-md" href="#starters">
+<span class="material-symbols-outlined">tapas</span> Starters
+                    </a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant hover:bg-surface-variant/50 hover:text-primary transition-all font-label-md text-label-md" href="#mains">
+<span class="material-symbols-outlined">restaurant</span> Mains
+                    </a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant hover:bg-surface-variant/50 hover:text-primary transition-all font-label-md text-label-md" href="#desserts">
+<span class="material-symbols-outlined">cake</span> Desserts
+                    </a>
+<a class="flex items-center gap-sm p-sm rounded-lg text-on-surface-variant hover:bg-surface-variant/50 hover:text-primary transition-all font-label-md text-label-md" href="#drinks">
+<span class="material-symbols-outlined">local_bar</span> Drinks
+                    </a>
+</div>
+<!-- Mobile horizontal nav -->
+<div class="md:hidden flex overflow-x-auto gap-sm pb-sm hide-scrollbar sticky top-[80px] z-40 bg-background/90 backdrop-blur-md py-sm">
+<a class="whitespace-nowrap px-md py-sm rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md border border-primary-container" href="#popular">Popular</a>
+<a class="whitespace-nowrap px-md py-sm rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md border border-outline-variant hover:border-primary/50" href="#starters">Starters</a>
+<a class="whitespace-nowrap px-md py-sm rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md border border-outline-variant hover:border-primary/50" href="#mains">Mains</a>
+<a class="whitespace-nowrap px-md py-sm rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md border border-outline-variant hover:border-primary/50" href="#desserts">Desserts</a>
+</div>
+</aside>
+<!-- Menu Items -->
+<div class="flex-grow flex flex-col gap-xxl pb-xxl">
+<!-- Category: Popular -->
+<section class="scroll-mt-[140px]" id="popular">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Popular Items</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<!-- Item Card -->
+<div class="group glass-card rounded-xl p-md flex gap-md hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden">
+<div class="w-[120px] h-[120px] rounded-lg overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A highly detailed, appetizing, overhead shot of a classic Margherita pizza on a rustic wooden board. The pizza has a perfectly charred, bubbly crust, vibrant red tomato sauce, melted pools of fresh mozzarella, and bright green basil leaves scattered on top. Warm, natural lighting highlighting the textures. Style: premium food photography, inviting, high definition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAViPYyWnxbkEeH_H8zL6Rfsbdkl5_YMgKid_WDsl0PnToysHwXyuz8VxKsnFQBPWaarRzFYCAs8lbUR0SHnbmCIqrAgCSP_qL4WdFgphpWPSngdeWsR4_dC69KXr2gh6J7a7TAPChILHm7rHg9xgS2S8XpWMukDlxTIfic61yVcH_7v2hmNvH_FMWnxC8tJPaVvQmDvh6h5DZiEf0dG10MTl2Sz16k92r92ve_HZrZhKj-nvz_RWUUn5gSMi5GTa97Bqqz1YVcdG6H"/>
+<div class="absolute top-sm right-sm bg-tertiary-container text-on-tertiary-container px-2 py-0.5 rounded-full font-label-md text-[10px] flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">thumb_up</span> Popular
+                                </div>
+</div>
+<div class="flex flex-col flex-grow justify-between py-xs">
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-xs leading-tight">Margherita Pizza</h3>
+<p class="font-body-md text-body-md text-on-surface-variant/80 line-clamp-2">San Marzano tomato sauce, fresh mozzarella, basil, and extra virgin olive oil on our signature sourdough crust.</p>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<span class="font-title-lg text-title-lg text-on-surface">$18.00</span>
+<button class="add-to-cart-btn bg-surface-container-highest text-primary hover:bg-primary hover:text-white rounded-full p-sm flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item Card -->
+<div class="group glass-card rounded-xl p-md flex gap-md hover:-translate-y-1 transition-transform duration-300">
+<div class="w-[120px] h-[120px] rounded-lg overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A close-up, premium food shot of a steaming plate of Spaghetti Carbonara. The pasta is perfectly glossy with a rich, creamy egg and pecorino sauce, dotted with crispy, golden-brown pancetta pieces and generously dusted with fresh black pepper. Served in a minimalist white bowl on a dark slate table. Warm, appetizing lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOOf9gArAUSBKJMOMgzZuXuVOODcyfpgl4g0lmIRWaTiZGrTMEUsZsrqvRu1E8ZqPcg8Rt3fGtqUd1nIuedRnZIsrkMMmsUpCwHf9KwaEkjxfmUTuxax2Fxv-SpJQmeRPn43Q3qogfpkPYP8CsAjqow36JgbBqAjt5UNMkQUT2ai5Zqp_57EVP77UqLLLcIIGRe6uGQ0wEogKnqq0ZVZ_Frx9ehpAjJaf2hsxw7372YpemiRhBG-MeNmuEuSWc_Z25Vw-zXakF5MQd"/>
+</div>
+<div class="flex flex-col flex-grow justify-between py-xs">
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-xs leading-tight">Spaghetti Carbonara</h3>
+<p class="font-body-md text-body-md text-on-surface-variant/80 line-clamp-2">Classic Roman pasta with crispy guanciale, pecorino romano, egg yolks, and black pepper.</p>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<span class="font-title-lg text-title-lg text-on-surface">$22.00</span>
+<button class="add-to-cart-btn bg-surface-container-highest text-primary hover:bg-primary hover:text-white rounded-full p-sm flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full h-px bg-outline-variant/50 mt-lg"></div>
+</section>
+<!-- Category: Starters -->
+<section class="scroll-mt-[140px]" id="starters">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Starters</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<!-- Item Card -->
+<div class="group glass-card rounded-xl p-md flex gap-md hover:-translate-y-1 transition-transform duration-300">
+<div class="w-[120px] h-[120px] rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A beautiful, vibrant plate of Caprese salad. Thick slices of deep red heirloom tomatoes layered with fresh, milky mozzarella and large basil leaves. Drizzled generously with dark balsamic glaze and high-quality olive oil. Shot top-down on a textured ceramic plate with soft, natural daylight emphasizing freshness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaTPpJJBjnQwHshuJTUoC-p8QVVcCgVFbdZCapM-7dCczr6qtFyiz0CLNQrtmSJL3GQ2UQwTbk-ASTRArXQlOkNdmFRDRBiNvtQbJAtjd_YQFFlICqmqlfBFJaK2Sy9dbjY_hCysQnN-Bu5YtdTWgDzKoU2iAEWeEzO53tBdXVrvoUpjxM0iII7mqcBhVhn-F4fuLPICSOo_kemvkXld6ov-RAp3O821WlCXbv2fMouSE1xbpgdOyfNAuGWGs46wmh-FW_ip09tms5"/>
+</div>
+<div class="flex flex-col flex-grow justify-between py-xs">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-xs leading-tight">Caprese Salad</h3>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded-sm font-label-md text-[10px] uppercase tracking-wider">Veg</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant/80 line-clamp-2">Heirloom tomatoes, fresh mozzarella, basil, balsamic glaze, and extra virgin olive oil.</p>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<span class="font-title-lg text-title-lg text-on-surface">$14.00</span>
+<button class="add-to-cart-btn bg-surface-container-highest text-primary hover:bg-primary hover:text-white rounded-full p-sm flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Floating Glass Cart Summary -->
+<div class="fixed bottom-margin right-margin z-50 transition-all duration-300 translate-y-0 opacity-100 hidden" id="floating-cart">
+<div class="glass-card rounded-xl p-sm flex items-center gap-md shadow-2xl bg-surface/95 dark:bg-surface-dim/95 border-primary/20">
+<div class="bg-primary text-white w-12 h-12 rounded-lg flex items-center justify-center font-title-lg text-title-lg relative">
+<span class="material-symbols-outlined absolute opacity-20">shopping_bag</span>
+<span class="relative z-10 font-bold" id="cart-count">2</span>
+</div>
+<div class="flex flex-col pr-md">
+<span class="font-label-md text-label-md text-on-surface-variant">Subtotal</span>
+<span class="font-title-lg text-title-lg text-on-surface" id="cart-total">$40.00</span>
+</div>
+<button class="bg-primary text-white font-label-md text-label-md px-lg py-sm rounded-lg hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg flex items-center gap-sm">
+                View Cart <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full border-t border-outline-variant/30 bg-surface-container-lowest/80 dark:bg-surface-dim/80 backdrop-blur-md">
+<div class="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center py-xxl px-margin gap-md">
+<div class="font-display-lg text-display-lg text-primary">ForkFlow</div>
+<div class="flex flex-wrap justify-center gap-lg font-label-md text-label-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:opacity-80" href="#">About Us</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:opacity-80" href="#">Partner with Us</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:opacity-80" href="#">Help Center</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:opacity-80" href="#">Privacy Policy</a>
+</div>
+<div class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim">
+                © 2024 ForkFlow Inc. All rights reserved.
+            </div>
+</div>
+</footer>
+<script>
+        // Simple cart interaction logic for demo
+        document.addEventListener('DOMContentLoaded', () => {
+            const addButtons = document.querySelectorAll('.add-to-cart-btn');
+            const cart = document.getElementById('floating-cart');
+            const cartCount = document.getElementById('cart-count');
+            
+            // Show cart initially for demo purposes if items existed
+            setTimeout(() => {
+                cart.classList.remove('hidden');
+                cart.classList.add('flex');
+            }, 1000);
+
+            let count = 2;
+
+            addButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    // Button animation
+                    this.classList.add('pulse-add');
+                    setTimeout(() => {
+                        this.classList.remove('pulse-add');
+                    }, 300);
+
+                    // Update cart
+                    count++;
+                    cartCount.textContent = count;
+                    
+                    // Cart bounce animation
+                    cart.classList.remove('cart-bounce');
+                    void cart.offsetWidth; // trigger reflow
+                    cart.classList.add('cart-bounce');
+                    
+                    // Show cart if hidden
+                    if (cart.classList.contains('hidden')) {
+                        cart.classList.remove('hidden');
+                        cart.classList.add('flex');
+                    }
+                });
+            });
+        });
+    </script>
+</body></html>

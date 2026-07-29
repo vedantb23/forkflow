@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForkFlow - Cart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#9df4cb",
+                      "inverse-surface": "#3c2c2b",
+                      "surface-bright": "#fff8f7",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#261817",
+                      "outline-variant": "#e2bebc",
+                      "on-tertiary-fixed": "#002114",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#81d7b0",
+                      "secondary": "#545f73",
+                      "outline": "#8e706f",
+                      "surface-container": "#ffe9e7",
+                      "error-container": "#ffdad6",
+                      "surface": "#fff8f7",
+                      "on-primary-container": "#ffccca",
+                      "secondary-container": "#d5e0f8",
+                      "primary-container": "#b52330",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed-variant": "#92001c",
+                      "primary": "#92001c",
+                      "tertiary": "#005138",
+                      "on-secondary-fixed": "#111c2d",
+                      "on-tertiary-fixed-variant": "#005138",
+                      "surface-container-high": "#fde2e0",
+                      "secondary-fixed": "#d8e3fb",
+                      "surface-variant": "#f7ddda",
+                      "surface-container-highest": "#f7ddda",
+                      "on-tertiary-container": "#93eac2",
+                      "on-surface-variant": "#5a403f",
+                      "surface-tint": "#b52330",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#ffedeb",
+                      "on-secondary-container": "#586377",
+                      "primary-fixed-dim": "#ffb3b1",
+                      "tertiary-container": "#006c4c",
+                      "inverse-primary": "#ffb3b1",
+                      "on-primary-fixed": "#410007",
+                      "background": "#fff8f7",
+                      "surface-dim": "#eed4d2",
+                      "surface-container-low": "#fff0ef",
+                      "primary-fixed": "#ffdad8",
+                      "on-background": "#261817"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "24px",
+                      "xxl": "48px",
+                      "xl": "32px",
+                      "gutter": "24px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "base": "4px",
+                      "sm": "8px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg-mobile": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                      "display-lg-mobile": ["36px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                      "title-lg": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                      "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                      "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2bebc; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #b52330; }
+    </style>
+</head>
+<body class="bg-surface-bright text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/40 dark:border-white/10 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<div class="max-w-[1280px] mx-auto flex justify-between items-center px-margin py-md">
+<!-- Brand Logo -->
+<a class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed-dim tracking-tight hidden md:block" href="#">
+                ForkFlow
+            </a>
+<a class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary dark:text-primary-fixed-dim tracking-tight md:hidden" href="#">
+                ForkFlow
+            </a>
+<!-- Navigation Links (Centered) -->
+<div class="hidden md:flex items-center gap-lg">
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors hover:bg-white/20 dark:hover:bg-black/20 duration-300 px-sm py-xs rounded-lg" href="#">
+                    Discover
+                </a>
+<!-- Active State applied to 'Orders' as it semantically matches a Cart page -->
+<a class="font-label-md text-label-md text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 px-sm pt-xs rounded-t-lg scale-95 transform" href="#">
+                    Orders
+                </a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors hover:bg-white/20 dark:hover:bg-black/20 duration-300 px-sm py-xs rounded-lg" href="#">
+                    Offers
+                </a>
+</div>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-sm">
+<button class="p-sm text-primary dark:text-primary-fixed-dim hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="p-sm text-primary dark:text-primary-fixed-dim hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow w-full max-w-[1280px] mx-auto px-margin pt-[120px] pb-xxl flex flex-col gap-xl relative">
+<!-- Dev Toggle (For demonstration purposes to show empty state) -->
+<div class="absolute top-[90px] right-margin z-40">
+<button class="text-label-md font-label-md text-secondary hover:text-primary underline bg-surface-container-lowest/50 px-sm py-xs rounded-full border border-outline-variant/30 backdrop-blur-md" onclick="toggleCartState()">
+                Toggle Empty State
+            </button>
+</div>
+<!-- Header -->
+<header class="flex flex-col gap-xs">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Your Cart</h1>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="restaurant">restaurant</span>
+                Ordering from <strong class="text-on-surface font-label-md">La Bella Trattoria</strong>
+</p>
+</header>
+<!-- FILLED CART STATE -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start" id="cart-filled">
+<!-- Left Column: Line Items -->
+<div class="lg:col-span-8 flex flex-col gap-md">
+<!-- Item 1 -->
+<div class="group bg-surface-container-lowest/80 backdrop-blur-xl border border-white/60 rounded-xl p-md flex flex-col sm:flex-row items-center gap-lg shadow-[0_4px_12px_rgba(181,35,48,0.03)] hover:shadow-[0_8px_24px_rgba(181,35,48,0.08)] transition-all duration-300">
+<!-- Photo -->
+<div class="w-full sm:w-[120px] h-[120px] flex-shrink-0 rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A highly detailed, appetizing close-up photograph of a creamy truffle mushroom rigatoni pasta dish. Served in a rustic, textured ceramic bowl. Warm, natural window lighting highlights the glistening sauce, earthy roasted mushrooms, and a sprinkle of fresh parsley. The mood is premium, comforting, and modern culinary chic, perfectly suited for a high-end food delivery application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu1g8fuHSKYWicmZAH_vr97o9N8GpD65Dpdl_m9SJMVbLRkcP77mpbGQkeDpilZE0gsnvhA-d9V17ZKpWRo9iaHqXV6uzaEfsH2SGfOM4dmNRHUziKefRS0yXbPiv39JN91ptnq1Rfg-8KeG63qUN54Swh-XchjU5_bqB17R_ryx1lz9kORG3BebcPuBeyBdIQMjn7Yk0mXAY7nnQfdTVP8yDZ-9pB1THYb6hNTKAU0_dIupD5B1YpYL7X9M-LPpilTaphhHJz9dTd"/>
+</div>
+<!-- Details -->
+<div class="flex-grow flex flex-col gap-xs w-full">
+<div class="flex justify-between items-start">
+<h3 class="font-title-lg text-title-lg text-on-surface leading-tight">Truffle Mushroom Rigatoni</h3>
+<span class="font-title-lg text-title-lg text-on-surface ml-md">$24.00</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">House-made rigatoni, wild mushrooms, light cream sauce, white truffle oil, shaved parmesan.</p>
+<!-- Actions Row -->
+<div class="flex justify-between items-center mt-sm">
+<!-- Stepper -->
+<div class="flex items-center gap-md bg-surface-container-low rounded-full px-sm py-xs border border-outline-variant/30">
+<button aria-label="Decrease quantity" class="w-8 h-8 flex items-center justify-center text-on-surface hover:text-primary transition-colors bg-white rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="remove">remove</span>
+</button>
+<span class="font-label-md text-label-md text-on-surface min-w-[20px] text-center">1</span>
+<button aria-label="Increase quantity" class="w-8 h-8 flex items-center justify-center text-on-surface hover:text-primary transition-colors bg-white rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+</button>
+</div>
+<!-- Remove -->
+<button class="text-on-surface-variant hover:text-error transition-colors flex items-center gap-xs font-label-md text-label-md p-xs rounded-md hover:bg-error-container/20">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+<span class="hidden sm:inline">Remove</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Subtle Separator between items (optional, using card gap instead for cleaner look, but fulfilling prompt request for subtle horizontal rules if it were a flat list. Since it's cards, cards provide separation. I will add one between card list and 'add more' button) -->
+<hr class="border-t border-outline-variant/30 my-sm mx-md"/>
+<!-- Item 2 -->
+<div class="group bg-surface-container-lowest/80 backdrop-blur-xl border border-white/60 rounded-xl p-md flex flex-col sm:flex-row items-center gap-lg shadow-[0_4px_12px_rgba(181,35,48,0.03)] hover:shadow-[0_8px_24px_rgba(181,35,48,0.08)] transition-all duration-300">
+<div class="w-full sm:w-[120px] h-[120px] flex-shrink-0 rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A mouth-watering, professional food photograph of a classic Margherita pizza on a wooden serving board. The crust is perfectly blistered with leopard spotting. Vibrant red San Marzano tomato sauce contrasts beautifully with bright white pools of melted fresh mozzarella and vibrant green basil leaves. The lighting is warm and directional, emphasizing texture and freshness in a modern, elevated setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcN6DQxmTLeCS-py7QCadsSnB-5glKADH_1EJ0lkiZGshOiceg5_hQAJWpqmbrCgmdD1TUAGKSnDwFj2j0a8_6nLb0EhHaTR01amHCDmh0_JaNF6-j6Iv_Qeb1L4ZsPIB0ZSDqfT4T75u6cizd-VOlc_KwKRlp7xH-kB-SWXY80Pv9mE-nF4bfdoAAwz1Nce2gNOH3B_FfZCgWQBj4_FJkXYYZGhtGCh3kYrFmqgw2j4YyI504pDA6pVmgIywNfDEcRmPY7YSISS8C"/>
+</div>
+<div class="flex-grow flex flex-col gap-xs w-full">
+<div class="flex justify-between items-start">
+<h3 class="font-title-lg text-title-lg text-on-surface leading-tight">Margherita Classica</h3>
+<span class="font-title-lg text-title-lg text-on-surface ml-md">$40.00</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">San Marzano DOP, fresh mozzarella di bufala, basil, extra virgin olive oil.</p>
+<div class="flex justify-between items-center mt-sm">
+<div class="flex items-center gap-md bg-surface-container-low rounded-full px-sm py-xs border border-outline-variant/30">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface hover:text-primary transition-colors bg-white rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="remove">remove</span>
+</button>
+<span class="font-label-md text-label-md text-on-surface min-w-[20px] text-center">2</span>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface hover:text-primary transition-colors bg-white rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors flex items-center gap-xs font-label-md text-label-md p-xs rounded-md hover:bg-error-container/20">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+<span class="hidden sm:inline">Remove</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Add more items button -->
+<button class="flex items-center justify-center gap-sm py-md text-primary font-label-md text-label-md hover:bg-primary-container/10 rounded-xl transition-colors border border-dashed border-primary/30 mt-sm">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                    Add more items from this restaurant
+                </button>
+</div>
+<!-- Right Column: Order Summary (Sticky) -->
+<div class="lg:col-span-4 relative">
+<div class="sticky top-[120px] bg-surface-container-lowest/90 backdrop-blur-2xl border border-white/80 rounded-xl p-xl shadow-[0_12px_40px_-12px_rgba(181,35,48,0.15)] flex flex-col gap-lg">
+<h2 class="font-title-lg text-title-lg text-on-surface border-b border-outline-variant/30 pb-md">Order Summary</h2>
+<div class="flex flex-col gap-sm font-body-md text-body-md text-on-surface-variant">
+<div class="flex justify-between">
+<span>Subtotal</span>
+<span class="text-on-surface font-label-md">$64.00</span>
+</div>
+<div class="flex justify-between">
+<span class="flex items-center gap-xs">Delivery Fee <span class="material-symbols-outlined text-[16px] text-secondary cursor-help" data-icon="info">info</span></span>
+<span class="text-on-surface font-label-md">$3.99</span>
+</div>
+<div class="flex justify-between">
+<span>Taxes &amp; Fees</span>
+<span class="text-on-surface font-label-md">$5.44</span>
+</div>
+</div>
+<hr class="border-t border-outline-variant/30"/>
+<div class="flex justify-between items-center">
+<span class="font-title-lg text-title-lg text-on-surface">Total</span>
+<span class="font-headline-md text-headline-md text-primary tracking-tight">$73.43</span>
+</div>
+<!-- Primary Checkout Button -->
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-md rounded-full shadow-[0_4px_14px_rgba(181,35,48,0.3)] hover:shadow-[0_6px_20px_rgba(181,35,48,0.4)] hover:-translate-y-[1px] active:translate-y-[1px] transition-all duration-200 flex justify-center items-center gap-sm mt-sm">
+<span>Proceed to Checkout</span>
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<p class="text-center font-body-md text-[12px] text-secondary mt-xs">
+                        By proceeding, you agree to our Terms of Service.
+                    </p>
+</div>
+</div>
+</div>
+<!-- EMPTY CART STATE (Hidden by default) -->
+<div class="hidden flex-col items-center justify-center text-center py-xxl gap-lg min-h-[512px]" id="cart-empty">
+<!-- Illustration Placeholder (Using an animated SVG placeholder as a stylized illustration) -->
+<div class="w-64 h-64 rounded-full bg-surface-container flex items-center justify-center relative overflow-hidden shadow-inner border border-white/50">
+
+<!-- Fallback icon overlay if animation is subtle -->
+<span class="material-symbols-outlined text-[80px] text-outline absolute z-10" data-icon="shopping_basket">shopping_basket</span>
+</div>
+<div class="flex flex-col gap-sm max-w-md">
+<h2 class="font-headline-md text-headline-md text-on-surface">Your cart is feeling light</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Good food is always brewing. Explore restaurants near you and start building your next delicious meal.</p>
+</div>
+<button class="bg-surface-container-high text-primary font-label-md text-label-md px-xl py-md rounded-full hover:bg-surface-variant transition-colors border border-outline-variant/50 shadow-sm mt-md">
+                Discover Restaurants
+            </button>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full border-t border-outline-variant/30 bg-surface-container-lowest/80 dark:bg-surface-dim/80 backdrop-blur-md mt-auto">
+<div class="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center py-xxl px-margin gap-lg">
+<!-- Brand -->
+<div class="font-display-lg text-display-lg text-primary text-center md:text-left">
+                ForkFlow
+            </div>
+<!-- Links -->
+<div class="flex flex-wrap justify-center md:justify-end gap-lg">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:opacity-80" href="#">About Us</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:opacity-80" href="#">Partner with Us</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:opacity-80" href="#">Help Center</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:opacity-80" href="#">Privacy Policy</a>
+</div>
+<!-- Copyright -->
+<div class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim text-center w-full md:w-auto mt-lg md:mt-0">
+                © 2024 ForkFlow Inc. All rights reserved.
+            </div>
+</div>
+</footer>
+<script>
+        // Simple script to toggle states for demonstration
+        let isFilled = true;
+        function toggleCartState() {
+            isFilled = !isFilled;
+            document.getElementById('cart-filled').classList.toggle('hidden', !isFilled);
+            document.getElementById('cart-empty').classList.toggle('hidden', isFilled);
+            document.getElementById('cart-empty').classList.toggle('flex', !isFilled);
+        }
+    </script>
+</body></html>

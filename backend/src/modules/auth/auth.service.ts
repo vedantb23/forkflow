@@ -131,7 +131,7 @@ export async function login(
   // password is wrong. Telling the attacker "email exists but wrong password"
   // leaks which emails are registered. So: one vague 401 for both cases.
   if (!user || !user.password_hash) {
-    throw ApiError.unauthorized("Provide email & password");
+    throw ApiError.unauthorized("Invalid email or password");
   }
 
   // 7c) Compare the submitted password against the stored hash (bcrypt re-hashes

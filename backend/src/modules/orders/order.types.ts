@@ -73,3 +73,31 @@ export function validatePlaceOrder(body: unknown): PlaceOrderInput {
     })),
   };
 }
+
+// The valid order statuses (must match the DB order_status enum exactly).
+export const ORDER_STATUSES = [
+  "PENDING",
+  "CONFIRMED",
+  "PREPARING",
+  "OUT_FOR_DELIVERY",
+  "DELIVERED",
+  "CANCELLED",
+] as const;
+export type OrderStatus = (typeof ORDER_STATUSES)[number];
+
+// Input for PATCH /api/orders/:orderId/status — the owner sends the new status.
+export interface UpdateOrderStatusInput {
+  status: OrderStatus;
+}
+
+// Validate PATCH /api/orders/:orderId/status body.
+export function validateUpdateOrderStatus(body: unknown): UpdateOrderStatusInput {
+  if (typeof body !== "object" || body === null)
+    throw ApiError.badRequest("Request body must be a JSON object");
+  const b = body as Record<string, unknown>;
+
+  if (!isNonEmptyString(b.status) || !ORDER_STATUSES.includes(b.status as OrderStatus))
+    throw ApiError.badRequest(`status must be one of: ${ORDER_STATUSES.join(", ")}`);
+
+  return { status: b.status as OrderStatus };
+}

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Live Order Tracking - ForkFlow</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config & Script -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#9df4cb",
+                        "inverse-surface": "#3c2c2b",
+                        "surface-bright": "#fff8f7",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#261817",
+                        "outline-variant": "#e2bebc",
+                        "on-tertiary-fixed": "#002114",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#81d7b0",
+                        "secondary": "#545f73",
+                        "outline": "#8e706f",
+                        "surface-container": "#ffe9e7",
+                        "error-container": "#ffdad6",
+                        "surface": "#fff8f7",
+                        "on-primary-container": "#ffccca",
+                        "secondary-container": "#d5e0f8",
+                        "primary-container": "#b52330",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#92001c",
+                        "primary": "#92001c",
+                        "tertiary": "#005138",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-tertiary-fixed-variant": "#005138",
+                        "surface-container-high": "#fde2e0",
+                        "secondary-fixed": "#d8e3fb",
+                        "surface-variant": "#f7ddda",
+                        "surface-container-highest": "#f7ddda",
+                        "on-tertiary-container": "#93eac2",
+                        "on-surface-variant": "#5a403f",
+                        "surface-tint": "#b52330",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#ffedeb",
+                        "on-secondary-container": "#586377",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "tertiary-container": "#006c4c",
+                        "inverse-primary": "#ffb3b1",
+                        "on-primary-fixed": "#410007",
+                        "background": "#fff8f7",
+                        "surface-dim": "#eed4d2",
+                        "surface-container-low": "#fff0ef",
+                        "primary-fixed": "#ffdad8",
+                        "on-background": "#261817"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin": "24px",
+                        "xxl": "48px",
+                        "xl": "32px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "display-lg-mobile": ["Inter", "sans-serif"],
+                        "title-lg": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "title-lg": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Map marker pulse animation */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background-color: theme('colors.primary');
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        /* Route line animation */
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+        .route-line {
+            stroke-dasharray: 10;
+            stroke-dashoffset: 100;
+            animation: dash 3s linear forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl text-primary dark:text-primary-fixed-dim fixed top-0 w-full z-50 border-b border-white/40 dark:border-white/10 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<div class="max-w-[1280px] mx-auto flex justify-between items-center px-margin py-md">
+<a class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed-dim tracking-tight" href="#">ForkFlow</a>
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 px-sm py-xs rounded-full" href="#">Discover</a>
+<a class="font-label-md text-label-md text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 px-sm py-xs rounded-full scale-95 transition-transform duration-200" href="#">Orders</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-colors hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 px-sm py-xs rounded-full" href="#">Offers</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="p-sm rounded-full hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 text-primary dark:text-primary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="p-sm rounded-full hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300 text-primary dark:text-primary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-[88px] relative">
+<!-- Map Panel (Hero Section) -->
+<div class="relative w-full h-[512px] min-h-[400px] bg-surface-container-high overflow-hidden" data-location="Chicago" style="">
+<!-- Simulated Map Image Placeholder -->
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="A detailed, modern top-down map interface showing a city grid. The map style is warm and minimal, using off-whites, light corals, and subtle rose-tinted roads to fit a light-mode, premium hospitality aesthetic. The lighting is soft and flat, emphasizing clarity and elegant design over stark realism. Parks are a muted sage green, and water is a soft pale grey-blue." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBbGpTu_3omu7NMpLFDVm6OpH1ZXF8Z5jM1K85Lyj_4Urg4An4E4CO9KHKTlDfQ90lbim5C90oUhQtRAkcndULwOr0soeRVlv_JMUECt9F5-lIbYtJa1rTBUdRWEJ54vhADx0H-q1is8n2YS-qqcoEPZIpFrdbsifMkqyD-2-9zndRBoRl9Ngx__nOeIBNQkmkdPdQiOPWwor-kqyy6lUbmacOJSSkGFr8DngNbD8wQbYqL384Irf_79SnGV4nxtB-LBFzLFCQ450dq')"></div>
+<!-- Map Overlay Effects (Glassmorphism edges) -->
+<div class="absolute inset-0 bg-gradient-to-b from-surface/40 via-transparent to-background"></div>
+<!-- Simulated Route & Marker Container -->
+<div class="absolute inset-0 z-10 flex items-center justify-center">
+<!-- SVG Route Line -->
+<svg class="absolute w-full h-full opacity-60" preserveaspectratio="none">
+<path class="route-line" d="M 30% 70% Q 50% 50% 60% 40% T 70% 25%" fill="none" stroke="#b52330" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<!-- Destination Marker (Restaurant) -->
+<div class="absolute top-[70%] left-[30%] -translate-x-1/2 -translate-y-1/2 bg-surface text-on-surface p-sm rounded-full shadow-[0_4px_16px_0_rgba(181,35,48,0.15)] border border-outline-variant/50">
+<span class="material-symbols-outlined text-outline" data-icon="storefront">storefront</span>
+</div>
+<!-- Driver Marker (Pulsing) -->
+<div class="absolute top-[40%] left-[60%] -translate-x-1/2 -translate-y-1/2 relative pulse-ring flex items-center justify-center">
+<div class="bg-primary text-on-primary p-sm rounded-full shadow-[0_8px_24px_0_rgba(181,35,48,0.4)] z-10 relative">
+<span class="material-symbols-outlined fill" data-icon="two_wheeler">two_wheeler</span>
+</div>
+</div>
+<!-- ETA Floating Badge -->
+<div class="absolute top-[35%] left-[65%] bg-surface/90 backdrop-blur-md px-md py-sm rounded-full shadow-lg border border-white/50 text-center">
+<span class="font-headline-md text-headline-md text-primary block">12 min</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Arriving by 7:42 PM</span>
+</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="max-w-[1280px] mx-auto px-margin relative z-20 -mt-xl pb-xxl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Status Timeline & Driver Info -->
+<div class="lg:col-span-7 flex flex-col gap-lg">
+<!-- Driver Profile Card -->
+<div class="bg-surface/80 backdrop-blur-xl rounded-xl p-lg border border-white/60 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] flex items-center justify-between">
+<div class="flex items-center gap-md">
+<img class="w-16 h-16 rounded-full object-cover border-2 border-surface-container-high" data-alt="A highly detailed, professional headshot portrait of a friendly delivery driver. The person has a warm, welcoming smile and is wearing casual, modern attire suitable for urban delivery. The lighting is soft, studio-quality, creating a bright and airy light-mode aesthetic. The background is a beautifully blurred, warm coral and neutral gradient that perfectly matches the high-end UI color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9Gsi8FNb9zTG7dIh-WYly65TWWr-EEkOd_hh3k0Gj6t85VPFJZdrfAgBSyPmfjeS6hmlUZVJSeZ-RvopQGtv-iv1p1qSIm9_RcsW6iJ5ZyjWDzKSY8OBKrjvddL7TLojDHiFnulj8pf8yORvWV9wxZY6ZGvgCRZhWycfyhHtIiZvz-wta-9oNkksx9HWY7uw6qsuczvbjJgVupUYrigjt0X56BVsk0Xpps5JAz90l4LsZxkapwuh2PM91bI1N3fzy2Z0lA6ITp3Gz"/>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Alex M.</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-lg" data-icon="star">star</span>
+                                    4.9 • Honda Civic
+                                </p>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="w-12 h-12 rounded-full bg-surface-container-high hover:bg-surface-variant flex items-center justify-center text-primary transition-colors shadow-sm border border-outline-variant/30">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-primary hover:bg-primary-fixed-variant flex items-center justify-center text-on-primary transition-colors shadow-sm">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</button>
+</div>
+</div>
+<!-- Status Timeline Card -->
+<div class="bg-surface/80 backdrop-blur-xl rounded-xl p-lg border border-white/60 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)]">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-xl">Tracking Status</h2>
+<div class="relative pl-sm">
+<!-- Vertical Track Line -->
+<div class="absolute left-[19px] top-2 bottom-6 w-[2px] bg-outline-variant/40 rounded-full"></div>
+<!-- Steps Container -->
+<div class="flex flex-col gap-xl">
+<!-- Step 1: Placed (Completed) -->
+<div class="relative flex items-start gap-md group">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-primary flex items-center justify-center z-10 border-2 border-surface shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="check">check</span>
+</div>
+<div class="pt-1">
+<p class="font-label-md text-label-md text-on-surface">Order Placed</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-xs">7:02 PM • Awaiting confirmation</p>
+</div>
+</div>
+<!-- Step 2: Confirmed (Completed) -->
+<div class="relative flex items-start gap-md group">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-primary flex items-center justify-center z-10 border-2 border-surface shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="check">check</span>
+</div>
+<div class="pt-1">
+<p class="font-label-md text-label-md text-on-surface">Order Confirmed</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-xs">7:05 PM • Kitchen accepted order</p>
+</div>
+</div>
+<!-- Step 3: Preparing (Completed) -->
+<div class="relative flex items-start gap-md group">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-primary flex items-center justify-center z-10 border-2 border-surface shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="check">check</span>
+</div>
+<div class="pt-1">
+<p class="font-label-md text-label-md text-on-surface">Preparing</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-xs">7:10 PM • Chef is preparing your meal</p>
+</div>
+</div>
+<!-- Step 4: Out for Delivery (Active) -->
+<div class="relative flex items-start gap-md group">
+<div class="absolute left-[3px] top-0 bottom-0 w-[2px] bg-primary rounded-full z-0 h-[120%] -translate-y-2"></div> <!-- Active segment line -->
+<div class="relative w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center z-10 border-4 border-surface shadow-[0_0_0_4px_rgba(181,35,48,0.2)]">
+<span class="material-symbols-outlined text-sm fill" data-icon="directions_bike">directions_bike</span>
+<!-- Pulsing effect for active state -->
+<div class="absolute inset-0 rounded-full border-2 border-primary animate-ping opacity-75"></div>
+</div>
+<div class="pt-1 bg-surface-container-low rounded-lg p-md -mt-md flex-grow border border-outline-variant/30 shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<p class="font-label-md text-label-md text-primary">Out for Delivery</p>
+<p class="font-body-md text-body-md text-on-surface mt-xs">Alex is on the way with your order.</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-xs">Heading south on Main St.</p>
+</div>
+</div>
+<!-- Step 5: Delivered (Pending) -->
+<div class="relative flex items-start gap-md opacity-50 mt-md">
+<div class="w-8 h-8 rounded-full bg-surface text-outline flex items-center justify-center z-10 border-2 border-outline-variant">
+<span class="material-symbols-outlined text-sm" data-icon="home">home</span>
+</div>
+<div class="pt-1">
+<p class="font-label-md text-label-md text-on-surface">Delivered</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-xs">Estimated 7:42 PM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Receipt Details -->
+<div class="lg:col-span-5 flex flex-col gap-lg">
+<div class="bg-surface/90 backdrop-blur-xl rounded-xl p-lg border border-white/60 shadow-[0_8px_32px_0_rgba(181,35,48,0.08)] sticky top-[120px]">
+<!-- Header -->
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-md mb-md">
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Osteria Bella</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-xs">Order #FF-8924</p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A beautifully styled, high-end food photograph of an artisan Italian pasta dish. The plate sits on a minimalist, warm wooden table. The lighting is soft and natural, emphasizing the rich coral tomato sauce and fresh basil. The overall mood is appetizing, warm, and sophisticated, aligning perfectly with a premium light-mode culinary brand aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArgLW1Wblv6NTrvwGjzyBFN-sdTH_Fac01wLxs1c0KfqRpYMwtNrAGMDDksPc2x6QlzrEgioc6k9UKFSIrqON37a99aUCpeTxYxVF8QWxWq1Cwmsu7snXy_6S5bL5i0XDFvMsVbB9yN32N9HqYL0WIOHroWvuf8Evvg5MehGEspOaERpvPfCRUw7kdpE2mvsnmBWeF7wJv8VJOcJ63nGlfZHHPAvDd7pDipX6iIvX-CU9jhxDti4M3Ff7YFeWN74O68dUcioovsPg_"/>
+</div>
+</div>
+<!-- Items List -->
+<div class="flex flex-col gap-sm border-b border-outline-variant/40 pb-md mb-md">
+<div class="flex justify-between items-start">
+<div class="flex gap-sm">
+<span class="bg-surface-variant text-on-surface-variant px-2 py-1 rounded-md font-label-md text-xs">1x</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Truffle Pappardelle</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-xs">Extra parmesan</p>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface">$28.00</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex gap-sm">
+<span class="bg-surface-variant text-on-surface-variant px-2 py-1 rounded-md font-label-md text-xs">2x</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Burrata Caprese</p>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface">$32.00</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex gap-sm">
+<span class="bg-surface-variant text-on-surface-variant px-2 py-1 rounded-md font-label-md text-xs">1x</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">San Pellegrino (Large)</p>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface">$7.50</span>
+</div>
+</div>
+<!-- Subtotals -->
+<div class="flex flex-col gap-xs border-b border-outline-variant/40 pb-md mb-md font-body-md text-body-md text-on-surface-variant">
+<div class="flex justify-between">
+<span>Subtotal</span>
+<span>$67.50</span>
+</div>
+<div class="flex justify-between">
+<span>Delivery Fee</span>
+<span>$2.99</span>
+</div>
+<div class="flex justify-between">
+<span>Service Fee</span>
+<span>$4.05</span>
+</div>
+<div class="flex justify-between text-primary">
+<span>Courier Tip</span>
+<span>$10.00</span>
+</div>
+</div>
+<!-- Total -->
+<div class="flex justify-between items-center mt-sm">
+<span class="font-title-lg text-title-lg text-on-surface">Total</span>
+<span class="font-headline-md text-headline-md text-on-surface">$84.54</span>
+</div>
+<div class="mt-lg">
+<button class="w-full bg-surface border border-outline-variant hover:bg-surface-variant text-on-surface font-label-md text-label-md py-md rounded-lg transition-colors shadow-sm flex justify-center items-center gap-sm">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+                                Download Receipt
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest/80 dark:bg-surface-dim/80 backdrop-blur-md text-secondary dark:text-secondary-fixed-dim w-full border-t border-outline-variant/30 mt-auto">
+<div class="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center py-xxl px-margin font-body-md text-body-md">
+<div class="font-display-lg text-display-lg text-primary mb-md md:mb-0">ForkFlow</div>
+<nav class="flex flex-wrap justify-center gap-gutter mb-md md:mb-0">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:opacity-80 transition-opacity" href="#">About Us</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:opacity-80 transition-opacity" href="#">Partner with Us</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:opacity-80 transition-opacity" href="#">Help Center</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:opacity-80 transition-opacity" href="#">Privacy Policy</a>
+</nav>
+<div class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim text-center md:text-right">
+                © 2024 ForkFlow Inc. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

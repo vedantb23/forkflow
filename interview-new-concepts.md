@@ -12,3 +12,4 @@ This is exactly the problem Redis Pub/Sub solves, and it's a great interview tal
 
 # the worker (separate process) can't touch the API's in-memory io. The Redis adapter routes room messages through Pub/Sub, so when the worker publishes an emit (Piece 3), the API process that holds the browser's connection delivers it. That's also what makes it horizontally scalable.
 
+#  RATE LIMITNG SLIDING WINDOWS

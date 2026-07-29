@@ -1,0 +1,43 @@
+Goal: one clean UI = Antigravity's Stitch design, correctly wired to the real backend contracts, with the dead old pages removed.
+
+A. Backend — 3 tiny additions (you'll run the commands, per your rules)
+
+1. GET /api/orders/restaurant/:restaurantId — owner's incoming-orders feed (KDS). New handler + service, ownership-checked.
+2. PATCH /api/orders/:orderId/status — owner advances an order (PENDING→PREPARING→…), emits order:status_updated. New handler + service.
+3. GET /api/delivery/available — DELIVERY role lists unassigned deliverable orders. New handler + service.
+
+Each with your learner-friendly step comments.
+
+B. Frontend — fix the wiring in the pretty pages
+
+┌──────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│         File         │                                                              Fix                                                              │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ page.tsx (Home)      │ unwrap {restaurants}                                                                                                          │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ restaurants/[id]     │ unwrap {restaurant}; menu from /menu/:id → {items}                                                                            │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ orders/[id]          │ use the correct order:join event (or the existing useOrderTracking hook)                                                      │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ dashboard/restaurant │ point at new /orders/restaurant/:id + /orders/:id/status; listen for order:new; get owner's restaurant id via                 │
+│                      │ /restaurants/mine                                                                                                             │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ dashboard/delivery   │ point at /delivery/available + real /delivery/:id/status (PICKED_UP/DELIVERED)                                                │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ checkout             │ fix the order-id extraction from {order,items}                                                                                │
+└──────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+C. Cleanup
+
+- Delete Navbar.tsx, app/dashboard/page.tsx, app/delivery/page.tsx.
+- Keep app/orders/page.tsx (customer history) but restyle it to the new design + fix its /orders shape.
+
+Let me start. I'll track it with a todo list and begin with the backend files.
+
+✻ API error · Retrying in 0s · attempt 2/10
+◻ Backend: owner order feed + status routes
+◻ Backend: delivery available list route
+◻ Frontend: fix response-shape wiring
+◻ Frontend: fix socket + dashboard endpoints
+◻ Cleanup: delete superseded old pages
+ … +1 pending

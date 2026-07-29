@@ -5,6 +5,13 @@ import * as deliveryService from "./delivery.service";
 import { sendSuccess } from "../../utils/apiResponse";
 import { ApiError } from "../../utils/apiError";
 
+// GET /api/delivery/available — the partner's job feed (orders ready to carry).
+// DELIVERY role only (enforced in the route).
+export async function getAvailableDeliveriesHandler(_req: Request, res: Response) {
+  const orders = await deliveryService.getAvailableDeliveries();
+  return sendSuccess(res, { orders }, "Available deliveries");
+}
+
 // GET /api/delivery/:orderId — get the assignment for an order.
 // Accessible by the customer, the assigned partner, owner, or admin.
 export async function getAssignmentHandler(req: Request, res: Response) {
@@ -18,6 +25,17 @@ export async function assignPartnerHandler(req: Request, res: Response) {
   const { order_id, partner_id } = req.body as { order_id: string; partner_id: string };
   const assignment = await deliveryService.assignPartner(order_id, partner_id);
   return sendSuccess(res, { assignment }, "Partner assigned", 201);
+}
+
+// POST /api/delivery/:orderId/claim — a partner claims an available order.
+// DELIVERY role only.
+export async function claimDeliveryHandler(req: Request, res: Response) {
+  if (!req.user) throw ApiError.unauthorized("Not authenticated");
+  const assignment = await deliveryService.claimDelivery(
+    req.params.orderId as string,
+    req.user.sub
+  );
+  return sendSuccess(res, { assignment }, "Trip claimed", 201);
 }
 
 // PATCH /api/delivery/:orderId/status — partner updates their delivery status.

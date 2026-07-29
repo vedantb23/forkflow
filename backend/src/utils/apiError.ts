@@ -38,4 +38,9 @@ export class ApiError extends Error {
   static conflict(message = "Conflict") {
     return new ApiError(409, message);
   }
+  // 500 = the server broke or is misconfigured (not the client's fault).
+  // isOperational stays true: it's an error we anticipated and format cleanly.
+  static internal(message = "Internal server error") {
+    return new ApiError(500, message);
+  }
 }

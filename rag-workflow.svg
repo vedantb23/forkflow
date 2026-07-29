@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="1000" height="600" fill="#0f172a" rx="16"/>
+  
+  <!-- Title -->
+  <text x="500" y="50" font-family="sans-serif" font-size="28" font-weight="bold" fill="#f97316" text-anchor="middle">ForkFlow RAG Concierge Workflow</text>
+  
+  <!-- User Query Node -->
+  <g transform="translate(50, 100)">
+    <rect width="200" height="80" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="2"/>
+    <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">1. User Query</text>
+    <text x="100" y="55" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">"Spicy veg under ₹300"</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M 250 140 L 330 140" stroke="#f97316" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Embedding Node -->
+  <g transform="translate(350, 100)">
+    <rect width="200" height="80" rx="12" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+    <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">2. Embedding Model</text>
+    <text x="100" y="55" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">HuggingFace MiniLM</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M 550 140 L 630 140" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Vector DB Node -->
+  <g transform="translate(650, 100)">
+    <rect width="200" height="80" rx="12" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+    <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">3. Vector Search</text>
+    <text x="100" y="55" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">Supabase pgvector</text>
+  </g>
+
+  <!-- Arrow Down -->
+  <path d="M 750 180 L 750 250" stroke="#10b981" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Retrieved Context Node -->
+  <g transform="translate(650, 270)">
+    <rect width="200" height="80" rx="12" fill="#1e293b" stroke="#eab308" stroke-width="2"/>
+    <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">4. Top Context</text>
+    <text x="100" y="55" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">Top 5 matching dishes</text>
+  </g>
+
+  <!-- Arrow Left -->
+  <path d="M 650 310 L 550 310" stroke="#eab308" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Prompt Assembly Node -->
+  <g transform="translate(350, 270)">
+    <rect width="200" height="80" rx="12" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+    <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">5. Prompt Assembly</text>
+    <text x="100" y="55" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">Combine context + query</text>
+  </g>
+
+  <!-- Arrow Down -->
+  <path d="M 450 350 L 450 430" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- LLM Generation Node -->
+  <g transform="translate(350, 450)">
+    <rect width="200" height="80" rx="12" fill="#1e293b" stroke="#ec4899" stroke-width="2"/>
+    <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">6. LLM Generation</text>
+    <text x="100" y="55" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">Groq llama-3.3-70b</text>
+  </g>
+
+  <!-- Arrow Left -->
+  <path d="M 350 490 L 250 490" stroke="#ec4899" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Final Output Node -->
+  <g transform="translate(50, 450)">
+    <rect width="200" height="80" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="2"/>
+    <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f1f5f9" text-anchor="middle">7. Result to User</text>
+    <text x="100" y="55" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">Response + UI Cards</text>
+  </g>
+
+  <!-- Arrow Definition -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="context-stroke" />
+    </marker>
+  </defs>
+</svg>
