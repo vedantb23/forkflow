@@ -29,9 +29,13 @@ async function processOrderJob(job: Job<OrderJobData>): Promise<void> {
   const { orderId } = job.data;
   logger.info({ orderId, jobId: job.id }, "order.worker: processing");
 
-  // Step 1 — load the order. If it's gone, nothing to do (don't retry forever).
-  const orders = await query<{ id: string; user_id: string; status: string; total_amount: string }>(
-    "SELECT id, user_id, status, total_amount FROM orders WHERE id = $1",
+  // Step 1 — load the order. Join with the users table to get the real email.
+  // If it's gone, nothing to do (don't retry forever).
+  const orders = await query<{ id: string; user_id: string; status: string; total_amount: string; email: string }>(
+    `SELECT o.id, o.user_id, o.status, o.total_amount, u.email 
+     FROM orders o 
+     JOIN users u ON o.user_id = u.id 
+     WHERE o.id = $1`,
     [orderId]
   );
   if (orders.length === 0) {
@@ -68,7 +72,7 @@ async function processOrderJob(job: Job<OrderJobData>): Promise<void> {
   // Step 5 — fan out to the email + notification queues. These run in their own
   // workers, so a slow mail server never blocks order processing.
   await emailQueue.add("order-confirmation", {
-    to: `user-${order.user_id}@example.com`, // Day 6 will join users table for the real email
+    to: order.email, // Fetched securely from the DB join above
     subject: `Your ForkFlow order is confirmed! 🍽️`,
     text: `Order ${orderId} is confirmed and payment received. The restaurant will start preparing it soon. Total: ₹${order.total_amount}.`,
   });
