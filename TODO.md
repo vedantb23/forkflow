@@ -272,9 +272,9 @@
 - [x] Verify: "spicy veg under ₹200 ready in 30 min" returns sensible dishes with an explanation
 
 ### Polish & docs
-- [ ] Expand `db/seed.ts` to a rich demo dataset (multiple cuisines) and re-ingest embeddings
-- [ ] `Dockerfile`, `Dockerfile.worker`, `frontend/Dockerfile`; finalize `docker-compose.yml` (backend + worker + redis; Supabase is remote)
-- [ ] `.github/workflows/ci.yml` — lint + typecheck + build
+- [x] Expand `db/seed.ts` to a rich demo dataset (multiple cuisines) and re-ingest embeddings
+- [x] `Dockerfile`, `Dockerfile.worker`, `frontend/Dockerfile`; finalize `docker-compose.yml` (backend + worker + redis; Supabase is remote)
+- [x] `.github/workflows/ci.yml` — lint + typecheck + build
 - [ ] README final pass: architecture diagram accurate, screenshots/GIF of live tracking + RAG search
 - [ ] Record 2-minute demo video
 - [ ] Deploy: frontend → Vercel, backend + worker → Railway/Render, Redis → Upstash, DB stays Supabase

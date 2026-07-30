@@ -65,6 +65,21 @@ export default function RestaurantMenu({ params }: { params: Promise<{ id: strin
             }}
           ></div>
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
+          
+          {/* The hanging sign (Large) */}
+          <div className="absolute top-0 right-8 md:right-24 z-20 animate-swing flex flex-col items-center drop-shadow-2xl">
+            <div className="flex justify-between w-16 md:w-20 px-2">
+              <div className="w-[2px] h-8 md:h-12 bg-white/70 shadow-sm"></div>
+              <div className="w-[2px] h-8 md:h-12 bg-white/70 shadow-sm"></div>
+            </div>
+            <div className={`px-4 md:px-6 py-1 md:py-2 rounded-md text-white font-black text-xs md:text-lg tracking-widest border-b-[4px] shadow-lg ${
+              restaurant.is_open 
+                ? 'bg-emerald-500 border-emerald-700' 
+                : 'bg-rose-500 border-rose-700'
+            }`}>
+              {restaurant.is_open ? 'OPEN' : 'CLOSED'}
+            </div>
+          </div>
         </div>
 
         {/* Restaurant Info Container */}
@@ -82,7 +97,7 @@ export default function RestaurantMenu({ params }: { params: Promise<{ id: strin
                 </h1>
                 <p className="font-body-md text-[16px] text-on-surface-variant flex items-center gap-[8px]">
                   <span className="material-symbols-outlined text-[18px]">location_on</span>
-                  {restaurant.address || "123 Premium Ave"}
+                  {restaurant.address || "Address"}
                 </p>
                 {restaurant.description && (
                   <p className="font-body-md text-[14px] text-on-surface-variant mt-2 max-w-2xl">{restaurant.description}</p>

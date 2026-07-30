@@ -1,19 +1,51 @@
-# docker-compose.yml
-# A "recipe" file. Each service below is a container Docker will run for us.
-# For now we only run Redis locally. (Postgres is on Supabase in the cloud.)
-# We'll add backend + worker containers here on Day 7.
+version: '3.8'
 
 services:
-  # -------- Redis: in-memory store used for cache, locks, and BullMQ queues --------
   redis:
-    image: redis:7-alpine          # official Redis image, "alpine" = tiny Linux base
-    container_name: forkflow-redis # a friendly name so `docker ps` is readable
+    image: redis:7-alpine
+    container_name: forkflow-redis
     ports:
-      - "6379:6379"                # map container port 6379 -> your PC's port 6379
+      - "6379:6379"
     volumes:
-      - redis_data:/data           # persist Redis data on disk so it survives restarts
-    restart: unless-stopped        # auto-restart the container if it crashes
+      - redis_data:/data
+    restart: unless-stopped
 
-# Named volume where Redis stores its data (managed by Docker)
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: forkflow-api
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+    container_name: forkflow-worker
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: forkflow-frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env.local
+    depends_on:
+      - api
+    restart: unless-stopped
+
 volumes:
   redis_data:

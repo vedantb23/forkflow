@@ -8,6 +8,7 @@
 
 import { query } from "../../config/db";
 import { ApiError } from "../../utils/apiError";
+import { ingestQueue } from "../../queues";
 import { getCachedMenu, setCachedMenu, invalidateMenu } from "./menu.cache";
 import type {
   MenuItemRow,
@@ -79,6 +80,13 @@ export async function createMenuItem(
     ]
   );
   await invalidateMenu(restaurantId); // menu changed → bust this restaurant's cache
+  
+  // Trigger background embedding ingestion
+  ingestQueue.add("ingest", { menuItemId: rows[0].id }).catch((err) => {
+    // We log but don't fail the request if Redis is temporarily hiccuping
+    // logger.error({ err }, "Failed to queue ingest job");
+  });
+  
   return rows[0];
 }
 
@@ -131,6 +139,10 @@ export async function updateMenuItem(
     throw ApiError.notFound("Menu item not found (or you don't own it)");
   }
   await invalidateMenu(rows[0].restaurant_id);
+  
+  // Trigger background embedding ingestion (since name, description, price, etc might have changed)
+  ingestQueue.add("ingest", { menuItemId: rows[0].id }).catch(() => {});
+  
   return rows[0];
 }
 

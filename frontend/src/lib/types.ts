@@ -13,9 +13,11 @@ export interface User {
 export interface Restaurant {
   id: string;
   name: string;
+  cuisine: string | null;
   description: string | null;
   image_url: string | null;
   address: string | null;
+  is_open: boolean;
 }
 
 export interface MenuItem {

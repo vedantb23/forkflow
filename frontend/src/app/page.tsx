@@ -102,6 +102,20 @@ export default function Home() {
                         }
                         alt={restaurant.name}
                       />
+                      {/* The hanging sign */}
+                      <div className="absolute top-0 right-6 z-10 animate-swing flex flex-col items-center drop-shadow-lg">
+                        <div className="flex justify-between w-10 px-1">
+                          <div className="w-[1.5px] h-4 bg-white/70 shadow-sm"></div>
+                          <div className="w-[1.5px] h-4 bg-white/70 shadow-sm"></div>
+                        </div>
+                        <div className={`px-3 py-[4px] rounded-sm text-white font-bold text-[10px] tracking-wider border-b-[3px] shadow-sm ${
+                          restaurant.is_open 
+                            ? 'bg-emerald-500 border-emerald-700' 
+                            : 'bg-rose-500 border-rose-700'
+                        }`}>
+                          {restaurant.is_open ? 'OPEN' : 'CLOSED'}
+                        </div>
+                      </div>
                     </div>
                     <div className="p-[16px]">
                       <div className="flex justify-between items-start mb-2">
@@ -120,12 +134,12 @@ export default function Home() {
                           </span>
                         </div>
                       </div>
-                      <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="flex flex-wrap items-center gap-2 mb-4">
                         <span className="font-label-md text-[12px] text-on-surface-variant bg-surface-container px-2 py-1 rounded-sm">
-                          {restaurant.description || "Premium Cuisine"}
+                          {restaurant.cuisine || "Premium Cuisine"}
                         </span>
-                        <span className="font-label-md text-[12px] text-on-surface-variant bg-surface-container px-2 py-1 rounded-sm">
-                          ₹₹
+                        <span className="font-label-md text-[12px] text-on-surface-variant bg-surface-container px-2 py-1 rounded-sm line-clamp-1 flex-1 text-ellipsis overflow-hidden">
+                          {restaurant.description}
                         </span>
                       </div>
                       <div className="flex items-center gap-4 text-on-surface-variant border-t border-outline-variant/30 pt-3">

@@ -9,3 +9,6 @@ export type { EmailJobData } from "./email.queue";
 
 export { notificationQueue } from "./notification.queue";
 export type { NotificationJobData } from "./notification.queue";
+
+export { ingestQueue } from "./ingest.queue";
+export type { IngestJobData } from "./ingest.queue";

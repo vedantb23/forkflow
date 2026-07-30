@@ -6,7 +6,7 @@ export function Footer() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-[40px] px-[20px] md:px-[48px] max-w-[1440px] mx-auto">
         <div>
           <div className="font-headline-md text-[24px] text-primary mb-[16px]">ForkFlow</div>
-          <p className="font-label-sm text-[12px] text-on-surface-variant">© 2024 ForkFlow Inc. Premium Delivery Services.</p>
+          <p className="font-label-sm text-[12px] text-on-surface-variant">© 2026 ForkFlow Inc. Premium Delivery Services.</p>
         </div>
         <div className="flex flex-col gap-[16px]">
           <Link href="/dashboard/restaurant" className="font-label-sm text-[12px] text-on-surface-variant hover:text-primary hover:underline transition-all opacity-80 hover:opacity-100">Become a Partner</Link>

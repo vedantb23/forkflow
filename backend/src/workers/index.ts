@@ -17,10 +17,11 @@ import { redis } from "../config/redis";
 import { orderWorker } from "./order.worker";
 import { emailWorker } from "./email.worker";
 import { notificationWorker } from "./notification.worker";
+import { ingestWorker } from "./ingest.worker";
 import { startCleanupJob, cleanupWorker } from "../jobs/cleanup.job";
 
 logger.info("👷 ForkFlow worker process starting...");
-logger.info(`   Listening on queues: order, email, notification, cleanup`);
+logger.info(`   Listening on queues: order, email, notification, ingest, cleanup`);
 
 // Register the repeatable cleanup job (expire stale carts / abandoned slot holds).
 startCleanupJob().catch((err) => logger.error({ err }, "failed to schedule cleanup job"));
@@ -32,6 +33,7 @@ async function shutdown(signal: string) {
     orderWorker.close(),
     emailWorker.close(),
     notificationWorker.close(),
+    ingestWorker.close(),
     cleanupWorker.close(),
   ]);
   await redis.quit();

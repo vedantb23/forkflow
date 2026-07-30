@@ -202,11 +202,20 @@
   50% { transform: scale(0.98); }
   100% { transform: scale(1); }
 }
+@keyframes swing {
+  0% { transform: rotate(3deg); }
+  50% { transform: rotate(-3deg); }
+  100% { transform: rotate(3deg); }
+}
 
 @utility animate-fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 @utility animate-fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
 @utility tracker-pulse { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
 @utility order-pulse { animation: pulse-border 2s infinite; }
+@utility animate-swing { 
+  animation: swing 3.5s ease-in-out infinite; 
+  transform-origin: top center; 
+}
 @utility delay-100 { animation-delay: 100ms; }
 @utility delay-200 { animation-delay: 200ms; }
 @utility delay-300 { animation-delay: 300ms; }
