@@ -19,6 +19,16 @@ import { logger } from "../../config/logger";
 export function registerDeliveryHandlers(io: Server, socket: Socket): void {
   const user = socket.data.user; // { sub, role }
 
+  // Step 2.5 — Delivery dashboard joins the "delivery_partners" room to get live feed updates.
+  socket.on(CLIENT_EVENTS.JOIN_DELIVERY, () => {
+    if (user.role !== "DELIVERY" && user.role !== "ADMIN") {
+      socket.emit("error", { message: "Only delivery partners can join this room" });
+      return;
+    }
+    socket.join("delivery_partners");
+    logger.debug({ userId: user.sub }, "delivery.handler: joined delivery_partners room");
+  });
+
   // Step 3 — a delivery partner pushes a new GPS position.
   // Payload: { orderId, lat, lng }.
   socket.on(

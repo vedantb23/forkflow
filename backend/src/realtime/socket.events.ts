@@ -35,4 +35,7 @@ export const CLIENT_EVENTS = {
   // Delivery partner app → push a new GPS position while driving.
   // Payload: { orderId, lat, lng }.
   SEND_LOCATION: "delivery:send_location",
+
+  // Delivery partner dashboard → join the general delivery room for new orders.
+  JOIN_DELIVERY: "delivery:join",
 } as const;

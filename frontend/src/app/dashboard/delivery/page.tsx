@@ -52,10 +52,16 @@ export default function DeliveryDashboard() {
 
   useEffect(() => {
     const socket = getSocket();
+    
+    // Join the delivery room to listen for new available orders
+    socket.emit("delivery:join");
+
     const onStatus = () => {
       queryClient.invalidateQueries({ queryKey: ["delivery-orders"] });
     };
+    
     socket.on("order:status_updated", onStatus);
+    
     return () => {
       socket.off("order:status_updated", onStatus);
     };

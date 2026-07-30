@@ -102,6 +102,14 @@ export async function updateOrderStatus(
   getIo()
     .to(`order:${orderId}`)
     .emit(SERVER_EVENTS.ORDER_STATUS_UPDATED, { orderId, status });
+
+  if (status === "PREPARING") {
+    // Tell delivery partners a new order is available to claim
+    getIo()
+      .to("delivery_partners")
+      .emit(SERVER_EVENTS.ORDER_STATUS_UPDATED, { orderId, status });
+  }
+
   logger.info({ orderId, status }, "orders: status updated by owner (emitted live)");
 
   // 2c-iii) Return the full view so the dashboard can update its cache in place.
