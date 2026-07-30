@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "start:worker": "node dist/workers/index.js",
+    "start:all": "node dist/server.js & node dist/workers/index.js",
     "db:migrate": "tsx db/migrate.ts",
     "db:seed": "tsx db/seed.ts"
   },
