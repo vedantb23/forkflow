@@ -1,5 +1,5 @@
 import { ChatGroq } from "@langchain/groq";
-import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
+import { HumanMessage, SystemMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import { pool } from "../../config/db";
 import { embeddings } from "./rag.embeddings";
 import { env } from "../../config/env";
@@ -56,7 +56,7 @@ export async function performSearch(query: string, history?: { role: string, con
     }).join("\n");
 
     // 4. Ask the LLM to formulate an answer
-    const messages = [
+    const messages: BaseMessage[] = [
       new SystemMessage(`You are the ForkFlow AI Assistant, helping a user find food to order.
 Use the following menu items retrieved from our database to answer the user's query.
 If the user asks for something not in the context, politely say you couldn't find an exact match but suggest the closest options from the context.
