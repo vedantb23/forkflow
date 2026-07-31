@@ -23,7 +23,7 @@ export const bullConnection: ConnectionOptions = {
   host: url.hostname, // e.g. "localhost"
   port: Number(url.port) || 6379, // e.g. 6379
   password: url.password || undefined,
-  tls: url.protocol === "rediss:" ? {} : undefined,
+  tls: url.protocol === "rediss:" ? { rejectUnauthorized: false } : undefined,
   // BullMQ REQUIRES this — it means "never give up on a command", which is the
   // behavior a queue needs (a worker blocking on the next job must not time out).
   maxRetriesPerRequest: null,

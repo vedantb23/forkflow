@@ -49,6 +49,8 @@ export function initSocket(httpServer: HttpServer): Server {
   //     `subClient` listens for them. The adapter uses both under the hood.
   const pubClient = redis.duplicate(); // for publishing room messages
   const subClient = redis.duplicate(); // for subscribing to them
+  pubClient.on("error", (err) => logger.error({ err }, "Redis pubClient error"));
+  subClient.on("error", (err) => logger.error({ err }, "Redis subClient error"));
   io.adapter(createAdapter(pubClient, subClient));
   logger.info("🔌 Socket.io Redis adapter attached (Pub/Sub across processes)");
 

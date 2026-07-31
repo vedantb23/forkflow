@@ -15,10 +15,10 @@ import { logger } from "./logger"; // shared logger
 // Step 2 — create the client by pointing it at REDIS_URL.
 // ioredis opens the connection automatically as soon as the client is created.
 export const redis = new Redis(env.REDIS_URL, {
-  // maxRetriesPerRequest: null is required by BullMQ (Day 5). It means "keep
-  // retrying a command instead of failing fast" — safe for our use, set now so
-  // we don't have to reconfigure later.
+  // maxRetriesPerRequest: null is required by BullMQ.
   maxRetriesPerRequest: null,
+  tls: env.REDIS_URL.startsWith("rediss://") ? { rejectUnauthorized: false } : undefined,
+  keepAlive: 10000, // keep-alive ping to prevent idle connection resets
 });
 
 // Step 3 — listen to connection lifecycle events and log them.

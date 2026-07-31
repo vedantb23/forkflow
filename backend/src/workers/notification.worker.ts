@@ -24,7 +24,9 @@ import type { NotificationJobData } from "../queues/notification.queue";
 // Step 1 — create the emitter. It needs its own Redis connection (separate from
 // BullMQ's connection) because it uses normal Redis commands, not the BullMQ
 // blocking-list protocol. We duplicate the shared client so config stays in one place.
-const emitter = new Emitter(redis.duplicate());
+const emitterClient = redis.duplicate();
+emitterClient.on("error", (err) => logger.error({ err }, "Redis emitter client error"));
+const emitter = new Emitter(emitterClient);
 
 // Step 2 — the job processor. Called by BullMQ for each notification job.
 async function processNotificationJob(job: Job<NotificationJobData>): Promise<void> {
