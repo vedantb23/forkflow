@@ -91,7 +91,7 @@ export const orderWorker = new Worker<OrderJobData>(
   {
     connection: bullConnection,
     concurrency: 1, // one order at a time = arrival order, easy to demo
-    drainDelay: 10,
+    drainDelay: 30,
     stalledInterval: 60000,
   }
 );
