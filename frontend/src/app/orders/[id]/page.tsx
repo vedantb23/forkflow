@@ -4,8 +4,9 @@ import { use, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { TopNavBar } from "@/components/TopNavBar";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiGet } from "@/lib/api";
+import { getSocket } from "@/lib/socket";
 import { useOrderTracking } from "@/hooks/useOrderTracking";
 import type { OrderView, OrderStatus, DeliveryAssignment } from "@/lib/types";
 
@@ -25,10 +26,26 @@ const LiveDeliveryMap = dynamic(() => import("@/components/LiveDeliveryMap"), {
 export default function LiveOrderTracking({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
 
+  const queryClient = useQueryClient();
+
   const { data, isLoading } = useQuery({
     queryKey: ["order", id],
     queryFn: () => apiGet<OrderView>(`/orders/${id}`),
+    refetchInterval: 10_000, // fallback polling every 10s in case socket misses
   });
+
+  // Socket-driven refetch: when the status changes live, also refetch the
+  // full order data so React Query's cache is up to date.
+  useEffect(() => {
+    const socket = getSocket();
+    const onStatus = (p: { orderId: string }) => {
+      if (p.orderId === id) {
+        queryClient.invalidateQueries({ queryKey: ["order", id] });
+      }
+    };
+    socket.on("order:status_updated", onStatus);
+    return () => { socket.off("order:status_updated", onStatus); };
+  }, [id, queryClient]);
 
   // Live updates come through the shared hook: it joins room `order:{id}` using the
   // correct `order:join` event and listens for status + GPS pushes. We seed it with

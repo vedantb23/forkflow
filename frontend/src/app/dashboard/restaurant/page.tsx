@@ -61,9 +61,16 @@ export default function RestaurantDashboard() {
     };
     socket.on("order:status_updated", onStatus);
 
+    // Re-join room after reconnect (Render cold start / network blip)
+    const onConnect = () => {
+      socket.emit("restaurant:join", { restaurantId });
+    };
+    socket.on("connect", onConnect);
+
     return () => {
       socket.off("order:new", onNew);
       socket.off("order:status_updated", onStatus);
+      socket.off("connect", onConnect);
     };
   }, [queryClient, restaurantId]);
 

@@ -22,6 +22,7 @@ export default function DeliveryDashboard() {
     queryKey: ["delivery-orders"],
     queryFn: () =>
       apiGet<{ orders: DeliveryFeedItem[] }>("/delivery/available").then((d) => d.orders),
+    refetchInterval: 10_000, // fallback polling every 10s
   });
 
   // "Accept Trip" — self-claim an available (PREPARING) order. POST /delivery/:id/claim
@@ -60,10 +61,17 @@ export default function DeliveryDashboard() {
       queryClient.invalidateQueries({ queryKey: ["delivery-orders"] });
     };
     
+    // Re-join room on reconnect (e.g. after Render cold start / network blip)
+    const onConnect = () => {
+      socket.emit("delivery:join");
+    };
+    
     socket.on("order:status_updated", onStatus);
+    socket.on("connect", onConnect);
     
     return () => {
       socket.off("order:status_updated", onStatus);
+      socket.off("connect", onConnect);
     };
   }, [queryClient]);
 

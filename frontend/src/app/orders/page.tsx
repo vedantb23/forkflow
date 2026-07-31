@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiGet } from "@/lib/api";
+import { getSocket } from "@/lib/socket";
 import { useAuth } from "@/store/authStore";
 import { TopNavBar } from "@/components/TopNavBar";
 import { Footer } from "@/components/Footer";
@@ -21,13 +23,26 @@ const STATUS_STYLES: Record<string, string> = {
 
 export default function OrdersPage() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   // Fetch the logged-in customer's orders. GET /orders → { orders } (bare rows).
   const { data: orders, isLoading } = useQuery({
     queryKey: ["orders"],
     queryFn: () => apiGet<{ orders: Order[] }>("/orders").then((d) => d.orders),
     enabled: !!user,
+    refetchInterval: 15_000, // fallback polling every 15s
   });
+
+  // Socket-driven live updates: when any order's status changes, refetch the list.
+  useEffect(() => {
+    if (!user) return;
+    const socket = getSocket();
+    const onStatus = () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    };
+    socket.on("order:status_updated", onStatus);
+    return () => { socket.off("order:status_updated", onStatus); };
+  }, [user, queryClient]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

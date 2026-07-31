@@ -17,6 +17,12 @@ export function useOrderTracking(orderId: string, initialStatus: OrderStatus) {
   const [status, setStatus] = useState<OrderStatus>(initialStatus);
   const [location, setLocation] = useState<LiveLocation | null>(null);
 
+  // Keep status in sync when React Query refetches and returns a newer status
+  // (e.g. user navigated away and came back, or the initial fetch was stale).
+  useEffect(() => {
+    setStatus(initialStatus);
+  }, [initialStatus]);
+
   useEffect(() => {
     if (!orderId) return;
     const socket = getSocket();

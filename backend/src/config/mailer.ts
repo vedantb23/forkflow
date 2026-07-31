@@ -1,10 +1,8 @@
 // config/mailer.ts — the Nodemailer transport (how we actually send email).
 //
-// CONCEPT: a "transport" is Nodemailer's connection to an SMTP server. In dev we
-// point it at Mailtrap, which CAPTURES emails in a fake inbox instead of
-// delivering them to real people — perfect for testing. The SMTP_* creds come
-// from .env (set up in the Day 5 setup block).
-//
+// Uses Gmail SMTP directly. No third-party email services needed.
+// Requires a Gmail App Password (not your regular password).
+// Generate one at: https://myaccount.google.com/apppasswords
 // We build the transport lazily and tolerate missing creds: if SMTP_* isn't set,
 // sendMail throws a clear error the email worker can log, rather than crashing boot.
 
@@ -39,7 +37,7 @@ export async function sendMail(to: string, subject: string, text: string): Promi
     throw new Error("Mail transport not configured (SMTP_* missing)");
   }
   await mailTransport.sendMail({
-    from: '"ForkFlow" <no-reply@forkflow.dev>', // the "from" address shown in the inbox
+    from: `"ForkFlow" <${env.SMTP_USER}>`, // sends from your own Gmail
     to,
     subject,
     text,
