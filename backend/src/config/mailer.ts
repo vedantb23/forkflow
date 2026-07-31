@@ -17,9 +17,17 @@ function buildTransport() {
     logger.warn("SMTP_* not fully set — emails will be skipped (set Mailtrap creds in .env)");
     return null;
   }
+  const port = Number(env.SMTP_PORT);
+  const isGmail = env.SMTP_HOST.includes("gmail");
+
   return nodemailer.createTransport({
-    host: env.SMTP_HOST,
-    port: Number(env.SMTP_PORT),
+    ...(isGmail
+      ? { service: "gmail" }
+      : {
+          host: env.SMTP_HOST,
+          port,
+          secure: port === 465, // true for 465, false for 587/other ports
+        }),
     auth: {
       user: env.SMTP_USER,
       pass: env.SMTP_PASS,
