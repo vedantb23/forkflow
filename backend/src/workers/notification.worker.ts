@@ -16,17 +16,15 @@ import { Worker, type Job } from "bullmq";
 import { Emitter } from "@socket.io/redis-emitter"; // the cross-process emit bridge
 import { QUEUE_NAMES } from "../config/constants";
 import { bullConnection } from "../queues/connection";
-import { redis } from "../config/redis"; // shared ioredis client
+import { createRedisClient } from "../config/redis";
 import { logger } from "../config/logger";
 import { SERVER_EVENTS } from "../realtime/socket.events"; // event name constants
 import type { NotificationJobData } from "../queues/notification.queue";
 
 // Step 1 — create the emitter. It needs its own Redis connection (separate from
 // BullMQ's connection) because it uses normal Redis commands, not the BullMQ
-// blocking-list protocol. We duplicate the shared client so config stays in one place.
-const emitterClient = redis.duplicate();
-emitterClient.on("error", (err) => logger.error({ err }, "Redis emitter client error"));
-const emitter = new Emitter(emitterClient);
+// blocking-list protocol.
+const emitter = new Emitter(createRedisClient("emitter"));
 
 // Step 2 — the job processor. Called by BullMQ for each notification job.
 async function processNotificationJob(job: Job<NotificationJobData>): Promise<void> {

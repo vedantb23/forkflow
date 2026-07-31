@@ -19,7 +19,7 @@
 import { Server } from "socket.io"; // the Socket.io server class
 import type { Server as HttpServer } from "http"; // Node's raw HTTP server type
 import { createAdapter } from "@socket.io/redis-adapter"; // the Redis Pub/Sub adapter
-import { redis } from "../config/redis"; // our existing shared ioredis client
+import { redis, createRedisClient } from "../config/redis"; // shared client + factory
 import { env } from "../config/env";
 import { logger } from "../config/logger";
 import { socketAuth } from "./socket.auth"; // JWT handshake middleware
@@ -47,10 +47,8 @@ export function initSocket(httpServer: HttpServer): Server {
   // 3b) Wire the Redis adapter. We need two connections: duplicate() clones the
   //     connection settings from our shared client. `pubClient` publishes messages,
   //     `subClient` listens for them. The adapter uses both under the hood.
-  const pubClient = redis.duplicate(); // for publishing room messages
-  const subClient = redis.duplicate(); // for subscribing to them
-  pubClient.on("error", (err) => logger.error({ err }, "Redis pubClient error"));
-  subClient.on("error", (err) => logger.error({ err }, "Redis subClient error"));
+  const pubClient = createRedisClient("pubClient");
+  const subClient = createRedisClient("subClient");
   io.adapter(createAdapter(pubClient, subClient));
   logger.info("🔌 Socket.io Redis adapter attached (Pub/Sub across processes)");
 
