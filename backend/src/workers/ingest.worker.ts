@@ -1,4 +1,5 @@
 import { Worker } from "bullmq";
+import { bullConnection } from "../queues/connection";
 import { redis } from "../config/redis";
 import { logger } from "../config/logger";
 import { query } from "../config/db";
@@ -56,7 +57,11 @@ export const ingestWorker = new Worker<IngestJobData>(
     await query("UPDATE menu_items SET embedding = $1 WHERE id = $2", [vectorString, menuItemId]);
     logger.info(`✅ Generated and saved embedding for dish: ${item.name}`);
   },
-  { connection: redis as any }
+  {
+    connection: bullConnection,
+    drainDelay: 10,
+    stalledInterval: 60000,
+  }
 );
 
 ingestWorker.on("failed", (job, err) => {

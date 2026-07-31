@@ -52,6 +52,8 @@ export const notificationWorker = new Worker<NotificationJobData>(
   {
     connection: bullConnection,
     concurrency: 5,
+    drainDelay: 10,
+    stalledInterval: 60000,
   }
 );
 

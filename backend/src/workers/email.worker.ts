@@ -26,6 +26,8 @@ export const emailWorker = new Worker<EmailJobData>(
   {
     connection: bullConnection,
     concurrency: 5, // emails are independent — send several at once
+    drainDelay: 10,
+    stalledInterval: 60000,
   }
 );
 

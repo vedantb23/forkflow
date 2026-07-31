@@ -55,6 +55,8 @@ async function processCleanupJob(_job: Job): Promise<void> {
 // The worker that runs the cleanup processor each time the repeat fires.
 export const cleanupWorker = new Worker(CLEANUP_QUEUE, processCleanupJob, {
   connection: bullConnection,
+  drainDelay: 10,
+  stalledInterval: 60000,
 });
 
 cleanupWorker.on("failed", (job, err) => {
