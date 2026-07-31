@@ -1,40 +1,19 @@
-// ─────────────────────────────────────────────────────────────
-// redis.ts — the ONE shared Redis client for the whole app.
+// redis.ts — shared Redis client + factory for additional connections.
 //
-// Creates a shared client + a factory for creating additional clients
-// (needed by Socket.io adapter pub/sub and the notification emitter).
-//
-// Upstash free tier is sensitive to connection bursts, so we configure
-// retryStrategy with exponential backoff and generous timeouts.
-// ─────────────────────────────────────────────────────────────
+// ioredis automatically detects `rediss://` URLs and enables TLS.
+// We keep config minimal and let ioredis handle it.
 
-import Redis, { type RedisOptions } from "ioredis";
+import Redis from "ioredis";
 import { env } from "./env";
 import { logger } from "./logger";
 
-// Shared options for every Redis client in the app.
-const isCloudRedis = env.REDIS_URL.startsWith("rediss://");
+// Shared options — only what's strictly needed.
+const baseOptions = { maxRetriesPerRequest: null as null };
 
-const baseOptions: RedisOptions = {
-  maxRetriesPerRequest: null,  // required by BullMQ
-  tls: isCloudRedis ? { rejectUnauthorized: false } : undefined,
-  connectTimeout: 15000,       // 15s for TLS handshake over the internet
-  keepAlive: 30000,            // TCP keep-alive every 30s to prevent idle resets
-  enableOfflineQueue: true,    // buffer commands while reconnecting
-  retryStrategy(times) {
-    // Exponential backoff: 500ms → 1s → 2s → 4s → … capped at 15s.
-    // Prevents rapid reconnect loops that burn Upstash free-tier commands.
-    const delay = Math.min(times * 500, 15000);
-    return delay;
-  },
-};
-
-// The primary shared client.
+// Primary shared client.
 export const redis = new Redis(env.REDIS_URL, baseOptions);
 
-// Factory: create a NEW client with the same options + an error handler.
-// Use this instead of redis.duplicate() — duplicate() doesn't always
-// propagate manually-passed options like tls/keepAlive correctly.
+// Factory: create a new client with the same URL + error handler.
 export function createRedisClient(label: string): Redis {
   const client = new Redis(env.REDIS_URL, baseOptions);
   client.on("error", (err) => {
@@ -46,12 +25,15 @@ export function createRedisClient(label: string): Redis {
 // Lifecycle logs for the primary client.
 redis.on("ready", () => logger.info("✅ Redis connected"));
 redis.on("error", (err) => logger.error({ err }, "Redis connection error"));
-// Log close only once, not every reconnect cycle.
-let closeLogged = false;
-redis.on("close", () => {
-  if (!closeLogged) {
-    logger.warn("Redis connection closed (will auto-reconnect)");
-    closeLogged = true;
+
+// Catch unhandled errors from BullMQ's internal ioredis connections
+// (BullMQ bundles its own ioredis and we can't attach handlers to those).
+process.on("uncaughtException", (err: any) => {
+  if (err?.code === "ECONNRESET" || err?.code === "EPIPE") {
+    logger.warn(`Suppressed ${err.code} from internal Redis connection`);
+    return; // don't crash — ioredis will auto-reconnect
   }
+  // Re-throw non-Redis errors so they still crash properly.
+  logger.error({ err }, "Uncaught exception");
+  process.exit(1);
 });
-redis.on("ready", () => { closeLogged = false; });

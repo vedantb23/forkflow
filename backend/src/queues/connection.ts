@@ -23,9 +23,7 @@ export const bullConnection: ConnectionOptions = {
   host: url.hostname,
   port: Number(url.port) || 6379,
   password: url.password || undefined,
-  tls: url.protocol === "rediss:" ? { rejectUnauthorized: false } : undefined,
-  connectTimeout: 15000,
-  keepAlive: 30000,
+  tls: url.protocol === "rediss:" ? {} : undefined,
   maxRetriesPerRequest: null,
 };
 
