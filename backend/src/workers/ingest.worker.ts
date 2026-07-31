@@ -59,8 +59,6 @@ export const ingestWorker = new Worker<IngestJobData>(
   },
   {
     connection: bullConnection,
-    drainDelay: 30,
-    stalledInterval: 60000,
   }
 );
 

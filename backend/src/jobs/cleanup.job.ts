@@ -28,12 +28,12 @@ export async function startCleanupJob(): Promise<void> {
     "expire-stale-carts",
     {},
     {
-      repeat: { every: 24 * 60 * 60 * 1000 }, // every 24 hours (saves Redis commands)
+      repeat: { every: 10 * 60 * 1000 }, // every 10 minutes
       removeOnComplete: true,
       removeOnFail: true,
     }
   );
-  logger.info("cleanup.job: repeatable 'expire-stale-carts' scheduled (every 24h)");
+  logger.info("cleanup.job: repeatable 'expire-stale-carts' scheduled (every 10m)");
 }
 
 // The processor: clear carts not updated in the last 2 hours.
@@ -55,8 +55,6 @@ async function processCleanupJob(_job: Job): Promise<void> {
 // The worker that runs the cleanup processor each time the repeat fires.
 export const cleanupWorker = new Worker(CLEANUP_QUEUE, processCleanupJob, {
   connection: bullConnection,
-  drainDelay: 30,
-  stalledInterval: 60000,
 });
 
 cleanupWorker.on("failed", (job, err) => {
