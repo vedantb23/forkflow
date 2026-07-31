@@ -1,40 +1,29 @@
 // queues/connection.ts — the shared Redis connection settings for BullMQ.
 //
-// CONCEPT: BullMQ (our job queue) stores jobs IN Redis. Both the producer (the
-// API that adds jobs) and the workers (that process them) must talk to the SAME
-// Redis. Rather than pass a client around, BullMQ wants connection *options* it
-// can use to open its own connections (it opens several internally).
-//
-// WHY not reuse the `redis` client from config/redis.ts? BullMQ needs to create
-// multiple dedicated connections (one blocks on "wait for next job"). Sharing a
-// single client would tie those up. So we hand BullMQ the connection OPTIONS and
-// let it manage its own pool. We DO reuse the same maxRetriesPerRequest:null
-// setting our redis.ts uses — BullMQ requires it.
+// BullMQ requires connection options (ConnectionOptions) to manage its internal pool.
+// maxRetriesPerRequest: null is strictly required by BullMQ.
 
 import type { ConnectionOptions } from "bullmq";
 import { env } from "../config/env";
 
-// Parse REDIS_URL (e.g. redis://localhost:6379) into host/port for BullMQ.
-// BullMQ accepts a connection URL too, but giving it the parsed pieces plus the
-// required option is the most explicit and avoids surprises.
 const url = new URL(env.REDIS_URL);
 
 export const bullConnection: ConnectionOptions = {
   host: url.hostname,
   port: Number(url.port) || 6379,
+  username: url.username || undefined,
   password: url.password || undefined,
   tls: url.protocol === "rediss:" ? {} : undefined,
   maxRetriesPerRequest: null,
 };
 
-// Shared default options for every job we enqueue. Centralized so retry/backoff
-// policy is consistent across queues (README: config in one place).
+// Shared default options for every job we enqueue.
 export const defaultJobOptions = {
-  attempts: 3, // try a failing job up to 3 times total
+  attempts: 3,
   backoff: {
-    type: "exponential" as const, // wait longer between each retry
-    delay: 2000, // 2s, then 4s, then 8s
+    type: "exponential" as const,
+    delay: 2000,
   },
-  removeOnComplete: true, // don't keep successful jobs (Redis stays small)
-  removeOnFail: false, // KEEP failed jobs so we can inspect them in Bull Board (our DLQ view)
+  removeOnComplete: true,
+  removeOnFail: false,
 };
