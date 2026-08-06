@@ -1,14 +1,11 @@
-// menu.types.ts — shapes + validators for menu items.
-
 import { ApiError } from "../../utils/apiError";
 
-// A menu item row from the DB. (embedding column arrives Day 7 — not here.)
 export interface MenuItemRow {
   id: string;
   restaurant_id: string;
   name: string;
   description: string | null;
-  price: string; // NUMERIC comes back from pg as a string — keeps money exact
+  price: string;
   image_url: string | null;
   is_veg: boolean;
   spice_level: number;
@@ -44,8 +41,6 @@ function isNonEmptyString(v: unknown): v is string {
   return typeof v === "string" && v.trim().length > 0;
 }
 
-// price must be a positive number; spice 0–3; stock/prep non-negative ints.
-// Shared checks used by both validators below.
 function checkNumericFields(b: Record<string, unknown>) {
   if (b.price !== undefined) {
     const n = Number(b.price);

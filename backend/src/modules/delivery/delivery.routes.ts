@@ -1,11 +1,3 @@
-// delivery.routes.ts — URLs for delivery, mounted at "/api/delivery".
-//
-// GET  /available               — partner's feed of orders ready to carry (DELIVERY)
-// POST /assign                  — assign a partner to an order (OWNER / ADMIN)
-// GET  /:orderId                — get assignment details (any authenticated user)
-// PATCH /:orderId/status        — partner updates delivery status (DELIVERY)
-// PATCH /:orderId/location      — partner pushes GPS position (DELIVERY)
-
 import { Router } from "express";
 import {
   assignPartnerHandler,
@@ -23,7 +15,6 @@ import { asyncHandler } from "../../utils/asyncHandler";
 
 const router = Router();
 
-// The partner's job feed. MUST come before "/:orderId" so "available" isn't an id.
 router.get(
   "/available",
   requireAuth,
@@ -31,7 +22,6 @@ router.get(
   asyncHandler(getAvailableDeliveriesHandler)
 );
 
-// Assign a delivery partner — only owners/admins can do this.
 router.post(
   "/assign",
   requireAuth,
@@ -40,10 +30,8 @@ router.post(
   asyncHandler(assignPartnerHandler)
 );
 
-// View an assignment — any authenticated user (customer checks their own order).
 router.get("/:orderId", requireAuth, asyncHandler(getAssignmentHandler));
 
-// Partner updates their status (ASSIGNED → PICKED_UP → DELIVERED).
 router.patch(
   "/:orderId/status",
   requireAuth,
@@ -52,7 +40,6 @@ router.patch(
   asyncHandler(updateStatusHandler)
 );
 
-// Partner claims an available (PREPARING) order for themselves ("Accept Trip").
 router.post(
   "/:orderId/claim",
   requireAuth,
@@ -60,7 +47,6 @@ router.post(
   asyncHandler(claimDeliveryHandler)
 );
 
-// Partner pushes a GPS ping.
 router.patch(
   "/:orderId/location",
   requireAuth,

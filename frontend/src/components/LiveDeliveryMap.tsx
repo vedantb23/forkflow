@@ -1,20 +1,10 @@
 "use client";
 
-// LiveDeliveryMap — a real OpenStreetMap map (react-leaflet) that shows the delivery
-// partner's bike moving live, the customer's own location, and a line connecting the
-// two (Zomato-style). NO API KEY / NO BILLING: free OSM raster tiles.
-//
-// IMPORTANT: this component touches `window` (Leaflet), so it must NEVER be
-// server-rendered. It's always loaded via `dynamic(() => import(...), { ssr: false })`
-// from the tracking page (see orders/[id]/page.tsx). Do not import it statically.
-
 import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet";
 import { divIcon } from "leaflet";
 import { useEffect } from "react";
 import "leaflet/dist/leaflet.css";
 
-// Default view when we have no GPS fix yet: centered on India, zoomed to show the
-// whole country. Once a real position arrives we snap in close.
 const INDIA_CENTER: [number, number] = [20.5937, 78.9629];
 const INDIA_ZOOM = 5;
 const TRACK_ZOOM = 15;
@@ -24,9 +14,6 @@ export interface LatLng {
   lng: number;
 }
 
-// Both markers are pure HTML (divIcons), so we don't depend on Leaflet's default PNG
-// marker assets — those break under bundlers unless you copy the images manually.
-// Material Symbols is already loaded globally, so the glyphs render here.
 function pinIcon(glyph: string, bg: string, ring: string) {
   return divIcon({
     className: "",
@@ -41,16 +28,13 @@ function pinIcon(glyph: string, bg: string, ring: string) {
         <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1;">${glyph}</span>
       </div>`,
     iconSize: [40, 40],
-    iconAnchor: [20, 20], // center the circle on the coordinate
+    iconAnchor: [20, 20],
   });
 }
 
-const bikeIcon = pinIcon("two_wheeler", "#92001c", "#fff"); // rider — brand red
-const homeIcon = pinIcon("home", "#1f6d3a", "#fff"); // customer — green
+const bikeIcon = pinIcon("two_wheeler", "#92001c", "#fff");
+const homeIcon = pinIcon("home", "#1f6d3a", "#fff");
 
-// Keeps the relevant points in view. With both rider + customer, it fits bounds so
-// the whole route is visible (like Zomato). With one, it centers on it. With none,
-// it leaves the India overview.
 function Fitter({ driver, customer }: { driver: LatLng | null; customer: LatLng | null }) {
   const map = useMap();
   useEffect(() => {
@@ -67,9 +51,9 @@ function Fitter({ driver, customer }: { driver: LatLng | null; customer: LatLng 
 }
 
 export interface LiveDeliveryMapProps {
-  /** Live/last-known rider position. null → no fix yet. */
+
   driver: LatLng | null;
-  /** The customer's own device location. null → not shared / unavailable. */
+
   customer: LatLng | null;
 }
 
@@ -89,7 +73,7 @@ export default function LiveDeliveryMap({ driver, customer }: LiveDeliveryMapPro
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* The route line between rider and customer (dashed, brand red). */}
+      {}
       {driverPos && customerPos && (
         <Polyline
           positions={[driverPos, customerPos]}

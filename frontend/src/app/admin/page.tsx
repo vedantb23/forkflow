@@ -1,9 +1,5 @@
 "use client";
 
-// /admin — Admin Control Panel overview.
-// This page is protected: it redirects unauthenticated users or non-admins.
-// It displays system performance and daily metrics using real backend data.
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -63,7 +59,7 @@ export default function AdminOverviewPage() {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in and is an ADMIN
+
     if (!user) {
       router.replace("/login");
     } else if (user.role !== "ADMIN") {
@@ -77,7 +73,7 @@ export default function AdminOverviewPage() {
     queryKey: ["admin", "users"],
     queryFn: () => apiGet<{ users: User[]; count: number }>("/users"),
     retry: false,
-    enabled: isAuthorized, // Only run query if authorized
+    enabled: isAuthorized,
   });
 
   const { data: restaurants, isLoading: loadingRestaurants } = useQuery({
@@ -108,31 +104,31 @@ export default function AdminOverviewPage() {
 
       <main className="md:ml-64 flex-1 flex flex-col min-h-screen w-full">
         <div className="pt-[40px] px-[24px] md:px-[48px] pb-[48px] flex-1 w-full max-w-[1280px] mx-auto">
-          {/* Header */}
+          {}
           <div className="mb-[32px]">
             <h1 className="font-headline-md text-[32px] font-bold text-on-surface mb-[4px]">Admin Overview</h1>
             <p className="font-body-md text-[16px] text-on-surface-variant">System performance and daily metrics.</p>
           </div>
 
-          {/* KPI bento row - Only showing existing data */}
+          {}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[16px] mb-[32px]">
-            <KpiCard 
-              label="Total Users" 
-              value={totalUsers != null ? totalUsers.toLocaleString() : "—"} 
-              icon="group" 
-              iconClass="text-tertiary-fixed-dim" 
+            <KpiCard
+              label="Total Users"
+              value={totalUsers != null ? totalUsers.toLocaleString() : "—"}
+              icon="group"
+              iconClass="text-tertiary-fixed-dim"
             />
-            <KpiCard 
-              label="Restaurants" 
-              value={totalRestaurants != null ? totalRestaurants.toLocaleString() : "—"} 
-              icon="storefront" 
-              iconClass="text-primary-fixed-dim" 
+            <KpiCard
+              label="Restaurants"
+              value={totalRestaurants != null ? totalRestaurants.toLocaleString() : "—"}
+              icon="storefront"
+              iconClass="text-primary-fixed-dim"
             />
           </div>
 
-          {/* Tables for Users and Restaurants */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[24px]">
-            {/* Users Table */}
+            {}
             <div className="bg-surface-container-lowest dark:bg-surface-dim border border-white/40 shadow-[0_8px_32px_0_rgba(181,35,48,0.04)] rounded-xl p-[24px] backdrop-blur-md overflow-hidden flex flex-col">
               <h3 className="font-title-lg text-[24px] font-semibold text-on-surface mb-[16px]">Recent Users</h3>
               {loadingUsers ? (
@@ -170,7 +166,7 @@ export default function AdminOverviewPage() {
               )}
             </div>
 
-            {/* Restaurants Table */}
+            {}
             <div className="bg-surface-container-lowest dark:bg-surface-dim border border-white/40 shadow-[0_8px_32px_0_rgba(181,35,48,0.04)] rounded-xl p-[24px] backdrop-blur-md overflow-hidden flex flex-col">
               <h3 className="font-title-lg text-[24px] font-semibold text-on-surface mb-[16px]">Restaurants</h3>
               {loadingRestaurants ? (

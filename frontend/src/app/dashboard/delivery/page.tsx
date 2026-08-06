@@ -14,19 +14,13 @@ export default function DeliveryDashboard() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  // The partner's job feed: orders that are PREPARING (grabbable) or already
-  // OUT_FOR_DELIVERY (a trip in progress). Each row carries its `assignment`
-  // (or null), so we know which trips are ours without extra requests.
-  // GET /delivery/available → { orders }.
   const { data: orders, isLoading } = useQuery({
     queryKey: ["delivery-orders"],
     queryFn: () =>
       apiGet<{ orders: DeliveryFeedItem[] }>("/delivery/available").then((d) => d.orders),
-    refetchInterval: 10_000, // fallback polling every 10s
+    refetchInterval: 10_000,
   });
 
-  // "Accept Trip" — self-claim an available (PREPARING) order. POST /delivery/:id/claim
-  // flips it to OUT_FOR_DELIVERY and creates the assignment for this partner.
   const claimTrip = useMutation({
     mutationFn: (orderId: string) => apiPost(`/delivery/${orderId}/claim`),
     onSuccess: () => {
@@ -34,8 +28,6 @@ export default function DeliveryDashboard() {
     },
   });
 
-  // "Complete" — mark the active delivery DELIVERED. PATCH /delivery/:id/status; the
-  // service mirrors it onto the order. Only valid on an assignment owned by me.
   const completeTrip = useMutation({
     mutationFn: (orderId: string) => apiPatch(`/delivery/${orderId}/status`, { status: "DELIVERED" }),
     onSuccess: () => {
@@ -43,7 +35,6 @@ export default function DeliveryDashboard() {
     },
   });
 
-  // My active trip = an OUT_FOR_DELIVERY order whose assignment.partner_id is me.
   const myActiveOrders =
     orders?.filter(
       (o) => o.order.status === "OUT_FOR_DELIVERY" && o.assignment?.partner_id === user?.id
@@ -53,30 +44,26 @@ export default function DeliveryDashboard() {
 
   useEffect(() => {
     const socket = getSocket();
-    
-    // Join the delivery room to listen for new available orders
+
     socket.emit("delivery:join");
 
     const onStatus = () => {
       queryClient.invalidateQueries({ queryKey: ["delivery-orders"] });
     };
-    
-    // Re-join room on reconnect (e.g. after Render cold start / network blip)
+
     const onConnect = () => {
       socket.emit("delivery:join");
     };
-    
+
     socket.on("order:status_updated", onStatus);
     socket.on("connect", onConnect);
-    
+
     return () => {
       socket.off("order:status_updated", onStatus);
       socket.off("connect", onConnect);
     };
   }, [queryClient]);
 
-  // Push GPS position to backend while an active trip is in progress.
-  // PATCH /delivery/:orderId/location — updates current_lat/current_lng on the assignment.
   const updateLocation = useMutation({
     mutationFn: ({ orderId, lat, lng }: { orderId: string; lat: number; lng: number }) =>
       apiPatch(`/delivery/${orderId}/location`, { lat, lng }),
@@ -117,7 +104,6 @@ export default function DeliveryDashboard() {
       </div>
     );
   }
-
 
   return (
     <div className="min-h-screen bg-background text-on-background flex flex-col">
@@ -163,7 +149,7 @@ export default function DeliveryDashboard() {
 
           <div className="relative z-20 mt-auto p-[20px] md:p-[48px] pointer-events-none flex flex-col gap-[24px] lg:flex-row lg:items-end">
 
-            {/* Left side: Available Trips */}
+            {}
             <div className="w-full lg:w-1/2 flex flex-col gap-[16px] pointer-events-auto">
               {isActive ? (
                 <>
@@ -222,7 +208,7 @@ export default function DeliveryDashboard() {
               )}
             </div>
 
-            {/* Right side: Active Trip details */}
+            {}
             {activeOrder && (
               <div className="w-full lg:w-1/2 flex justify-end pointer-events-auto">
                 <div className="glass-card rounded-xl p-[24px] w-full border-2 border-primary shadow-[0_20px_40px_rgb(0,0,0,0.2)] order-pulse">

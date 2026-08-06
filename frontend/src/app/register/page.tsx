@@ -50,7 +50,7 @@ export default function Register() {
 
   return (
     <div className="bg-background text-on-background min-h-screen flex antialiased">
-      {/* Left Split: Hero Image — fixed 5/12 on desktop, never shrinks */}
+      {}
       <div className="hidden lg:block lg:w-5/12 lg:shrink-0 relative animate-fade-in">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -83,11 +83,11 @@ export default function Register() {
 
       {/* Right Split: Auth Form — takes all remaining width (flex-1) so it can't collapse */}
       <div className="flex-1 w-full flex flex-col justify-center items-center px-[20px] md:px-[48px] py-[64px] relative overflow-hidden bg-surface">
-        {/* Decorative subtle background blob */}
+        {}
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary-fixed rounded-full mix-blend-multiply filter blur-3xl opacity-30 -translate-y-1/2 translate-x-1/3 animate-fade-in delay-300"></div>
-        
+
         <div className="w-full min-w-0 z-10 mx-auto">
-          {/* Mobile Header (Hidden on Desktop) */}
+          {}
           <div className="lg:hidden flex justify-center items-center gap-[8px] mb-[40px] animate-fade-up">
             <span className="material-symbols-outlined text-primary text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>
               restaurant
@@ -100,9 +100,9 @@ export default function Register() {
             <p className="font-body-md text-[16px] text-on-surface-variant">Choose your role to get started with ForkFlow.</p>
           </div>
 
-          {/* Role Picker */}
+          {}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-[12px] mb-[32px] animate-fade-up delay-200">
-            {/* Customer Role */}
+            {}
             <button
               onClick={() => setRole("CUSTOMER")}
               className={`flex flex-col items-center p-[12px] rounded-xl shadow-sm text-center border transition-all duration-300 active:scale-95 ${
@@ -120,7 +120,7 @@ export default function Register() {
               <span className={`font-label-md text-[14px] ${role === "CUSTOMER" ? "text-primary font-bold" : "text-on-surface"}`}>Customer</span>
             </button>
 
-            {/* Restaurant Owner Role */}
+            {}
             <button
               onClick={() => setRole("RESTAURANT_OWNER")}
               className={`flex flex-col items-center p-[12px] rounded-xl shadow-sm text-center border transition-all duration-300 active:scale-95 ${
@@ -138,7 +138,7 @@ export default function Register() {
               <span className={`font-label-md text-[14px] ${role === "RESTAURANT_OWNER" ? "text-primary font-bold" : "text-on-surface"}`}>Restaurant</span>
             </button>
 
-            {/* Delivery Partner Role */}
+            {}
             <button
               onClick={() => setRole("DELIVERY")}
               className={`flex flex-col items-center p-[12px] rounded-xl shadow-sm text-center border transition-all duration-300 active:scale-95 ${
@@ -157,7 +157,7 @@ export default function Register() {
             </button>
           </div>
 
-          {/* Form */}
+          {}
           <form className="space-y-[24px] animate-fade-up delay-300 bg-surface-container p-[32px] rounded-2xl shadow-lg border border-outline-variant/50" onSubmit={handleRegister}>
             {error && (
               <div className="bg-error-container text-on-error-container p-4 rounded-lg text-sm text-center font-bold">
@@ -220,16 +220,14 @@ export default function Register() {
               </button>
             </div>
 
-            {/* Divider between the form and Google sign-up */}
+            {}
             <div className="flex items-center gap-[12px]">
               <div className="flex-1 h-px bg-outline-variant"></div>
               <span className="font-label-sm text-[12px] text-on-surface-variant/70">OR</span>
               <div className="flex-1 h-px bg-outline-variant"></div>
             </div>
 
-            {/* Google Sign-Up. NOTE: Google accounts are always created as
-                CUSTOMER (the role picker above only applies to email sign-up),
-                because we can't collect a role during Google's own popup. */}
+            {}
             <GoogleSignInButton onError={setError} />
             <p className="text-center font-label-sm text-[11px] text-on-surface-variant/60">
               Signing up with Google creates a Customer account.

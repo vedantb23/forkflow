@@ -46,7 +46,7 @@ export default function Login() {
 
   return (
     <div className="bg-background text-on-background min-h-screen flex antialiased">
-      {/* Left Split: Hero Image — fixed 5/12 on desktop, never shrinks */}
+      {}
       <div className="hidden lg:block lg:w-5/12 lg:shrink-0 relative animate-fade-in">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -76,10 +76,10 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right Split: Auth Form — takes all remaining width (flex-1) so it can't collapse */}
+      {}
       <div className="flex-1 w-full flex flex-col justify-center items-center p-[24px] md:p-[48px] relative bg-surface h-screen overflow-y-auto">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary-fixed rounded-full mix-blend-multiply filter blur-3xl opacity-30 -translate-y-1/2 translate-x-1/3 animate-fade-in delay-300"></div>
-        
+
         <div className="w-full min-w-0 z-10 mx-auto">
           <div className="lg:hidden flex justify-center items-center gap-[8px] mb-[40px] animate-fade-up">
             <span className="material-symbols-outlined text-primary text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -141,14 +141,14 @@ export default function Login() {
               </button>
             </div>
 
-            {/* Divider between password login and Google sign-in */}
+            {}
             <div className="flex items-center gap-[12px]">
               <div className="flex-1 h-px bg-outline-variant"></div>
               <span className="font-label-sm text-[12px] text-on-surface-variant/70">OR</span>
               <div className="flex-1 h-px bg-outline-variant"></div>
             </div>
 
-            {/* Google Sign-In — reports failures into the same error banner above */}
+            {}
             <GoogleSignInButton onError={setError} />
 
             <div className="text-center mt-[24px]">

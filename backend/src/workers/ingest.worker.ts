@@ -12,7 +12,6 @@ export const ingestWorker = new Worker<IngestJobData>(
     const { menuItemId } = job.data;
     logger.info(`Starting ingestion for menu item ${menuItemId}`);
 
-    // Fetch item with restaurant name
     const rows = await query<{
       id: string;
       name: string;
@@ -39,7 +38,7 @@ export const ingestWorker = new Worker<IngestJobData>(
     const vegText = item.is_veg ? "Vegetarian" : "Non-Vegetarian";
     const spiceLevels = ["Not Spicy", "Mild", "Medium", "Hot"];
     const spiceText = spiceLevels[item.spice_level] || "Not Spicy";
-    
+
     const textBlob = `
       Dish Name: ${item.name}
       Restaurant: ${item.restaurant_name}
@@ -49,11 +48,9 @@ export const ingestWorker = new Worker<IngestJobData>(
       Price: ₹${item.price}
     `;
 
-    // Embed
     const [vector] = await embeddings.embedDocuments([textBlob]);
     const vectorString = `[${vector.join(",")}]`;
 
-    // Save to DB
     await query("UPDATE menu_items SET embedding = $1 WHERE id = $2", [vectorString, menuItemId]);
     logger.info(`✅ Generated and saved embedding for dish: ${item.name}`);
   },

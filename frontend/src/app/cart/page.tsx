@@ -37,15 +37,15 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <TopNavBar />
-      
+
       <main className="flex-grow pt-[100px] pb-[64px] px-[20px] md:px-[48px] mx-auto w-full animate-fade-in">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-[32px] gap-[16px]">
           <div>
             <h1 className="font-display-lg text-[36px] text-on-surface">Your Cart</h1>
             <p className="font-body-md text-[16px] text-on-surface-variant">Review your premium selection before checkout.</p>
           </div>
-          <button 
-            onClick={clear} 
+          <button
+            onClick={clear}
             className="flex items-center gap-[8px] text-error hover:bg-error-container/50 px-[16px] py-[8px] rounded-lg transition-colors font-label-md text-[14px]"
           >
             <span className="material-symbols-outlined text-[18px]">delete</span>
@@ -57,8 +57,8 @@ export default function CartPage() {
           {/* Cart Items */}
           <div className="lg:col-span-8 space-y-[16px]">
             {lines.map((l, index) => (
-              <div 
-                key={l.item.id} 
+              <div
+                key={l.item.id}
                 className="glass-card rounded-xl p-[20px] border border-outline-variant/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[16px] animate-fade-up"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
@@ -66,10 +66,10 @@ export default function CartPage() {
                   <h3 className="font-headline-md text-[18px] text-on-surface">{l.item.name}</h3>
                   <p className="font-label-sm text-[14px] text-primary font-bold mt-[4px]">₹{Number(l.item.price).toFixed(2)}</p>
                 </div>
-                
+
                 <div className="flex items-center gap-[16px] w-full sm:w-auto justify-between sm:justify-end">
                   <div className="flex items-center bg-surface-container-high rounded-lg overflow-hidden border border-outline-variant/30">
-                    <button 
+                    <button
                       onClick={() => setQty(l.item.id, Math.max(1, l.quantity - 1))}
                       className="w-[36px] h-[36px] flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors"
                     >
@@ -78,20 +78,20 @@ export default function CartPage() {
                     <div className="w-[40px] text-center font-label-md text-[14px] text-on-surface">
                       {l.quantity}
                     </div>
-                    <button 
+                    <button
                       onClick={() => setQty(l.item.id, l.quantity + 1)}
                       className="w-[36px] h-[36px] flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors"
                     >
                       <span className="material-symbols-outlined text-[18px]">add</span>
                     </button>
                   </div>
-                  
+
                   <div className="font-headline-md text-[18px] text-on-surface min-w-[80px] text-right">
                     ₹{(Number(l.item.price) * l.quantity).toFixed(2)}
                   </div>
 
-                  <button 
-                    onClick={() => remove(l.item.id)} 
+                  <button
+                    onClick={() => remove(l.item.id)}
                     className="w-[36px] h-[36px] flex items-center justify-center rounded-full text-on-surface-variant hover:text-error hover:bg-error-container/30 transition-colors ml-[8px]"
                     aria-label="Remove item"
                   >
@@ -106,7 +106,7 @@ export default function CartPage() {
           <div className="lg:col-span-4">
             <div className="glass-card rounded-xl p-[24px] border border-outline-variant/30 sticky top-[100px] animate-fade-up delay-200">
               <h2 className="font-headline-md text-[20px] text-on-surface mb-[24px] pb-[16px] border-b border-outline-variant/30">Order Summary</h2>
-              
+
               <div className="space-y-[16px] mb-[24px]">
                 <div className="flex justify-between font-body-md text-[16px] text-on-surface-variant">
                   <span>Subtotal</span>
@@ -117,12 +117,12 @@ export default function CartPage() {
                   <span className="text-tertiary-container font-bold">Free</span>
                 </div>
               </div>
-              
+
               <div className="flex justify-between items-end border-t border-outline-variant/30 pt-[16px] mb-[32px]">
                 <span className="font-headline-md text-[18px] text-on-surface">Total</span>
                 <span className="font-display-lg text-[32px] text-primary">₹{total().toFixed(2)}</span>
               </div>
-              
+
               <Link
                 href="/checkout"
                 className="w-full h-14 bg-gradient-to-r from-primary to-surface-tint text-on-primary rounded-xl font-label-md text-[16px] font-bold shadow-md hover:shadow-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-[8px]"

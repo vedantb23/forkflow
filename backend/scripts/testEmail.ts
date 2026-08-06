@@ -1,13 +1,7 @@
-// scripts/testEmail.ts — quick script to verify SMTP is configured and working.
-// Usage: npx tsx scripts/testEmail.ts
-//
-// Sends a test email to vedant2k5@gmail.com using the SMTP credentials from .env.
-// If the email arrives, your production email pipeline is working end-to-end.
-
-import "../src/config/env"; // load .env
+import "../src/config/env";
 import { sendMail } from "../src/config/mailer";
 
-const TO = "vedant2k5@gmail.com"; // Gmail SMTP can send to anyone!
+const TO = "vedant2k5@gmail.com";
 const SUBJECT = "🍽️ ForkFlow Email Test — It Works!";
 const BODY = `
 Hey Vedant!

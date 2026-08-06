@@ -10,8 +10,6 @@ import { TopNavBar } from "@/components/TopNavBar";
 import { Footer } from "@/components/Footer";
 import type { Order } from "@/lib/types";
 
-// Status → chip colours, using the design-system tokens so it matches the rest of
-// the premium UI (and flips correctly in dark mode).
 const STATUS_STYLES: Record<string, string> = {
   PENDING: "bg-surface-container-high text-on-surface-variant",
   CONFIRMED: "bg-secondary-container text-on-secondary-container",
@@ -25,15 +23,13 @@ export default function OrdersPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Fetch the logged-in customer's orders. GET /orders → { orders } (bare rows).
   const { data: orders, isLoading } = useQuery({
     queryKey: ["orders"],
     queryFn: () => apiGet<{ orders: Order[] }>("/orders").then((d) => d.orders),
     enabled: !!user,
-    refetchInterval: 15_000, // fallback polling every 15s
+    refetchInterval: 15_000,
   });
 
-  // Socket-driven live updates: when any order's status changes, refetch the list.
   useEffect(() => {
     if (!user) return;
     const socket = getSocket();

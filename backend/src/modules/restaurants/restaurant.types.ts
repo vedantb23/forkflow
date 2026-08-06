@@ -1,10 +1,5 @@
-// restaurant.types.ts — shapes + hand-written validators for the restaurants module.
-// Same style as auth.types.ts: take untrusted req.body, return a clean typed
-// object or throw ApiError.badRequest.
-
 import { ApiError } from "../../utils/apiError";
 
-// What a restaurant row looks like coming out of the DB.
 export interface RestaurantRow {
   id: string;
   name: string;
@@ -19,7 +14,6 @@ export interface RestaurantRow {
   updated_at: string;
 }
 
-// What creating a restaurant requires.
 export interface CreateRestaurantInput {
   name: string;
   description?: string;
@@ -28,7 +22,6 @@ export interface CreateRestaurantInput {
   max_orders_per_slot?: number;
 }
 
-// What an update may change (everything optional — send only what changes).
 export interface UpdateRestaurantInput {
   name?: string;
   description?: string;
@@ -38,12 +31,10 @@ export interface UpdateRestaurantInput {
   max_orders_per_slot?: number;
 }
 
-// quick guard reused below
 function isNonEmptyString(v: unknown): v is string {
   return typeof v === "string" && v.trim().length > 0;
 }
 
-// validateCreateRestaurant — name is required, the rest optional.
 export function validateCreateRestaurant(body: unknown): CreateRestaurantInput {
   if (typeof body !== "object" || body === null) {
     throw ApiError.badRequest("Request body must be a JSON object");
@@ -53,13 +44,13 @@ export function validateCreateRestaurant(body: unknown): CreateRestaurantInput {
   if (!isNonEmptyString(b.name)) {
     throw ApiError.badRequest("Restaurant name is required");
   }
-  // optional strings — if present, must actually be strings
+
   for (const field of ["description", "cuisine", "address"] as const) {
     if (b[field] !== undefined && typeof b[field] !== "string") {
       throw ApiError.badRequest(`${field} must be a string`);
     }
   }
-  // optional capacity — if present, must be a positive integer
+
   if (b.max_orders_per_slot !== undefined) {
     const n = Number(b.max_orders_per_slot);
     if (!Number.isInteger(n) || n <= 0) {
@@ -77,7 +68,6 @@ export function validateCreateRestaurant(body: unknown): CreateRestaurantInput {
   };
 }
 
-// validateUpdateRestaurant — all optional, but at least ONE field must be sent.
 export function validateUpdateRestaurant(body: unknown): UpdateRestaurantInput {
   if (typeof body !== "object" || body === null) {
     throw ApiError.badRequest("Request body must be a JSON object");

@@ -7,8 +7,6 @@ import { useAuth } from "@/store/authStore";
 import { useRouter, usePathname } from "next/navigation";
 import type { Role } from "@/lib/types";
 
-// Nav links shown per role. Public visitors and customers get the discovery-
-// focused set; owners/delivery/admin get a shortcut to their workspace.
 const NAV_BY_ROLE: Record<Role | "GUEST", { label: string; href: string }[]> = {
   GUEST: [
     { label: "Browse", href: "/" },
@@ -45,8 +43,6 @@ export function TopNavBar() {
     setMounted(true);
   }, []);
 
-  // Before mount we don't know the persisted user, so render the guest set to
-  // avoid a hydration mismatch, then swap to the role-specific links.
   const navLinks = mounted && user ? NAV_BY_ROLE[user.role] : NAV_BY_ROLE.GUEST;
 
   const handleLogout = () => {

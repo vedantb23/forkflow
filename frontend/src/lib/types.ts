@@ -1,6 +1,3 @@
-// Shared shapes mirrored from the backend responses. Keep these in sync with the
-// API's { success, message, data } envelope and the DB rows.
-
 export type Role = "CUSTOMER" | "RESTAURANT_OWNER" | "DELIVERY" | "ADMIN";
 
 export interface User {
@@ -25,10 +22,10 @@ export interface MenuItem {
   restaurant_id: string;
   name: string;
   description: string | null;
-  price: string; // numeric comes back as string from pg
+  price: string;
   image_url: string | null;
   is_veg: boolean;
-  spice_level: number; // 0 none, 1 mild, 2 medium, 3 hot
+  spice_level: number;
   stock: number;
   prep_time_minutes: number;
   is_available: boolean;
@@ -60,7 +57,7 @@ export interface Order {
   user_id: string;
   restaurant_id: string;
   status: OrderStatus;
-  total_amount: string; // NUMERIC → string from pg
+  total_amount: string;
   slot_window: string;
   created_at: string;
   updated_at: string;
@@ -75,24 +72,20 @@ export interface OrderItem {
   quantity: number;
 }
 
-// Full order view returned by POST /orders and GET /orders/:id.
 export interface OrderView {
   order: Order;
   items: OrderItem[];
 }
 
-// The API always wraps payloads as { success, message, data }.
 export interface ApiEnvelope<T> {
   success: boolean;
   message: string;
   data: T;
 }
 
-// Delivery statuses — must match the backend DB enum exactly.
 export const DELIVERY_STATUSES = ["UNASSIGNED", "ASSIGNED", "PICKED_UP", "DELIVERED"] as const;
 export type DeliveryStatus = (typeof DELIVERY_STATUSES)[number];
 
-// A delivery_assignments row — links one order to one delivery partner.
 export interface DeliveryAssignment {
   id: string;
   order_id: string;
@@ -104,9 +97,6 @@ export interface DeliveryAssignment {
   updated_at: string;
 }
 
-// A row in the delivery partner's job feed (GET /delivery/available). An OrderView
-// plus its assignment (null until claimed/assigned) so the dashboard can tell which
-// OUT_FOR_DELIVERY trips are "mine" without a per-order assignment lookup.
 export interface DeliveryFeedItem extends OrderView {
   assignment: DeliveryAssignment | null;
 }

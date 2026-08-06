@@ -1,21 +1,17 @@
-// order.types.ts — shapes + validators for placing an order.
-
 import { ApiError } from "../../utils/apiError";
 
-// What the DB returns for an order row.
 export interface OrderRow {
   id: string;
   user_id: string;
   restaurant_id: string;
   status: string;
-  total_amount: string; // NUMERIC → string from pg
+  total_amount: string;
   slot_window: string;
   idempotency_key: string | null;
   created_at: string;
   updated_at: string;
 }
 
-// What the DB returns for an order_items row.
 export interface OrderItemRow {
   id: string;
   order_id: string;
@@ -25,14 +21,11 @@ export interface OrderItemRow {
   quantity: number;
 }
 
-// The full order view returned to the client.
 export interface OrderView {
   order: OrderRow;
   items: OrderItemRow[];
 }
 
-// Input for POST /api/orders — the client sends cart items + optional idempotency key.
-// (The idempotency key comes from the header, not the body.)
 export interface PlaceOrderInput {
   restaurant_id: string;
   items: { menu_item_id: string; quantity: number }[];
@@ -74,7 +67,6 @@ export function validatePlaceOrder(body: unknown): PlaceOrderInput {
   };
 }
 
-// The valid order statuses (must match the DB order_status enum exactly).
 export const ORDER_STATUSES = [
   "PENDING",
   "CONFIRMED",
@@ -85,12 +77,10 @@ export const ORDER_STATUSES = [
 ] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
-// Input for PATCH /api/orders/:orderId/status — the owner sends the new status.
 export interface UpdateOrderStatusInput {
   status: OrderStatus;
 }
 
-// Validate PATCH /api/orders/:orderId/status body.
 export function validateUpdateOrderStatus(body: unknown): UpdateOrderStatusInput {
   if (typeof body !== "object" || body === null)
     throw ApiError.badRequest("Request body must be a JSON object");

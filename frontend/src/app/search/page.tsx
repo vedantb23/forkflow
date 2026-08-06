@@ -48,7 +48,7 @@ export default function SearchPage() {
 
     const currentQuery = query;
     const historyPayload = messages.map(m => ({ role: m.role, content: m.content }));
-    
+
     setMessages(prev => [...prev, { role: "user", content: currentQuery }]);
     setQuery("");
     setIsLoading(true);
@@ -66,7 +66,7 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white flex flex-col font-sans selection:bg-orange-500/30">
-      {/* Header */}
+      {}
       <header className="p-6 md:px-12 md:py-8 border-b border-neutral-900 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="inline-flex items-center text-sm font-medium text-neutral-400 hover:text-orange-400 transition-colors">
@@ -78,17 +78,17 @@ export default function SearchPage() {
           <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-rose-400 hidden sm:block">
             ForkFlow AI Assistant
           </h1>
-          <div className="w-[100px]"></div> {/* Spacer for centering */}
+          <div className="w-[100px]"></div> {}
         </div>
       </header>
 
-      {/* Chat Area */}
+      {}
       <div className="flex-1 overflow-y-auto p-6 md:p-12">
         <div className="max-w-4xl mx-auto space-y-8">
-          
+
           {messages.length === 0 && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center space-y-4 pt-12 pb-24"
             >
@@ -103,7 +103,7 @@ export default function SearchPage() {
 
           <AnimatePresence initial={false}>
             {messages.map((msg, index) => (
-              <motion.div 
+              <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -166,7 +166,7 @@ export default function SearchPage() {
               </motion.div>
             ))}
           </AnimatePresence>
-          
+
           {isLoading && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
               <div className="bg-neutral-900 border border-neutral-800 rounded-2xl rounded-tl-sm p-6 shadow-xl flex gap-2 items-center">
@@ -182,7 +182,7 @@ export default function SearchPage() {
               {error}
             </motion.div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
       </div>

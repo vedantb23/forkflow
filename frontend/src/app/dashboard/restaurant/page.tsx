@@ -11,13 +11,10 @@ import type { OrderView, OrderStatus, Restaurant } from "@/lib/types";
 
 export default function RestaurantDashboard() {
   const [isLive, setIsLive] = useState(true);
-  // Order ids currently being accepted, so we can disable the button + show a
-  // spinner while the PATCH is in flight (prevents double-clicks / double-accept).
+
   const [acceptingIds, setAcceptingIds] = useState<Set<string>>(new Set());
   const queryClient = useQueryClient();
 
-  // Which restaurant's kitchen is this? Owners can have several; we drive the KDS
-  // off their first one for the demo. GET /restaurants/mine → { restaurants }.
   const { data: myRestaurant, isLoading: restaurantLoading } = useQuery({
     queryKey: ["my-restaurant"],
     queryFn: () =>
@@ -27,28 +24,23 @@ export default function RestaurantDashboard() {
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ["restaurant-orders", restaurantId],
-    // Owner feed: every order for this restaurant, each as { order, items }.
+
     queryFn: () =>
       apiGet<{ orders: OrderView[] }>(`/orders/restaurant/${restaurantId}`).then((d) => d.orders),
-    enabled: !!restaurantId, // wait until we know the restaurant id
+    enabled: !!restaurantId,
   });
 
   useEffect(() => {
     if (!restaurantId) return;
     const socket = getSocket();
 
-    // Join this restaurant's room so the backend pushes new orders here live.
     socket.emit("restaurant:join", { restaurantId });
 
-    // A brand-new order landed (backend emits ORDER_NEW = "order:new"). The payload
-    // is an order summary, not a full view, so the simplest correct move is to
-    // refetch the feed — cheap, and guarantees we render the new order with items.
     const onNew = () => {
       queryClient.invalidateQueries({ queryKey: ["restaurant-orders", restaurantId] });
     };
     socket.on("order:new", onNew);
 
-    // A status changed elsewhere (e.g. delivery picked it up) — patch our cache.
     const onStatus = (payload: { orderId: string; status: OrderStatus }) => {
       queryClient.setQueryData<OrderView[]>(["restaurant-orders", restaurantId], (old) => {
         if (!old) return old;
@@ -61,7 +53,6 @@ export default function RestaurantDashboard() {
     };
     socket.on("order:status_updated", onStatus);
 
-    // Re-join room after reconnect (Render cold start / network blip)
     const onConnect = () => {
       socket.emit("restaurant:join", { restaurantId });
     };
@@ -79,17 +70,11 @@ export default function RestaurantDashboard() {
     { icon: "menu_book", label: "Menu Manager", href: "/dashboard/restaurant/menu" },
   ];
 
-  // Owner accepts a CONFIRMED order → PREPARING. This is the manual gate: nothing
-  // moves out of Incoming without the kitchen actively accepting it. PREPARING is
-  // also the state couriers can claim (see claimDelivery), so this single action
-  // both starts the cook and makes the order available for pickup.
-  // Backend: PATCH /orders/:id/status { status } — owner-only, emits the live
-  // ORDER_STATUS_UPDATED event which our onStatus listener folds into the cache.
   const acceptOrder = async (orderId: string) => {
     setAcceptingIds((prev) => new Set(prev).add(orderId));
     try {
       await apiPatch(`/orders/${orderId}/status`, { status: "PREPARING" });
-      // Optimistically reflect it locally too; the socket event will also arrive.
+
       queryClient.setQueryData<OrderView[]>(["restaurant-orders", restaurantId], (old) =>
         old?.map((o) =>
           o.order.id === orderId ? { ...o, order: { ...o.order, status: "PREPARING" } } : o
@@ -148,7 +133,7 @@ export default function RestaurantDashboard() {
 
   return (
     <div className="min-h-screen bg-background text-on-background">
-      {/* Mobile Top Nav */}
+      {}
       <div className="md:hidden">
         <TopNavBar />
       </div>
@@ -162,19 +147,19 @@ export default function RestaurantDashboard() {
         />
 
         <main className="flex-1 md:ml-64 p-[24px] md:p-[48px] overflow-y-auto">
-          {/* Header */}
+          {}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[40px] gap-[16px]">
             <div>
               <h1 className="font-headline-lg text-[32px] text-on-surface">Kitchen Display System</h1>
               <p className="font-body-md text-[16px] text-on-surface-variant">Manage live orders in real-time.</p>
             </div>
-            
-            {/* Go Live Toggle */}
+
+            {}
             <div className="glass-panel px-[24px] py-[12px] rounded-full flex items-center gap-[16px] shadow-sm">
               <span className={`font-label-md text-[14px] ${isLive ? 'text-primary font-bold' : 'text-on-surface-variant'}`}>
                 {isLive ? 'Accepting Orders' : 'Paused'}
               </span>
-              <button 
+              <button
                 onClick={() => setIsLive(!isLive)}
                 className={`relative w-[52px] h-[28px] rounded-full transition-colors duration-300 ${isLive ? 'bg-primary' : 'bg-surface-container-high border border-outline-variant'}`}
               >
@@ -190,9 +175,9 @@ export default function RestaurantDashboard() {
             </div>
           )}
 
-          {/* Kanban Board */}
+          {}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-[24px] h-[calc(100vh-200px)] min-h-[600px]">
-            {/* Column 1: Incoming */}
+            {}
             <div className="flex flex-col bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm">
               <div className="bg-surface p-[16px] border-b border-outline-variant/30 flex justify-between items-center sticky top-0 z-10">
                 <div className="flex items-center gap-[8px]">
@@ -224,14 +209,13 @@ export default function RestaurantDashboard() {
                     </ul>
                     <div className="flex gap-[8px]">
                       {o.order.status === "PENDING" ? (
-                        // Payment still being taken by the worker — no action yet.
+
                         <div className="w-full flex items-center justify-center gap-[8px] bg-surface-container-high text-on-surface-variant border border-outline-variant/50 py-2 rounded-md font-label-md text-[14px]">
                           <span className="material-symbols-outlined text-[18px] text-tertiary animate-pulse">hourglass_top</span>
                           Processing payment…
                         </div>
                       ) : (
-                        // CONFIRMED (paid) — owner must accept to start prep. This is
-                        // the manual gate that replaces the old auto-progression.
+
                         <button
                           onClick={() => acceptOrder(o.order.id)}
                           disabled={acceptingIds.has(o.order.id)}
@@ -256,7 +240,7 @@ export default function RestaurantDashboard() {
               </div>
             </div>
 
-            {/* Column 2: Preparing */}
+            {}
             <div className="flex flex-col bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm">
               <div className="bg-surface p-[16px] border-b border-outline-variant/30 flex justify-between items-center sticky top-0 z-10">
                 <div className="flex items-center gap-[8px]">
@@ -294,7 +278,7 @@ export default function RestaurantDashboard() {
               </div>
             </div>
 
-            {/* Column 3: Ready / Completed */}
+            {}
             <div className="flex flex-col bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm opacity-80 hover:opacity-100 transition-opacity">
               <div className="bg-surface p-[16px] border-b border-outline-variant/30 flex justify-between items-center sticky top-0 z-10">
                 <div className="flex items-center gap-[8px]">

@@ -57,7 +57,7 @@ export function DashboardSidebar({ title, subtitle, links, userImage, userType }
             <p className="font-label-sm text-[12px] text-on-surface-variant mt-1">{subtitle}</p>
           </div>
         )}
-        
+
       </div>
 
       <nav className="flex-1 px-[16px] space-y-[8px] overflow-y-auto">
@@ -68,8 +68,8 @@ export function DashboardSidebar({ title, subtitle, links, userImage, userType }
               key={link.label}
               href={link.href}
               className={`rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all font-label-md text-[14px] ${
-                isActive 
-                  ? "bg-primary-container text-on-primary-container" 
+                isActive
+                  ? "bg-primary-container text-on-primary-container"
                   : "text-on-surface-variant hover:bg-surface-container-high"
               }`}
             >

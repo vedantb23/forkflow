@@ -5,29 +5,20 @@ import { embeddings } from "./rag.embeddings";
 import { env } from "../../config/env";
 import { logger } from "../../config/logger";
 
-// We use llama-3.3-70b-versatile for fast and smart generation
 const llm = new ChatGroq({
   apiKey: env.GROQ_API_KEY,
   model: "llama-3.3-70b-versatile",
-  temperature: 0.2, // Low temperature for more grounded answers
+  temperature: 0.2,
 });
 
-/**
- * Executes a RAG query:
- * 1. Embeds the user query
- * 2. Does a cosine similarity search in pgvector
- * 3. Passes the results + the question to Groq
- */
 export async function performSearch(query: string, history?: { role: string, content: string }[]) {
   try {
-    // 1. Embed the user's search query
+
     const [queryVector] = await embeddings.embedDocuments([query]);
     const vectorString = `[${queryVector.join(",")}]`;
 
-    // 2. Search Postgres using vector cosine distance (<=>)
-    // We get the top 5 closest items
     const sql = `
-      SELECT m.id, m.name, m.description, m.price, m.is_veg, m.spice_level, 
+      SELECT m.id, m.name, m.description, m.price, m.is_veg, m.spice_level,
              r.name as restaurant_name, r.id as restaurant_id,
              (m.embedding <=> $1) as distance
       FROM menu_items m
@@ -36,7 +27,7 @@ export async function performSearch(query: string, history?: { role: string, con
       ORDER BY m.embedding <=> $1
       LIMIT 5
     `;
-    
+
     const dbResult = await pool.query(sql, [vectorString]);
     const items = dbResult.rows;
 
@@ -47,7 +38,6 @@ export async function performSearch(query: string, history?: { role: string, con
       };
     }
 
-    // 3. Construct context for the LLM
     const contextText = items.map(item => {
       const vegText = item.is_veg ? "Vegetarian" : "Non-Vegetarian";
       const spiceLevels = ["Not Spicy", "Mild", "Medium", "Hot"];
@@ -55,7 +45,6 @@ export async function performSearch(query: string, history?: { role: string, con
       return `Dish: ${item.name} | Restaurant: ${item.restaurant_name} | Price: ₹${item.price} | Diet: ${vegText} | Spice: ${spiceText} | Description: ${item.description}`;
     }).join("\n");
 
-    // 4. Ask the LLM to formulate an answer
     const messages: BaseMessage[] = [
       new SystemMessage(`You are the ForkFlow AI Assistant, helping a user find food to order.
 Use the following menu items retrieved from our database to answer the user's query.
@@ -87,7 +76,7 @@ ${contextText}`)
         price: Number(item.price),
         is_veg: item.is_veg,
         description: item.description,
-        distance: item.distance // lower is better
+        distance: item.distance
       }))
     };
   } catch (error) {

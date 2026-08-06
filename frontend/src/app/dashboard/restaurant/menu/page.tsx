@@ -159,7 +159,7 @@ export default function MenuManagerPage() {
           )}
         </main>
 
-        {/* Side panel for add/edit */}
+        {}
         {panelOpen && (
           <div className="fixed inset-0 z-50 flex justify-end">
             <div className="absolute inset-0 bg-on-surface/30 backdrop-blur-sm" onClick={closePanel} />

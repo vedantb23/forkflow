@@ -1,6 +1,3 @@
-// queues/index.ts — one place to import every queue + its job-data type.
-// Producers do: import { orderQueue } from "../queues";
-
 export { orderQueue } from "./order.queue";
 export type { OrderJobData } from "./order.queue";
 

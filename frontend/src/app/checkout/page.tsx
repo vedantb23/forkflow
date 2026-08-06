@@ -16,9 +16,6 @@ export default function CheckoutPage() {
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState("");
 
-  // Place the order. Generates a fresh Idempotency-Key so a retry (double-click,
-  // network blip) can never create two orders. On success clears the cart and
-  // jumps to the live tracking page.
   async function placeOrder() {
     if (!user) {
       router.push("/login");
@@ -34,8 +31,7 @@ export default function CheckoutPage() {
         restaurant_id: restaurantId,
         items: lines.map((l) => ({ menu_item_id: l.item.id, quantity: l.quantity })),
       };
-      // POST /orders → data envelope { order, items }. apiPost already unwraps to
-      // `data`, so we get the OrderView back and read the new order's id off it.
+
       const result = await apiPost<OrderView>("/orders", body, { "Idempotency-Key": key });
       clear();
       router.push(`/orders/${result.order.id}`);
@@ -61,7 +57,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <TopNavBar />
-      
+
       <main className="flex-grow pt-[100px] pb-[64px] px-[20px] md:px-[48px] max-w-[800px] mx-auto w-full animate-fade-in">
         <h1 className="font-display-lg text-[36px] text-on-surface mb-[32px]">Checkout</h1>
 

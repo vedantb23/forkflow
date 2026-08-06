@@ -1,19 +1,10 @@
-// seed.ts — fill the DB with sample data so we have something to work with.
-// Run with: npm run db:seed
-//
-// It creates one restaurant-owner user, then 3 restaurants each with a small
-// menu. Safe to re-run: it wipes the old seed rows first (by the owner's known
-// email) so you don't pile up duplicates.
-
 import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { pool } from "../src/config/db";
 import { logger } from "../src/config/logger";
 
-// A fixed email for our demo owner so we can find + clear old seed data.
 const OWNER_EMAIL = "owner@forkflow.dev";
 
-// The sample restaurants and their dishes. Prices in rupees.
 const RESTAURANTS = [
   {
     name: "Spice Route",
@@ -121,28 +112,26 @@ async function seed() {
   try {
     await client.query("BEGIN");
 
-    // 1) Wipe old seed data safely.
     const ownerRes = await client.query("SELECT id FROM users WHERE email = $1", [OWNER_EMAIL]);
     if (ownerRes.rows.length > 0) {
       const existingOwnerId = ownerRes.rows[0].id;
       const restRes = await client.query("SELECT id FROM restaurants WHERE owner_id = $1", [existingOwnerId]);
       const restIds = restRes.rows.map(r => r.id);
-      
+
       if (restIds.length > 0) {
-        // Delete order items and orders
+
         await client.query("DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE restaurant_id = ANY($1))", [restIds]);
         await client.query("DELETE FROM orders WHERE restaurant_id = ANY($1)", [restIds]);
-        // Delete cart items and menu items
+
         await client.query("DELETE FROM cart_items WHERE menu_item_id IN (SELECT id FROM menu_items WHERE restaurant_id = ANY($1))", [restIds]);
         await client.query("DELETE FROM menu_items WHERE restaurant_id = ANY($1)", [restIds]);
-        // Delete restaurants
+
         await client.query("DELETE FROM restaurants WHERE owner_id = $1", [existingOwnerId]);
       }
-      // Finally, delete the owner user
+
       await client.query("DELETE FROM users WHERE id = $1", [existingOwnerId]);
     }
 
-    // 2) create the demo owner. Password is "password123" (hashed).
     const passwordHash = await bcrypt.hash("password123", 10);
     const ownerRows = await client.query(
       `INSERT INTO users (email, password_hash, name, role)
@@ -152,7 +141,6 @@ async function seed() {
     );
     const ownerId = ownerRows.rows[0].id;
 
-    // 3) create each restaurant and its menu items.
     for (const r of RESTAURANTS) {
       const restRows = await client.query(
         `INSERT INTO restaurants (name, description, cuisine, image_url, max_orders_per_slot, owner_id)
@@ -176,12 +164,12 @@ async function seed() {
     await client.query("COMMIT");
     logger.info("✅ Seed complete.");
   } catch (err) {
-    await client.query("ROLLBACK"); // undo everything if any step failed
+    await client.query("ROLLBACK");
     logger.error({ err }, "❌ Seed failed");
     process.exit(1);
   } finally {
     client.release();
-    await pool.end(); // close the pool so the script process can exit
+    await pool.end();
   }
 }
 

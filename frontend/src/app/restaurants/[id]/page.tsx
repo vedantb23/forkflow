@@ -11,23 +11,23 @@ import type { Restaurant, MenuItem } from "@/lib/types";
 
 export default function RestaurantMenu({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  
+
   const { data: restaurant, isLoading: resLoading } = useQuery({
     queryKey: ["restaurant", id],
-    // GET /restaurants/:id → { restaurant } inside the data envelope.
+
     queryFn: () => apiGet<{ restaurant: Restaurant }>(`/restaurants/${id}`).then((d) => d.restaurant),
   });
 
   const { data: menu, isLoading: menuLoading } = useQuery({
     queryKey: ["restaurant", id, "menu"],
-    // Public menu lives at /menu/:restaurantId → { items, count }.
+
     queryFn: () => apiGet<{ items: MenuItem[] }>(`/menu/${id}`).then((d) => d.items),
   });
 
   const cartLines = useCart((state) => state.lines);
   const addToCart = useCart((state) => state.add);
   const cartTotal = useCart((state) => state.total());
-  
+
   const cartItemsCount = cartLines.reduce((acc, line) => acc + line.quantity, 0);
 
   if (resLoading || menuLoading) {
@@ -56,7 +56,7 @@ export default function RestaurantMenu({ params }: { params: Promise<{ id: strin
     <>
       <TopNavBar />
       <main className="flex-grow pt-16 pb-[100px] min-h-screen">
-        {/* Hero Banner */}
+        {}
         <div className="relative w-full h-[307px] md:h-[460px] bg-surface-variant overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center w-full h-full"
@@ -65,16 +65,16 @@ export default function RestaurantMenu({ params }: { params: Promise<{ id: strin
             }}
           ></div>
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
-          
-          {/* The hanging sign (Large) */}
+
+          {}
           <div className="absolute top-0 right-8 md:right-24 z-20 animate-swing flex flex-col items-center drop-shadow-2xl">
             <div className="flex justify-between w-16 md:w-20 px-2">
               <div className="w-[2px] h-8 md:h-12 bg-white/70 shadow-sm"></div>
               <div className="w-[2px] h-8 md:h-12 bg-white/70 shadow-sm"></div>
             </div>
             <div className={`px-4 md:px-6 py-1 md:py-2 rounded-md text-white font-black text-xs md:text-lg tracking-widest border-b-[4px] shadow-lg ${
-              restaurant.is_open 
-                ? 'bg-emerald-500 border-emerald-700' 
+              restaurant.is_open
+                ? 'bg-emerald-500 border-emerald-700'
                 : 'bg-rose-500 border-rose-700'
             }`}>
               {restaurant.is_open ? 'OPEN' : 'CLOSED'}
@@ -82,7 +82,7 @@ export default function RestaurantMenu({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
-        {/* Restaurant Info Container */}
+        {}
         <div className="max-w-[1440px] mx-auto px-[20px] md:px-[48px] -mt-[64px] relative z-10">
           <div className="bg-surface dark:bg-surface-dim rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-[40px] border border-outline-variant/30 backdrop-blur-sm">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-[24px]">
@@ -106,9 +106,9 @@ export default function RestaurantMenu({ params }: { params: Promise<{ id: strin
             </div>
           </div>
 
-          {/* Content Grid (Menu Categories + Items) */}
+          {}
           <div className="mt-[64px] grid grid-cols-1 lg:grid-cols-12 gap-[24px] relative">
-            {/* Sticky Sidebar Categories */}
+            {}
             <div className="lg:col-span-3">
               <div className="sticky top-[100px] bg-surface/80 backdrop-blur-md rounded-lg p-[16px] border border-outline-variant/20 overflow-x-auto no-scrollbar">
                 <nav className="flex flex-row lg:flex-col gap-[8px] lg:gap-[16px]">
@@ -119,7 +119,7 @@ export default function RestaurantMenu({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
-            {/* Menu Items Grid */}
+            {}
             <div className="lg:col-span-9 space-y-[64px] pb-[64px]">
               <section className="scroll-mt-[100px]" id="menu">
                 <h2 className="font-headline-md text-[24px] text-on-background mb-[24px] pb-[8px] border-b border-outline-variant/30">
@@ -164,7 +164,7 @@ export default function RestaurantMenu({ params }: { params: Promise<{ id: strin
         </div>
       </main>
 
-      {/* Floating Cart Bar */}
+      {}
       <div
         className={`fixed bottom-0 left-0 w-full z-50 p-[20px] pb-[24px] flex justify-center pointer-events-none transition-all duration-300 ${
           cartItemsCount > 0 ? "cart-active" : "hidden opacity-0 translate-y-[100%]"

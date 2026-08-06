@@ -19,7 +19,6 @@ export default function Home() {
       ),
   });
 
-  // Client-side search over the loaded restaurants — matches name or description.
   const q = query.trim().toLowerCase();
   const filtered = q
     ? restaurants?.filter(
@@ -33,7 +32,7 @@ export default function Home() {
     <>
       <TopNavBar />
       <main className="min-h-screen pt-[88px] flex flex-col">
-        {/* Hero */}
+        {}
         <section className="relative h-[600px] md:h-[700px] flex items-center justify-center overflow-hidden">
           <div
             className="absolute inset-0 w-full h-full bg-cover bg-center"
@@ -109,8 +108,8 @@ export default function Home() {
                           <div className="w-[1.5px] h-4 bg-white/70 shadow-sm"></div>
                         </div>
                         <div className={`px-3 py-[4px] rounded-sm text-white font-bold text-[10px] tracking-wider border-b-[3px] shadow-sm ${
-                          restaurant.is_open 
-                            ? 'bg-emerald-500 border-emerald-700' 
+                          restaurant.is_open
+                            ? 'bg-emerald-500 border-emerald-700'
                             : 'bg-rose-500 border-rose-700'
                         }`}>
                           {restaurant.is_open ? 'OPEN' : 'CLOSED'}
