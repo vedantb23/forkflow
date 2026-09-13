@@ -5,6 +5,8 @@ export interface User {
   name: string;
   email: string;
   role: Role;
+  phone?: string | null;
+  created_at?: string;
 }
 
 export interface Restaurant {
@@ -15,6 +17,13 @@ export interface Restaurant {
   image_url: string | null;
   address: string | null;
   is_open: boolean;
+}
+
+export interface RestaurantFull extends Restaurant {
+  owner_id: string;
+  max_orders_per_slot: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface MenuItem {

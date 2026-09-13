@@ -54,3 +54,13 @@ export async function deleteRestaurantHandler(req: Request, res: Response) {
   await restaurantService.deleteRestaurant(req.params.id as string, req.user.sub);
   return sendSuccess(res, null, "Restaurant deleted");
 }
+
+export async function listAllRestaurantsHandler(_req: Request, res: Response) {
+  const restaurants = await restaurantService.listAllRestaurants();
+  return sendSuccess(res, { restaurants, count: restaurants.length }, "All restaurants (admin)");
+}
+
+export async function adminDeleteRestaurantHandler(req: Request, res: Response) {
+  await restaurantService.adminDeleteRestaurant(req.params.id as string);
+  return sendSuccess(res, null, "Restaurant deleted by admin");
+}

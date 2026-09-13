@@ -6,6 +6,8 @@ import {
   createRestaurantHandler,
   updateRestaurantHandler,
   deleteRestaurantHandler,
+  listAllRestaurantsHandler,
+  adminDeleteRestaurantHandler,
 } from "./restaurant.controller";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { requireRole } from "../../middlewares/rbac.middleware";
@@ -23,6 +25,21 @@ router.get(
   requireAuth,
   requireRole("RESTAURANT_OWNER", "ADMIN"),
   asyncHandler(listMyRestaurantsHandler)
+);
+
+// Admin-only routes — placed before /:id to avoid route conflicts
+router.get(
+  "/admin/all",
+  requireAuth,
+  requireRole("ADMIN"),
+  asyncHandler(listAllRestaurantsHandler)
+);
+
+router.delete(
+  "/admin/:id",
+  requireAuth,
+  requireRole("ADMIN"),
+  asyncHandler(adminDeleteRestaurantHandler)
 );
 
 router.get("/:id", asyncHandler(getRestaurantHandler));

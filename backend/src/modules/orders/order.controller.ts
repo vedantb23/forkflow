@@ -3,6 +3,19 @@ import * as orderService from "./order.service";
 import { sendSuccess } from "../../utils/apiResponse";
 import { ApiError } from "../../utils/apiError";
 
+export async function listAllOrdersHandler(_req: Request, res: Response) {
+  const orders = await orderService.listAllOrders();
+  return sendSuccess(res, { orders, count: orders.length }, "All orders");
+}
+
+export async function adminUpdateOrderStatusHandler(req: Request, res: Response) {
+  const result = await orderService.adminUpdateOrderStatus(
+    req.params.orderId as string,
+    req.body.status
+  );
+  return sendSuccess(res, result, "Order status updated by admin");
+}
+
 export async function placeOrderHandler(req: Request, res: Response) {
   if (!req.user) throw ApiError.unauthorized("Not authenticated");
   const idempotencyToken = req.headers["idempotency-key"] as string | undefined;

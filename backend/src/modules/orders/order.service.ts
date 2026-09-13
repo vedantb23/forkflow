@@ -217,3 +217,42 @@ export async function placeOrder(
     }
   }
 }
+
+export async function listAllOrders(): Promise<OrderView[]> {
+  const orders = await query<OrderRow>("SELECT * FROM orders ORDER BY created_at DESC");
+  if (orders.length === 0) return [];
+
+  const orderIds = orders.map((o) => o.id);
+  const items = await query<OrderItemRow>(
+    "SELECT * FROM order_items WHERE order_id = ANY($1)",
+    [orderIds]
+  );
+
+  return orders.map((order) => ({
+    order,
+    items: items.filter((it) => it.order_id === order.id),
+  }));
+}
+
+export async function adminUpdateOrderStatus(
+  orderId: string,
+  status: OrderRow["status"]
+): Promise<OrderView> {
+  const rows = await query<OrderRow>(
+    `UPDATE orders SET status = $1 WHERE id = $2 RETURNING *`,
+    [status, orderId]
+  );
+  if (rows.length === 0) throw ApiError.notFound("Order not found");
+
+  getIo()
+    .to(`order:${orderId}`)
+    .emit(SERVER_EVENTS.ORDER_STATUS_UPDATED, { orderId, status });
+
+  logger.info({ orderId, status }, "orders: status updated by admin");
+
+  const items = await query<OrderItemRow>(
+    "SELECT * FROM order_items WHERE order_id = $1",
+    [orderId]
+  );
+  return { order: rows[0], items };
+}

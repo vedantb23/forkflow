@@ -82,3 +82,24 @@ export async function listUsers(): Promise<PublicUser[]> {
   );
   return rows.map(toPublicUser);
 }
+
+export async function updateUserRole(userId: string, role: Role): Promise<PublicUser> {
+  const VALID_ROLES: Role[] = ["CUSTOMER", "RESTAURANT_OWNER", "DELIVERY", "ADMIN"];
+  if (!VALID_ROLES.includes(role)) {
+    throw ApiError.badRequest(`Invalid role. Must be one of: ${VALID_ROLES.join(", ")}`);
+  }
+  const rows = await query<UserRow>(
+    "UPDATE users SET role = $1 WHERE id = $2 RETURNING *",
+    [role, userId]
+  );
+  if (rows.length === 0) throw ApiError.notFound("User not found");
+  return toPublicUser(rows[0]);
+}
+
+export async function deleteUser(userId: string): Promise<void> {
+  const rows = await query<{ id: string }>(
+    "DELETE FROM users WHERE id = $1 RETURNING id",
+    [userId]
+  );
+  if (rows.length === 0) throw ApiError.notFound("User not found");
+}

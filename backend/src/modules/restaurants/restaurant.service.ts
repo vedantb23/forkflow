@@ -114,3 +114,18 @@ export async function listMyRestaurants(ownerId: string): Promise<RestaurantRow[
     [ownerId]
   );
 }
+
+export async function listAllRestaurants(): Promise<RestaurantRow[]> {
+  return query<RestaurantRow>(
+    "SELECT * FROM restaurants ORDER BY created_at DESC"
+  );
+}
+
+export async function adminDeleteRestaurant(restaurantId: string): Promise<void> {
+  const rows = await query<{ id: string }>(
+    "DELETE FROM restaurants WHERE id = $1 RETURNING id",
+    [restaurantId]
+  );
+  if (rows.length === 0) throw ApiError.notFound("Restaurant not found");
+  await invalidateRestaurantList();
+}
