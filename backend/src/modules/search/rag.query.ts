@@ -5,9 +5,11 @@ import { embeddings } from "./rag.embeddings";
 import { env } from "../../config/env";
 import { logger } from "../../config/logger";
 
+const modelName = env.GROQ_MODEL || "qwen/qwen3.8-27b";
+
 const llm = new ChatGroq({
   apiKey: env.GROQ_API_KEY,
-  model: "llama-3.1-8b-instant",
+  model: modelName,
   temperature: 0.2,
 });
 
@@ -64,10 +66,19 @@ ${contextText}`)
 
     messages.push(new HumanMessage(query));
 
-    const response = await llm.invoke(messages);
+    let answer = "";
+    try {
+      const response = await llm.invoke(messages);
+      const rawContent = typeof response.content === "string" ? response.content : JSON.stringify(response.content);
+      // Strip any reasoning / think tags if present
+      answer = rawContent.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+    } catch (llmError) {
+      logger.warn({ err: llmError }, "Groq LLM call failed in performSearch; returning matched dishes with fallback answer");
+      answer = `Here are the top matches I found for "${query}":`;
+    }
 
     return {
-      answer: response.content,
+      answer,
       dishes: items.map(item => ({
         id: item.id,
         name: item.name,

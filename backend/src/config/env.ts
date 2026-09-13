@@ -58,5 +58,6 @@ export const env = {
 
   GEMINI_API_KEY: optionalString("GEMINI_API_KEY"),
   GROQ_API_KEY: optionalString("GROQ_API_KEY"),
+  GROQ_MODEL: optionalString("GROQ_MODEL"),
   HUGGINGFACE_API_KEY: optionalString("HUGGINGFACE_API_KEY"),
 } as const;
