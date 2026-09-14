@@ -1,6 +1,6 @@
 import { Worker, type Job } from "bullmq";
 import { QUEUE_NAMES } from "../config/constants";
-import { bullConnection } from "../queues/connection";
+import { bullConnection, defaultWorkerOptions } from "../queues/connection";
 import { logger } from "../config/logger";
 import { query } from "../config/db";
 import { processPayment } from "../modules/payments/payment.service";
@@ -55,7 +55,7 @@ export const orderWorker = new Worker<OrderJobData>(
   QUEUE_NAMES.ORDER,
   processOrderJob,
   {
-    connection: bullConnection,
+    ...defaultWorkerOptions,
     concurrency: 1,
   }
 );

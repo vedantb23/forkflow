@@ -1,5 +1,5 @@
 import { Worker } from "bullmq";
-import { bullConnection } from "../queues/connection";
+import { bullConnection, defaultWorkerOptions } from "../queues/connection";
 import { redis } from "../config/redis";
 import { logger } from "../config/logger";
 import { query } from "../config/db";
@@ -55,7 +55,7 @@ export const ingestWorker = new Worker<IngestJobData>(
     logger.info(`✅ Generated and saved embedding for dish: ${item.name}`);
   },
   {
-    connection: bullConnection,
+    ...defaultWorkerOptions,
   }
 );
 

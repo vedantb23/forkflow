@@ -1,7 +1,7 @@
 import { Worker, type Job } from "bullmq";
 import { Emitter } from "@socket.io/redis-emitter";
 import { QUEUE_NAMES } from "../config/constants";
-import { bullConnection } from "../queues/connection";
+import { bullConnection, defaultWorkerOptions } from "../queues/connection";
 import { redis } from "../config/redis";
 import { logger } from "../config/logger";
 import { SERVER_EVENTS } from "../realtime/socket.events";
@@ -27,7 +27,7 @@ export const notificationWorker = new Worker<NotificationJobData>(
   QUEUE_NAMES.NOTIFICATION,
   processNotificationJob,
   {
-    connection: bullConnection,
+    ...defaultWorkerOptions,
     concurrency: 5,
   }
 );

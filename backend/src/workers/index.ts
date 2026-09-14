@@ -8,7 +8,7 @@ import { ingestWorker } from "./ingest.worker";
 import { startCleanupJob, cleanupWorker } from "../jobs/cleanup.job";
 
 logger.info("👷 ForkFlow worker process starting...");
-logger.info(`   Listening on queues: order, email, notification, ingest, cleanup`);
+logger.info("   Listening on queues: order, email, notification, ingest (cleanup in-process)");
 
 startCleanupJob().catch((err) => logger.error({ err }, "failed to schedule cleanup job"));
 

@@ -1,8 +1,8 @@
 export const SLOT_MINUTES = 15;
 
 export const CACHE_TTL = {
-  RESTAURANT_LIST: 60,
-  MENU: 120,
+  RESTAURANT_LIST: 300, // 5 minutes (was 60s)
+  MENU: 600,            // 10 minutes (was 2m)
 } as const;
 
 export const QUEUE_NAMES = {
